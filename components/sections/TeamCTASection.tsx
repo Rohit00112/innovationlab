@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const TeamCTASection: React.FC = () => {
   return (
@@ -48,10 +49,12 @@ const TeamCTASection: React.FC = () => {
           <div className="bg-white p-8 rounded-xl shadow-md animate-cta">
             <div className="flex items-center mb-6">
               <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80"
                   alt="Sarah J."
                   className="w-full h-full object-cover"
+                  width={48}
+                  height={48}
                 />
               </div>
               <div>
@@ -67,10 +70,12 @@ const TeamCTASection: React.FC = () => {
           <div className="bg-white p-8 rounded-xl shadow-md animate-cta">
             <div className="flex items-center mb-6">
               <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80"
                   alt="Michael T."
                   className="w-full h-full object-cover"
+                  width={48}
+                  height={48}
                 />
               </div>
               <div>
@@ -79,7 +84,7 @@ const TeamCTASection: React.FC = () => {
               </div>
             </div>
             <blockquote className="text-gray-700 italic">
-              "The culture at Innovation Lab is unlike anywhere else I've worked. There's a genuine commitment to innovation, continuous learning, and making a positive impact. Every day brings new challenges and opportunities to create something meaningful."
+              &quot;The culture at Innovation Lab is unlike anywhere else I&apos;ve worked. There&apos;s a genuine commitment to innovation, continuous learning, and making a positive impact. Every day brings new challenges and opportunities to create something meaningful.&quot;
             </blockquote>
           </div>
         </div>

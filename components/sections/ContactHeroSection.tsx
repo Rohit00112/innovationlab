@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from 'react';
-import Button from '../ui/Button';
+// Removed unused import
+// import Button from '../ui/Button';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 
@@ -182,14 +183,18 @@ const ContactHeroSection: React.FC = () => {
       tl.kill();
 
       // Clean up button hover animations
-      if (sendMessageBtnRef.current) {
-        gsap.killTweensOf(sendMessageBtnRef.current);
+      // Store refs in variables to avoid the "ref value will likely have changed" warning
+      const sendMessageBtn = sendMessageBtnRef.current;
+      const findLocationBtn = findLocationBtnRef.current;
+
+      if (sendMessageBtn) {
+        gsap.killTweensOf(sendMessageBtn);
       }
-      if (findLocationBtnRef.current) {
-        gsap.killTweensOf(findLocationBtnRef.current);
+      if (findLocationBtn) {
+        gsap.killTweensOf(findLocationBtn);
       }
     };
-  }, []);
+  }, [prefersReducedMotion, setupButtonHoverEffects]);
 
   return (
     <section

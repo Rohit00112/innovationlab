@@ -73,7 +73,7 @@ const ProgramsSection = forwardRef<HTMLDivElement>((_, ref) => {
               prefetch={true}
               passHref={true}
               aria-label="View all programs"
-              onClick={(e) => {
+              onClick={() => {
                 // Ensure the link works by navigating directly
                 window.location.href = '/programs';
               }}
@@ -83,13 +83,7 @@ const ProgramsSection = forwardRef<HTMLDivElement>((_, ref) => {
                 <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </Link>
-            {/* Fallback direct link in case the Next.js Link component has issues */}
-            <a
-              href="/programs"
-              className="absolute inset-0 z-10"
-              aria-hidden="true"
-              tabIndex={-1}
-            ></a>
+            {/* Removed fallback direct link to fix ESLint error */}
           </div>
         </div>
 

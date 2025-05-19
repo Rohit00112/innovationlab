@@ -3,7 +3,9 @@
 import React, { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CalendarIcon, MapPinIcon, ClockIcon, TagIcon } from '@heroicons/react/24/outline';
+import { MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
+// Removed unused imports
+// import { CalendarIcon, TagIcon } from '@heroicons/react/24/outline';
 import { gsap } from 'gsap';
 
 interface SimpleEventCardProps {

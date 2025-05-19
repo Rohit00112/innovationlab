@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useEffect } from 'react';
-import Link from 'next/link';
+// Removed unused import
+// import Link from 'next/link';
 import { gsap } from 'gsap';
 
 interface TimelineCardProps {
@@ -23,6 +24,7 @@ const EnhancedTimelineCard: React.FC<TimelineCardProps> = ({
   position,
   icon,
   index,
+  // link parameter is not used in the component but kept for future use
   link = '#',
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -114,16 +116,18 @@ const EnhancedTimelineCard: React.FC<TimelineCardProps> = ({
 
     // Clean up event listeners on unmount
     return () => {
-      if (cardRef.current) {
-        const card = cardRef.current;
+      // Store refs in variables to avoid the "ref value will likely have changed" warning
+      const card = cardRef.current;
+      const icon = iconRef.current;
+
+      if (card) {
         const newCard = card.cloneNode(true);
         if (card.parentNode) {
           card.parentNode.replaceChild(newCard, card);
         }
       }
 
-      if (iconRef.current) {
-        const icon = iconRef.current;
+      if (icon) {
         const newIcon = icon.cloneNode(true);
         if (icon.parentNode) {
           icon.parentNode.replaceChild(newIcon, icon);

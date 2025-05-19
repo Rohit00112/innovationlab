@@ -895,8 +895,8 @@ const EventDetailsPage: React.FC<EventDetailsProps> = ({ event }) => {
   // Get search params for tab persistence
   const searchParams = useSearchParams();
 
-  // Define valid tabs
-  const validTabs = ['about', 'agenda', 'sub-events', 'gallery'];
+  // Define valid tabs - wrapped in useMemo to avoid dependency array changes on every render
+  const validTabs = React.useMemo(() => ['about', 'agenda', 'sub-events', 'gallery'], []);
 
   // Active tab state - initialize with default 'about'
   const [activeTab, setActiveTab] = useState('about');

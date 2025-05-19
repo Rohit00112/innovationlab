@@ -1,21 +1,22 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
+// Removed unused import
+// import Image from 'next/image';
 
 const PastEventsHeroSection: React.FC = () => {
   return (
     <section className="relative min-h-[60vh] flex items-center pt-20 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#21409A] to-[#0066FF] z-0"></div>
-      
+
       {/* Decorative elements */}
       <div className="absolute top-1/4 right-[10%] w-64 h-64 rounded-full bg-[#5045E8]/20 blur-3xl"></div>
       <div className="absolute bottom-1/4 left-[5%] w-48 h-48 rounded-full bg-[#0066FF]/30 blur-3xl"></div>
-      
+
       {/* Circuit pattern overlay */}
       <div className="absolute inset-0 bg-[url('/patterns/circuit-pattern.svg')] bg-repeat opacity-10 z-0"></div>
-      
+
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center text-white">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-title">
@@ -24,7 +25,7 @@ const PastEventsHeroSection: React.FC = () => {
           <p className="text-xl md:text-2xl text-white/80 mb-8 animate-subtitle">
             Explore our previous events, access recordings, presentations, and resources from our past innovation gatherings.
           </p>
-          
+
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 animate-subtitle">
             <div className="bg-white/10 backdrop-blur-md p-6 rounded-lg">
@@ -42,7 +43,7 @@ const PastEventsHeroSection: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Wave divider */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" fill="white">

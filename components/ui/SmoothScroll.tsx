@@ -26,7 +26,7 @@ const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
     // Don't interfere with normal link navigation
     const links = document.querySelectorAll('a');
     links.forEach(link => {
-      link.addEventListener('click', (e) => {
+      link.addEventListener('click', () => {
         // Allow normal link navigation to proceed
         // This ensures links work as expected
       });
@@ -42,7 +42,7 @@ const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
 
       // Then apply animations with a delay
       setTimeout(() => {
-        sections.forEach((section, index) => {
+        sections.forEach((section) => {
           // Add a subtle parallax effect to each section
           gsap.fromTo(
             section,

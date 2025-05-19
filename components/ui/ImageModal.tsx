@@ -88,7 +88,7 @@ const ImageModal: React.FC<ImageModalProps> = ({ isOpen, imageUrl, title, onClos
       document.removeEventListener('mousedown', handleClickOutside);
       document.body.style.overflow = '';
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, handleClose]);
 
   if (!isOpen) return null;
 

@@ -16,7 +16,8 @@ const AgendaItem: React.FC<AgendaItemProps> = ({
   time,
   title,
   description,
-  day,
+  // day parameter is defined but not used in the component
+  // day,
   isFirst = false,
   isSpecial = false
 }) => {

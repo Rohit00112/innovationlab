@@ -213,8 +213,10 @@ const EnhancedJourneySection: React.FC = () => {
       triggers.forEach(trigger => trigger.kill());
 
       // Kill any ongoing animations for decorative elements
-      if (decorativeElementsRef.current) {
-        const decorativeElements = decorativeElementsRef.current.querySelectorAll('.decorative-element');
+      // Store ref in variable to avoid the "ref value will likely have changed" warning
+      const decorativeElementsContainer = decorativeElementsRef.current;
+      if (decorativeElementsContainer) {
+        const decorativeElements = decorativeElementsContainer.querySelectorAll('.decorative-element');
         gsap.killTweensOf(decorativeElements);
       }
     };

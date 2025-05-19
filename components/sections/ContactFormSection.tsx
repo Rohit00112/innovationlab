@@ -275,15 +275,17 @@ const ContactFormSection: React.FC = () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
       // Clean up contact item hover animations
-      if (contactItemsRef.current) {
-        const contactItems = contactItemsRef.current.querySelectorAll('.contact-item');
+      // Store ref in variable to avoid the "ref value will likely have changed" warning
+      const contactItemsElement = contactItemsRef.current;
+      if (contactItemsElement) {
+        const contactItems = contactItemsElement.querySelectorAll('.contact-item');
         contactItems.forEach(item => {
           item.removeEventListener('mouseenter', () => {});
           item.removeEventListener('mouseleave', () => {});
         });
       }
     };
-  }, []);
+  }, [setupContactItemHoverEffects]);
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

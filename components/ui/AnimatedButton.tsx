@@ -105,8 +105,10 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     return () => {
       // Clean up
       gsap.killTweensOf(button);
-      if (arrowRef.current) {
-        gsap.killTweensOf(arrowRef.current);
+      // Store ref in variable to avoid the "ref value will likely have changed" warning
+      const arrow = arrowRef.current;
+      if (arrow) {
+        gsap.killTweensOf(arrow);
       }
     };
   }, []);
