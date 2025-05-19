@@ -360,7 +360,14 @@ const ContactFormSection: React.FC = () => {
   };
 
   // Submit form data to the server
-  const submitFormToServer = async (formData: typeof formData) => {
+  const submitFormToServer = async (data: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    company: string;
+    phone: string;
+  }) => {
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
