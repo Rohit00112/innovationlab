@@ -13,7 +13,7 @@ interface TimelineCardProps {
   position: 'left' | 'right';
   icon: React.ReactNode;
   index: number;
-  link?: string;
+  // Removed link parameter as it's not used
 }
 
 const EnhancedTimelineCard: React.FC<TimelineCardProps> = ({
@@ -24,8 +24,7 @@ const EnhancedTimelineCard: React.FC<TimelineCardProps> = ({
   position,
   icon,
   index,
-  // link parameter is not used in the component but kept for future use
-  link = '#',
+  // Removed link parameter as it's not used
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
