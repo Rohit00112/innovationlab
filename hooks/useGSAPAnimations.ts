@@ -122,13 +122,26 @@ export const useHeroAnimation = <T extends HTMLElement>(elementRef: RefObject<T>
       );
     }
 
+    // Animate the pill element
+    const pillElement = element.querySelector('.flex.flex-col.items-center');
+    if (pillElement) {
+      tl.fromTo(
+        pillElement,
+        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8 },
+        0.1
+      );
+    }
+
     // Animate each line of heading text separately with precise staggered timing
     headingLines.forEach((line, index) => {
+      // Set initial state to ensure visibility before animation
+      gsap.set(line, { opacity: 1 });
+
       tl.fromTo(
         line,
-        { opacity: 0, y: 40, scale: 0.98 },
+        { y: 40, scale: 0.98 },
         {
-          opacity: 1,
           y: 0,
           scale: 1,
           duration: 0.8,
@@ -146,12 +159,52 @@ export const useHeroAnimation = <T extends HTMLElement>(elementRef: RefObject<T>
       // Then animate them with staggered timing
       tl.fromTo(
         buttons,
-        { y: 30 },
+        { y: 30, scale: 0.9 },
         {
           y: 0,
+          scale: 1,
           duration: 0.8,
           stagger: 0.15,
-          ease: 'back.out(1.2)'
+          ease: 'back.out(1.2)',
+          onComplete: () => {
+            // Add a subtle pulse glow effect to the primary button after it appears
+            const registerButton = buttons[0];
+            if (registerButton && registerButton.classList.contains('bg-[#0066FF]')) {
+              gsap.to(registerButton, {
+                boxShadow: "0 0 20px rgba(0, 102, 255, 0.6), 0 0 30px rgba(0, 102, 255, 0.3)",
+                duration: 1.2,
+                repeat: 2,
+                yoyo: true,
+                ease: "sine.inOut",
+                onComplete: () => {
+                  // Add a subtle permanent glow
+                  gsap.to(registerButton, {
+                    boxShadow: "0 0 15px rgba(0, 102, 255, 0.4)",
+                    duration: 0.5
+                  });
+                }
+              });
+            }
+
+            // Add a subtle glow to the secondary button
+            const readMoreButton = buttons[1];
+            if (readMoreButton && readMoreButton.classList.contains('border-white')) {
+              gsap.to(readMoreButton, {
+                boxShadow: "0 0 15px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.2)",
+                duration: 1.2,
+                repeat: 2,
+                yoyo: true,
+                ease: "sine.inOut",
+                onComplete: () => {
+                  // Add a subtle permanent glow
+                  gsap.to(readMoreButton, {
+                    boxShadow: "0 0 10px rgba(255, 255, 255, 0.3)",
+                    duration: 0.5
+                  });
+                }
+              });
+            }
+          }
         },
         1.5 // Start after heading animations
       );

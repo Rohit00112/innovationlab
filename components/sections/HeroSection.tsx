@@ -1,15 +1,100 @@
 "use client";
 
-import React, { useRef, forwardRef, RefObject } from 'react';
+import React, { useRef, forwardRef, RefObject, useEffect } from 'react';
 import AnimatedButton from '../ui/AnimatedButton';
 import Image from 'next/image';
 import { useHeroAnimation } from '@/hooks/useGSAPAnimations';
+import { gsap } from 'gsap';
 
 const HeroSection = forwardRef<HTMLDivElement>((_, ref) => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const registerBtnRef = useRef<HTMLAnchorElement>(null);
+  const readMoreBtnRef = useRef<HTMLAnchorElement>(null);
 
   // Use the enhanced hero animation hook
   useHeroAnimation(sectionRef as RefObject<HTMLElement>);
+
+  // Add custom button animations
+  useEffect(() => {
+    if (!registerBtnRef.current || !readMoreBtnRef.current) return;
+
+    // Register button hover effects (matching contact page)
+    if (registerBtnRef.current) {
+      // Create hover in animation
+      registerBtnRef.current.addEventListener('mouseenter', () => {
+        gsap.to(registerBtnRef.current, {
+          scale: 1.05,
+          duration: 0.3,
+          ease: "back.out(1.5)",
+          boxShadow: "0 10px 25px rgba(0, 102, 255, 0.3)",
+        });
+
+        // Create a pulse effect on hover
+        gsap.to(registerBtnRef.current, {
+          boxShadow: "0 10px 25px rgba(0, 102, 255, 0.5)",
+          duration: 0.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      });
+
+      // Create hover out animation
+      registerBtnRef.current.addEventListener('mouseleave', () => {
+        gsap.killTweensOf(registerBtnRef.current);
+        gsap.to(registerBtnRef.current, {
+          scale: 1,
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+    }
+
+    // Read More button hover effects (matching contact page)
+    if (readMoreBtnRef.current) {
+      // Create hover in animation
+      readMoreBtnRef.current.addEventListener('mouseenter', () => {
+        gsap.to(readMoreBtnRef.current, {
+          scale: 1.05,
+          duration: 0.3,
+          ease: "back.out(1.5)",
+          backgroundColor: "rgba(255, 255, 255, 0.15)"
+        });
+
+        // Create a subtle border glow effect
+        gsap.to(readMoreBtnRef.current, {
+          boxShadow: "0 0 15px rgba(255, 255, 255, 0.5)",
+          duration: 0.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      });
+
+      // Create hover out animation
+      readMoreBtnRef.current.addEventListener('mouseleave', () => {
+        gsap.killTweensOf(readMoreBtnRef.current);
+        gsap.to(readMoreBtnRef.current, {
+          scale: 1,
+          backgroundColor: "transparent",
+          boxShadow: "none",
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+    }
+
+    return () => {
+      // Clean up event listeners
+      if (registerBtnRef.current) {
+        gsap.killTweensOf(registerBtnRef.current);
+      }
+      if (readMoreBtnRef.current) {
+        gsap.killTweensOf(readMoreBtnRef.current);
+      }
+    };
+  }, []);
 
   // Polaroid images removed
 
@@ -53,40 +138,44 @@ const HeroSection = forwardRef<HTMLDivElement>((_, ref) => {
 
       {/* Hero content with improved spacing and visual hierarchy */}
       <div className="container relative z-40 flex flex-col items-center justify-center min-h-screen text-center pt-16 pb-32 md:pt-20 md:pb-36 lg:pt-24 lg:pb-40 px-6 md:px-8">
-        <div className="flex flex-col items-center opacity-0">
+        <div className="flex flex-col items-center">
           <div className="bg-[#EEAE22] text-white px-4 py-1.5 md:px-5 md:py-2 rounded-full mb-6 md:mb-8 lg:mb-10 shadow-lg">
             <p className="text-xs md:text-sm font-medium tracking-wide">Where Ideas Get Shaped</p>
           </div>
         </div>
 
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black text-white mb-6 md:mb-8 lg:mb-10 max-w-4xl leading-tight tracking-tight">
-          <div className="hero-heading-line opacity-0">Innovation Lab</div>
+          <div className="hero-heading-line">Innovation Lab</div>
         </h1>
 
-        <p className="hero-heading-line text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mb-8 md:mb-10 lg:mb-12 opacity-0 px-4 leading-relaxed">
+        <p className="hero-heading-line text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mb-8 md:mb-10 lg:mb-12 px-4 leading-relaxed">
           At the heart of Itahari International College, the Innovation Lab is a dynamic ecosystem empowering students to transform bold ideas into real-world solutions through technology, creativity, and collaboration.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          <AnimatedButton
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+          <a
+            ref={registerBtnRef}
             href="https://docs.google.com/forms/d/e/1FAIpQLSfDn9Evo7cRpeGIe45MWdvbYKRB3rj8wpVjNGV5FwwFnBGPRg/viewform"
-            size="lg"
-            variant="primary"
-            className="hero-button relative z-30 mt-2 font-bold shadow-xl bg-[#0066FF] text-white hover:bg-[#0055DD] px-8 py-3 md:px-10 md:py-4 opacity-100"
+            className="inline-flex items-center justify-center bg-[#0066FF] text-white font-medium text-base px-6 md:px-8 py-3 rounded-full shadow-md w-full sm:w-auto relative z-30"
             target="_blank"
             rel="noopener noreferrer"
+            style={{
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+            }}
           >
             REGISTER
-          </AnimatedButton>
+          </a>
 
-          <AnimatedButton
+          <a
+            ref={readMoreBtnRef}
             href="/events/iic-quest-3.0"
-            size="lg"
-            variant="secondary"
-            className="hero-button relative z-30 mt-2 font-bold shadow-xl bg-transparent text-white border-2 border-white hover:bg-white/10 px-8 py-3 md:px-10 md:py-4 opacity-100"
+            className="inline-flex items-center justify-center bg-transparent border-2 border-white text-white font-medium text-base px-6 md:px-8 py-3 rounded-full w-full sm:w-auto relative z-30"
+            style={{
+              boxShadow: "none"
+            }}
           >
             READ MORE
-          </AnimatedButton>
+          </a>
         </div>
       </div>
 

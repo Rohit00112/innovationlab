@@ -52,13 +52,63 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
     // Create hover animation
     const button = buttonRef.current;
+    let glowAnimation: gsap.core.Tween;
 
     button.addEventListener('mouseenter', () => {
+      // Scale up the button
       gsap.to(button, {
         scale: 1.05,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: 'back.out(1.5)',
       });
+
+      // Add glowing effect based on variant
+      if (variant === 'primary') {
+        gsap.to(button, {
+          boxShadow: "0 0 20px rgba(0, 102, 255, 0.6), 0 0 30px rgba(0, 102, 255, 0.3)",
+          duration: 0.4,
+          ease: "power2.out"
+        });
+
+        // Create a pulsing glow effect
+        glowAnimation = gsap.to(button, {
+          boxShadow: "0 0 25px rgba(0, 102, 255, 0.7), 0 0 35px rgba(0, 102, 255, 0.4)",
+          duration: 1.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      } else if (variant === 'secondary') {
+        gsap.to(button, {
+          boxShadow: "0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3)",
+          duration: 0.4,
+          ease: "power2.out"
+        });
+
+        // Create a pulsing glow effect for secondary buttons
+        glowAnimation = gsap.to(button, {
+          boxShadow: "0 0 25px rgba(255, 255, 255, 0.6), 0 0 35px rgba(255, 255, 255, 0.4)",
+          duration: 1.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      } else if (variant === 'outline') {
+        gsap.to(button, {
+          boxShadow: "0 0 15px rgba(0, 102, 255, 0.4)",
+          duration: 0.4,
+          ease: "power2.out"
+        });
+
+        // Create a pulsing glow effect for outline buttons
+        glowAnimation = gsap.to(button, {
+          boxShadow: "0 0 20px rgba(0, 102, 255, 0.5)",
+          duration: 1.2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      }
 
       if (arrowRef.current) {
         gsap.to(arrowRef.current, {
@@ -70,8 +120,15 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     });
 
     button.addEventListener('mouseleave', () => {
+      // Kill any ongoing glow animations
+      if (glowAnimation) {
+        glowAnimation.kill();
+      }
+
+      // Reset button style
       gsap.to(button, {
         scale: 1,
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         duration: 0.3,
         ease: 'power2.out',
       });
@@ -111,7 +168,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({
         gsap.killTweensOf(arrow);
       }
     };
-  }, []);
+  }, [variant]);
 
   return (
     <Link
