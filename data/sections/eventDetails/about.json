@@ -1,0 +1,304 @@
+{
+  "tabId": "about",
+  "sections": [
+    {
+      "id": "description",
+      "containerClasses": "content-section mb-16 bg-white rounded-xl p-8 shadow-sm border border-gray-100",
+      "header": {
+        "containerClasses": "flex items-center mb-6",
+        "icon": {
+          "containerClasses": "w-10 h-10 rounded-full bg-[#0066FF]/10 flex items-center justify-center mr-4",
+          "classes": "w-5 h-5 text-[#0066FF]",
+          "viewBox": "0 0 24 24",
+          "path": {
+            "d": "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+            "strokeLinecap": "round",
+            "strokeLinejoin": "round",
+            "strokeWidth": "2"
+          }
+        },
+        "title": {
+          "text": "Event Description",
+          "classes": "text-3xl font-bold text-gray-900 section-title"
+        }
+      },
+      "content": {
+        "containerClasses": "pl-14",
+        "text": {
+          "classes": "text-gray-700 leading-relaxed section-text"
+        }
+      }
+    },
+    {
+      "id": "eligibility",
+      "containerClasses": "content-section mb-16 bg-white rounded-xl p-8 shadow-sm border border-gray-100",
+      "header": {
+        "containerClasses": "flex items-center mb-6",
+        "icon": {
+          "containerClasses": "w-10 h-10 rounded-full bg-[#0066FF]/10 flex items-center justify-center mr-4",
+          "classes": "w-5 h-5 text-[#0066FF]",
+          "viewBox": "0 0 24 24",
+          "path": {
+            "d": "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+            "strokeLinecap": "round",
+            "strokeLinejoin": "round",
+            "strokeWidth": "2"
+          }
+        },
+        "title": {
+          "text": "Eligibility Criteria",
+          "classes": "text-3xl font-bold text-gray-900 section-title"
+        }
+      },
+      "content": {
+        "containerClasses": "pl-14",
+        "introduction": {
+          "classes": "text-gray-700 leading-relaxed mb-6",
+          "html": "<span class=\"font-bold text-[#0066FF]\">IICQuest 3.0</span> invites passionate and curious minds who are eager to explore the boundaries of innovation and technology. Therefore, <span class=\"font-bold\">ongoing undergraduate students</span> of any discipline are <span class=\"font-bold\">eligible to register</span>."
+        },
+        "requirements": {
+          "title": {
+            "text": "Minimum Requirements",
+            "classes": "text-xl font-bold text-gray-900 mb-4"
+          },
+          "description": {
+            "text": "To ensure a productive and competitive environment, participants are expected to have a basic understanding of the following:",
+            "classes": "text-gray-700 mb-4"
+          },
+          "list": {
+            "containerClasses": "space-y-3",
+            "items": [
+              {
+                "containerClasses": "flex items-start",
+                "icon": {
+                  "containerClasses": "flex-shrink-0 w-5 h-5 mt-1 mr-3 text-[#0066FF]",
+                  "viewBox": "0 0 24 24",
+                  "path": {
+                    "d": "M5 13l4 4L19 7",
+                    "strokeLinecap": "round",
+                    "strokeLinejoin": "round",
+                    "strokeWidth": "2"
+                  }
+                },
+                "text": {
+                  "classes": "text-gray-700",
+                  "html": "Participants must bring their own <span class=\"font-semibold\">laptop and charger</span>."
+                }
+              },
+              {
+                "containerClasses": "flex items-start",
+                "icon": {
+                  "containerClasses": "flex-shrink-0 w-5 h-5 mt-1 mr-3 text-[#0066FF]",
+                  "viewBox": "0 0 24 24",
+                  "path": {
+                    "d": "M5 13l4 4L19 7",
+                    "strokeLinecap": "round",
+                    "strokeLinejoin": "round",
+                    "strokeWidth": "2"
+                  }
+                },
+                "text": {
+                  "classes": "text-gray-700",
+                  "html": "Familiarity with <span class=\"font-semibold\">programming languages</span>."
+                }
+              },
+              {
+                "containerClasses": "flex items-start",
+                "icon": {
+                  "containerClasses": "flex-shrink-0 w-5 h-5 mt-1 mr-3 text-[#0066FF]",
+                  "viewBox": "0 0 24 24",
+                  "path": {
+                    "d": "M5 13l4 4L19 7",
+                    "strokeLinecap": "round",
+                    "strokeLinejoin": "round",
+                    "strokeWidth": "2"
+                  }
+                },
+                "text": {
+                  "classes": "text-gray-700",
+                  "html": "Basic knowledge of <span class=\"font-semibold\">web or app development frameworks/tools</span>."
+                }
+              },
+              {
+                "containerClasses": "flex items-start",
+                "icon": {
+                  "containerClasses": "flex-shrink-0 w-5 h-5 mt-1 mr-3 text-[#0066FF]",
+                  "viewBox": "0 0 24 24",
+                  "path": {
+                    "d": "M5 13l4 4L19 7",
+                    "strokeLinecap": "round",
+                    "strokeLinejoin": "round",
+                    "strokeWidth": "2"
+                  }
+                },
+                "text": {
+                  "classes": "text-gray-700",
+                  "html": "Understanding of version control systems like <span class=\"font-semibold\">Git and GitHub</span>."
+                }
+              },
+              {
+                "containerClasses": "flex items-start",
+                "icon": {
+                  "containerClasses": "flex-shrink-0 w-5 h-5 mt-1 mr-3 text-[#0066FF]",
+                  "viewBox": "0 0 24 24",
+                  "path": {
+                    "d": "M5 13l4 4L19 7",
+                    "strokeLinecap": "round",
+                    "strokeLinejoin": "round",
+                    "strokeWidth": "2"
+                  }
+                },
+                "text": {
+                  "classes": "text-gray-700",
+                  "html": "Experience in using <span class=\"font-semibold\">design or prototyping tools</span>."
+                }
+              },
+              {
+                "containerClasses": "flex items-start",
+                "icon": {
+                  "containerClasses": "flex-shrink-0 w-5 h-5 mt-1 mr-3 text-[#0066FF]",
+                  "viewBox": "0 0 24 24",
+                  "path": {
+                    "d": "M5 13l4 4L19 7",
+                    "strokeLinecap": "round",
+                    "strokeLinejoin": "round",
+                    "strokeWidth": "2"
+                  }
+                },
+                "text": {
+                  "classes": "text-gray-700",
+                  "html": "Familiarity with business terms like <span class=\"font-semibold\">Business Model Canvas, Revenue model</span> etc."
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "countdown",
+      "containerClasses": "content-section mb-16 bg-gradient-to-br from-[#5045E8] to-[#0066FF] rounded-xl p-8 shadow-lg border border-white/10 relative overflow-hidden",
+      "background": {
+        "containerClasses": "absolute top-0 left-0 w-full h-full opacity-10",
+        "elements": [
+          {
+            "classes": "absolute top-10 left-10 w-40 h-40 rounded-full bg-white blur-3xl"
+          },
+          {
+            "classes": "absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white blur-3xl"
+          }
+        ]
+      },
+      "title": {
+        "text": "Countdown to Event Day",
+        "classes": "text-3xl font-bold text-white mb-8 text-center section-title relative z-10"
+      },
+      "countdown": {
+        "containerClasses": "flex flex-wrap justify-center gap-4 md:gap-6 relative z-10 countdown-element",
+        "boxClasses": "bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20",
+        "innerContainerClasses": "flex flex-wrap gap-4",
+        "units": [
+          {
+            "type": "days",
+            "label": "Days",
+            "containerClasses": "text-center px-4 py-2",
+            "valueClasses": "text-3xl font-bold text-white mb-1 countdown-number",
+            "labelClasses": "text-sm text-white/80 uppercase tracking-wider",
+            "initialValue": "30"
+          },
+          {
+            "type": "hours",
+            "label": "Hours",
+            "containerClasses": "text-center px-4 py-2",
+            "valueClasses": "text-3xl font-bold text-white mb-1 countdown-number",
+            "labelClasses": "text-sm text-white/80 uppercase tracking-wider",
+            "initialValue": "12"
+          },
+          {
+            "type": "minutes",
+            "label": "Minutes",
+            "containerClasses": "text-center px-4 py-2",
+            "valueClasses": "text-3xl font-bold text-white mb-1 countdown-number",
+            "labelClasses": "text-sm text-white/80 uppercase tracking-wider",
+            "initialValue": "30"
+          },
+          {
+            "type": "seconds",
+            "label": "Seconds",
+            "containerClasses": "text-center px-4 py-2",
+            "valueClasses": "text-3xl font-bold text-white mb-1 countdown-number",
+            "labelClasses": "text-sm text-white/80 uppercase tracking-wider",
+            "initialValue": "00"
+          }
+        ]
+      },
+      "animations": {
+        "countdownElement": {
+          "initial": {
+            "y": 30,
+            "scale": 0.92,
+            "opacity": 0
+          },
+          "animate": {
+            "y": 0,
+            "scale": 1,
+            "opacity": 1,
+            "duration": 0.8,
+            "delay": 0.2,
+            "ease": "power3.out"
+          }
+        },
+        "countdownNumbers": {
+          "initial": {
+            "y": 20,
+            "opacity": 0
+          },
+          "animate": {
+            "y": 0,
+            "opacity": 1,
+            "duration": 0.7,
+            "stagger": 0.15,
+            "delay": 0.3,
+            "ease": "back.out(1.5)"
+          },
+          "pulse": {
+            "scale": 1.08,
+            "duration": 1.5,
+            "ease": "sine.inOut",
+            "repeat": -1,
+            "yoyo": true
+          }
+        },
+        "floatingEffect": {
+          "y": -15,
+          "duration": 4,
+          "ease": "sine.inOut",
+          "repeat": -1,
+          "yoyo": true
+        }
+      }
+    },
+    {
+      "id": "expectations",
+      "containerClasses": "content-section mb-16 bg-white rounded-xl p-8 shadow-sm border border-gray-100",
+      "header": {
+        "containerClasses": "flex items-center mb-6",
+        "icon": {
+          "containerClasses": "w-10 h-10 rounded-full bg-[#0066FF]/10 flex items-center justify-center mr-4",
+          "classes": "w-5 h-5 text-[#0066FF]",
+          "viewBox": "0 0 24 24",
+          "path": {
+            "d": "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+            "strokeLinecap": "round",
+            "strokeLinejoin": "round",
+            "strokeWidth": "2"
+          }
+        },
+        "title": {
+          "text": "What to Expect?",
+          "classes": "text-3xl font-bold text-gray-900 section-title"
+        }
+      }
+    }
+  ]
+}

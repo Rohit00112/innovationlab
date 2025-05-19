@@ -1,0 +1,183 @@
+{
+  "tabId": "agenda",
+  "containerClasses": "content-section mb-16 bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-100",
+  "header": {
+    "containerClasses": "flex items-center mb-6",
+    "icon": {
+      "containerClasses": "w-10 h-10 rounded-full bg-[#0066FF]/10 flex items-center justify-center mr-4",
+      "classes": "w-5 h-5 text-[#0066FF]",
+      "viewBox": "0 0 24 24",
+      "path": {
+        "d": "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+        "strokeLinecap": "round",
+        "strokeLinejoin": "round",
+        "strokeWidth": "2"
+      }
+    },
+    "title": {
+      "text": "Event Agenda",
+      "classes": "text-3xl font-bold text-gray-900 section-title"
+    }
+  },
+  "description": {
+    "containerClasses": "pl-4 md:pl-14 mb-6 md:mb-8",
+    "text": "Our comprehensive 3-day event schedule is designed to maximize your learning, networking, and innovation experience. Here's what to expect each day:",
+    "classes": "text-gray-700 leading-relaxed section-text"
+  },
+  "agendaContainer": {
+    "classes": "pl-4 md:pl-14 space-y-6 md:space-y-8"
+  },
+  "visibleAgenda": {
+    "containerClasses": "space-y-6",
+    "dayGroups": [
+      {
+        "day": "Day 1",
+        "items": [
+          {
+            "time": "07:00 AM",
+            "title": "Participants arrival at Itahari International College",
+            "description": "Day 1, June 11, Wednesday",
+            "day": "Day 1"
+          },
+          {
+            "time": "09:30 AM",
+            "title": "Hackathon Theme Introduction",
+            "description": "Day 1, June 11, Wednesday",
+            "day": "Day 1"
+          },
+          {
+            "time": "12:00 PM",
+            "title": "Proposal Submission & Hackathon Kickoff",
+            "description": "Day 1, June 11, Wednesday",
+            "day": "Day 1"
+          }
+        ]
+      },
+      {
+        "day": "Day 2",
+        "items": [
+          {
+            "time": "All Day",
+            "title": "Hackathon Continues",
+            "description": "Day 2, June 12, Thursday",
+            "day": "Day 2",
+            "isSpecial": true
+          }
+        ]
+      }
+    ]
+  },
+  "hiddenAgenda": {
+    "containerClasses": "hidden-agenda space-y-6 overflow-hidden",
+    "dayGroups": [
+      {
+        "day": "Day 3",
+        "items": [
+          {
+            "time": "07:00 AM",
+            "title": "Presentation & Demo Starts",
+            "description": "Day 3, June 13, Friday",
+            "day": "Day 3",
+            "isHidden": true
+          },
+          {
+            "time": "12:00 PM",
+            "title": "Submission",
+            "description": "Day 3, June 13, Friday",
+            "day": "Day 3",
+            "isHidden": true
+          },
+          {
+            "time": "12:30 PM",
+            "title": "Panel Discussion",
+            "description": "Day 3, June 13, Friday",
+            "day": "Day 3",
+            "isHidden": true
+          },
+          {
+            "time": "01:30 PM",
+            "title": "Formal & Informal Programs",
+            "description": "Day 3, June 13, Friday",
+            "day": "Day 3",
+            "isHidden": true
+          },
+          {
+            "time": "02:00 PM",
+            "title": "Winner Announcement & Prize Distribution",
+            "description": "Day 3, June 13, Friday",
+            "day": "Day 3",
+            "isHidden": true
+          },
+          {
+            "time": "04:00 PM",
+            "title": "Departure from College",
+            "description": "Day 3, June 13, Friday",
+            "day": "Day 3",
+            "isHidden": true
+          }
+        ]
+      }
+    ]
+  },
+  "toggleButton": {
+    "id": "toggle-agenda-btn",
+    "containerClasses": "flex justify-center mt-8",
+    "buttonClasses": "flex items-center gap-2 text-[#0066FF] font-medium hover:text-[#0055DD] transition-colors duration-300 focus:outline-none",
+    "text": "View Full Agenda",
+    "icon": {
+      "containerClasses": "transform transition-transform duration-300",
+      "classes": "w-5 h-5",
+      "viewBox": "0 0 24 24",
+      "path": {
+        "d": "M19 9l-7 7-7-7",
+        "strokeLinecap": "round",
+        "strokeLinejoin": "round",
+        "strokeWidth": "2"
+      }
+    }
+  },
+  "agendaItem": {
+    "containerClasses": "flex flex-col sm:flex-row items-start gap-2 sm:gap-4 p-3 md:p-4 rounded-lg transition-all duration-300 hover:bg-gray-50",
+    "timeContainer": {
+      "classes": "w-full sm:w-24 flex-shrink-0 mb-1 sm:mb-0",
+      "regularClasses": "text-lg font-bold text-[#0066FF]",
+      "specialClasses": "text-lg font-bold text-[#EEAE22]"
+    },
+    "contentContainer": {
+      "classes": "flex-1",
+      "title": {
+        "regularClasses": "text-lg font-bold text-gray-900 mb-1",
+        "specialClasses": "text-lg font-bold text-[#EEAE22] mb-1"
+      },
+      "description": {
+        "classes": "text-sm text-gray-600"
+      }
+    },
+    "dayBadge": {
+      "containerClasses": "flex-shrink-0 sm:ml-auto mt-2 sm:mt-0",
+      "classes": "inline-block px-3 py-1 text-xs font-medium rounded-full bg-[#0066FF]/10 text-[#0066FF]"
+    }
+  },
+  "animations": {
+    "toggleAnimation": {
+      "collapsed": {
+        "height": 0,
+        "opacity": 0,
+        "duration": 0.5,
+        "ease": "power2.inOut"
+      },
+      "expanded": {
+        "height": "auto",
+        "opacity": 1,
+        "duration": 0.7,
+        "ease": "power2.inOut"
+      },
+      "buttonRotation": {
+        "collapsed": 0,
+        "expanded": 180,
+        "duration": 0.5,
+        "ease": "power2.inOut"
+      }
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "sectionClasses": "relative py-24 md:py-32 bg-gray-50 overflow-hidden",
+  "background": {
+    "vShapedTop": {
+      "containerClasses": "absolute top-0 left-0 right-0 w-full",
+      "svgClasses": "w-full h-auto",
+      "svgStyle": { "marginTop": "-1px" },
+      "viewBox": "0 0 1440 120",
+      "path": {
+        "d": "M0,0 L1440,0 L1440,120 L720,0 L0,120 Z",
+        "fill": "#ffffff",
+        "fillOpacity": "1"
+      }
+    },
+    "vShapedBottom": {
+      "containerClasses": "absolute bottom-0 left-0 right-0 w-full",
+      "svgClasses": "w-full h-auto transform rotate-180",
+      "svgStyle": { "marginBottom": "-1px" },
+      "viewBox": "0 0 1440 120",
+      "path": {
+        "d": "M0,0 L1440,0 L1440,120 L720,0 L0,120 Z",
+        "fill": "#ffffff",
+        "fillOpacity": "1"
+      }
+    },
+    "pattern": {
+      "containerClasses": "absolute inset-0 -z-10 opacity-[0.03]",
+      "style": {
+        "backgroundImage": "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230066FF' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E\")"
+      }
+    },
+    "decorativeElements": [
+      {
+        "classes": "absolute top-40 right-10 w-80 h-80 bg-gradient-to-br from-[#0066FF]/5 to-[#5045E8]/5 rounded-full blur-3xl animate-float"
+      },
+      {
+        "classes": "absolute bottom-40 left-10 w-64 h-64 bg-gradient-to-br from-[#EEAE22]/5 to-[#F5C462]/5 rounded-full blur-3xl animate-float",
+        "style": { "animationDelay": "1.5s" }
+      }
+    ]
+  },
+  "content": {
+    "containerClasses": "container mx-auto pt-32 relative z-10",
+    "header": {
+      "containerClasses": "text-center mb-16",
+      "badge": {
+        "text": "Got Questions?",
+        "classes": "inline-block px-4 py-1 bg-[#F0F4FF] text-[#0066FF] text-sm font-medium rounded-full mb-4 animate-fadeInUp"
+      },
+      "title": {
+        "text": "Frequently Asked Questions",
+        "classes": "heading-2 text-gray-900 mb-6 animate-fadeInUp animation-delay-100"
+      },
+      "description": {
+        "text": "Find answers to common questions about the Innovation Lab and how you can get involved.",
+        "classes": "text-lg text-gray-600 max-w-2xl mx-auto animate-fadeInUp animation-delay-200"
+      },
+      "decorativeLine": {
+        "classes": "w-24 h-1 bg-gradient-to-r from-[#0066FF] to-[#5045E8] mx-auto mt-8 rounded-full"
+      }
+    },
+    "faqContent": {
+      "containerClasses": "max-w-3xl mx-auto relative",
+      "decorativeElements": {
+        "sideElements": [
+          {
+            "classes": "hidden lg:block absolute -left-16 top-1/4 w-12 h-12 rounded-full bg-[#0066FF]/10 animate-pulse",
+            "style": { "animationDuration": "3s" }
+          },
+          {
+            "classes": "hidden lg:block absolute -right-16 top-2/3 w-8 h-8 rounded-full bg-[#EEAE22]/10 animate-pulse",
+            "style": { "animationDuration": "4s", "animationDelay": "1s" }
+          }
+        ],
+        "verticalLine": {
+          "classes": "hidden lg:block absolute left-3 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#0066FF]/20 via-[#5045E8]/10 to-transparent"
+        }
+      },
+      "faqListClasses": "flex flex-col gap-6",
+      "additionalHelp": {
+        "containerClasses": "mt-16 p-8 bg-[#F0F4FF] rounded-2xl shadow-sm animate-fadeInUp animation-delay-800",
+        "wrapperClasses": "flex flex-col md:flex-row items-center gap-6",
+        "icon": {
+          "containerClasses": "w-16 h-16 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0",
+          "viewBox": "0 0 24 24",
+          "paths": [
+            {
+              "d": "M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z",
+              "stroke": "#0066FF",
+              "strokeWidth": "2",
+              "strokeLinecap": "round",
+              "strokeLinejoin": "round"
+            },
+            {
+              "d": "M12 13V13.01M12 8V11",
+              "stroke": "#0066FF",
+              "strokeWidth": "2",
+              "strokeLinecap": "round",
+              "strokeLinejoin": "round"
+            }
+          ]
+        },
+        "content": {
+          "title": {
+            "text": "Still have questions?",
+            "classes": "text-xl font-bold text-gray-900 mb-2"
+          },
+          "description": {
+            "text": "If you couldn't find the answer to your question, feel free to contact our support team.",
+            "classes": "text-gray-600 mb-4"
+          },
+          "button": {
+            "text": "Contact Us",
+            "classes": "btn-primary py-2 px-4 rounded-lg text-sm"
+          }
+        }
+      }
+    }
+  },
+  "faqs": [
+    {
+      "question": "What is the Innovation Lab at Itahari International College?",
+      "answer": "The Innovation Lab is a creative and collaborative space at IIC where students gain hands-on experience by working on real-world projects, developing innovative solutions, and enhancing their practical skills."
+    },
+    {
+      "question": "Who can join the Innovation Lab?",
+      "answer": "The lab is open to all IIC students, particularly those enrolled in IT or Business programs, who are interested in technology, innovation, research, or entrepreneurship."
+    },
+    {
+      "question": "How does the Innovation Lab benefit students?",
+      "answer": "It helps students apply classroom knowledge to real-world challenges, build a strong portfolio, gain teamwork and leadership experience, and become more prepared for internships and job opportunities in the tech industry."
+    },
+    {
+      "question": "How can I apply to be part of the Innovation Lab?",
+      "answer": "Students can join the Innovation Lab by participating in the Creative Clash event. Winners are directly selected, while other registered participants get an interview opportunity to showcase their skills. Selection is based on creativity, passion, and potential."
+    },
+    {
+      "question": "Can I propose my own project idea in the lab?",
+      "answer": "Absolutely! The Innovation Lab encourages students to pitch their own ideas. If approved, the lab provides mentorship, team collaboration, and resources to help bring the idea to life."
+    }
+  ]
+}

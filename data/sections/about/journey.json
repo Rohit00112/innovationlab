@@ -1,0 +1,158 @@
+{
+  "sectionClasses": "relative py-24 md:py-32 bg-white overflow-hidden",
+  "sectionId": "journey-section",
+  "background": {
+    "pattern": {
+      "containerClasses": "absolute inset-0 -z-10 opacity-[0.02]",
+      "style": {
+        "backgroundImage": "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%230066FF' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E\")"
+      }
+    },
+    "decorativeElements": [
+      {
+        "classes": "absolute top-1/4 left-[10%] w-64 h-64 rounded-full bg-gradient-to-r from-[#0066FF]/5 to-[#5045E8]/5 blur-3xl decorative-element"
+      },
+      {
+        "classes": "absolute bottom-1/4 right-[10%] w-80 h-80 rounded-full bg-gradient-to-r from-[#EEAE22]/5 to-[#F5C462]/5 blur-3xl decorative-element"
+      },
+      {
+        "classes": "absolute top-1/2 right-[20%] w-40 h-40 rounded-full bg-gradient-to-r from-[#00C853]/5 to-[#5045E8]/5 blur-2xl decorative-element"
+      },
+      {
+        "classes": "absolute bottom-1/3 left-[15%] w-48 h-48 rounded-full bg-gradient-to-r from-[#5045E8]/5 to-[#0066FF]/5 blur-2xl decorative-element"
+      }
+    ]
+  },
+  "header": {
+    "containerClasses": "text-left container mx-auto px-4 md:px-8 mb-16",
+    "badge": {
+      "text": "Our History",
+      "classes": "inline-block px-4 py-1 bg-[#F0F4FF] text-[#0066FF] text-sm font-medium rounded-full mb-4 section-title"
+    },
+    "title": {
+      "text": "Our Journey",
+      "classes": "text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 section-title"
+    },
+    "description": {
+      "text": "Explore the key milestones that have shaped our innovation lab over the years.",
+      "classes": "text-lg text-gray-700 max-w-2xl section-description"
+    },
+    "decorativeLine": {
+      "classes": "w-24 h-1 bg-gradient-to-r from-[#0066FF] to-[#5045E8] mt-8 rounded-full"
+    }
+  },
+  "timeline": {
+    "containerClasses": "relative",
+    "line": {
+      "classes": "absolute left-1/2 transform -translate-x-1/2 h-full w-1.5 bg-gradient-to-b from-[#0066FF] via-[#5045E8] to-[#00C853] rounded-full opacity-80 timeline-line"
+    },
+    "dots": [
+      {
+        "classes": "absolute left-1/2 transform -translate-x-1/2 top-0 w-3 h-3 rounded-full bg-[#0066FF] -mt-1.5 timeline-dot"
+      },
+      {
+        "classes": "absolute left-1/2 transform -translate-x-1/2 bottom-0 w-3 h-3 rounded-full bg-[#00C853] -mb-1.5 timeline-dot"
+      }
+    ],
+    "cardsContainerClasses": "flex flex-col gap-24"
+  },
+  "futureMilestone": {
+    "containerClasses": "mt-24 text-left future-milestone",
+    "boxClasses": "inline-block px-6 py-3 bg-[#F0F4FF] rounded-xl shadow-md",
+    "content": {
+      "containerClasses": "flex items-center gap-4",
+      "icon": {
+        "containerClasses": "w-12 h-12 rounded-full bg-gradient-to-r from-[#0066FF]/10 to-[#5045E8]/10 flex items-center justify-center flex-shrink-0",
+        "viewBox": "0 0 24 24",
+        "path": "M12 8V12L15 15M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z",
+        "stroke": "#0066FF",
+        "strokeWidth": "2",
+        "strokeLinecap": "round",
+        "strokeLinejoin": "round"
+      },
+      "textContainer": {
+        "classes": "text-left"
+      },
+      "title": {
+        "text": "What's Next?",
+        "classes": "text-lg font-bold text-gray-900"
+      },
+      "description": {
+        "text": "Stay tuned for our upcoming milestones and achievements",
+        "classes": "text-sm text-gray-700"
+      }
+    }
+  },
+  "icons": {
+    "foundation": {
+      "viewBox": "0 0 24 24",
+      "path": "M3 21H21M3 21V19L12 10L21 19V21M3 21H6M21 21H18M6 21V16H10V21M6 21H10M14 21V16H18V21M14 21H18M12 3L2 13H22L12 3Z",
+      "stroke": "white",
+      "strokeWidth": "2",
+      "strokeLinecap": "round",
+      "strokeLinejoin": "round"
+    },
+    "cohort": {
+      "viewBox": "0 0 24 24",
+      "path": "M17 21V19C17 16.7909 15.2091 15 13 15H5C2.79086 15 1 16.7909 1 19V21M23 21V19C23 16.7909 21.2091 15 19 15H18M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7ZM19 7C19 9.20914 17.2091 11 15 11C12.7909 11 11 9.20914 11 7C11 4.79086 12.7909 3 15 3C17.2091 3 19 4.79086 19 7Z",
+      "stroke": "white",
+      "strokeWidth": "2",
+      "strokeLinecap": "round",
+      "strokeLinejoin": "round"
+    },
+    "research": {
+      "viewBox": "0 0 24 24",
+      "path": "M9 3H5C3.89543 3 3 3.89543 3 5V9M9 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V9M9 3L3 9M8 17.5C9.38071 17.5 10.5 16.3807 10.5 15C10.5 13.6193 9.38071 12.5 8 12.5C6.61929 12.5 5.5 13.6193 5.5 15C5.5 16.3807 6.61929 17.5 8 17.5ZM14.5 14.5L19 19M14.5 8H14.51M17 8H17.01",
+      "stroke": "white",
+      "strokeWidth": "2",
+      "strokeLinecap": "round",
+      "strokeLinejoin": "round"
+    },
+    "expansion": {
+      "viewBox": "0 0 24 24",
+      "path": "M21 12C21 16.9706 16.9706 21 12 21M21 12C21 7.02944 16.9706 3 12 3M21 12H17M12 21C7.02944 21 3 16.9706 3 12M12 21V17M3 12C3 7.02944 7.02944 3 12 3M3 12H7M12 3V7",
+      "stroke": "white",
+      "strokeWidth": "2",
+      "strokeLinecap": "round",
+      "strokeLinejoin": "round"
+    }
+  },
+  "milestones": [
+    {
+      "year": "15th September 2022",
+      "title": "Foundation",
+      "description": "Establishment of Innovation Lab with a vision to foster technological advancement and research excellence.",
+      "iconBgColor": "bg-[#0066FF]",
+      "position": "right",
+      "iconType": "foundation",
+      "link": "/about/foundation"
+    },
+    {
+      "year": "29th May 2023",
+      "title": "IIC Quest",
+      "description": "IIC Quest 1.0 was a four-day pioneering initiative that brought together industry experts, students, and faculty members from both BIT and BBA programs. The event featured a comprehensive journey from bootcamp to pitch-day hackathon, with insightful sessions and seminars led by industry leaders.",
+      "iconBgColor": "bg-[#5045E8]",
+      "position": "left",
+      "iconType": "cohort",
+      "link": "/about/iic-quest-1"
+    },
+    {
+      "year": "12th June 2024",
+      "title": "IIC Quest 2.0",
+      "description": "IIC Quest 2.0 was a three-day program featuring a 36-hour intensive hackathon with participation from various colleges across the Purwanchal region of Nepal. The event also included a Job Fair, where more than ten renowned companies from across Nepal sought to recruit talented students and graduates, and a Final Year Project Showcase, providing students with the opportunity to present their projects to potential employers.",
+      "iconBgColor": "bg-[#EEAE22]",
+      "position": "right",
+      "iconType": "research",
+      "link": "/about/iic-quest-2"
+    },
+    {
+      "year": "20th February 2025",
+      "title": "Creative Clash 2025",
+      "description": "Creative Clash 2025: The Triathon of Innovation, was a dynamic and exhilarating event that celebrated the fusion of creativity and technology. It was a two-day competitive event designed to challenge and inspire first-year and second-year students. The event provided a platform for students to showcase their creativity, technical skills, and problem-solving abilities through UI design, frontend development, and algorithm challenges.",
+      "iconBgColor": "bg-[#00C853]",
+      "position": "left",
+      "iconType": "expansion",
+      "link": "/about/creative-clash-2025"
+    }
+  ]
+}

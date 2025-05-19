@@ -1,0 +1,117 @@
+{
+  "sectionId": "upcoming-events",
+  "sectionClasses": "py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden",
+  "background": {
+    "pattern": {
+      "url": "/patterns/grid-pattern.svg",
+      "opacity": "opacity-3"
+    },
+    "decorativeElements": [
+      {
+        "position": "absolute top-20 left-[5%] w-64 h-64",
+        "background": "bg-gradient-to-br from-[#0066FF]/10 to-[#5045E8]/5 opacity-30 rounded-full blur-3xl",
+        "classes": "decorative-element parallax-element",
+        "dataDepth": "0.2"
+      },
+      {
+        "position": "absolute bottom-20 right-[5%] w-72 h-72",
+        "background": "bg-gradient-to-br from-[#5045E8]/10 to-[#0066FF]/5 opacity-30 rounded-full blur-3xl",
+        "classes": "decorative-element parallax-element",
+        "dataDepth": "0.3"
+      }
+    ]
+  },
+  "header": {
+    "containerClasses": "flex flex-col md:flex-row justify-between items-start md:items-center mb-12 md:mb-16",
+    "contentClasses": "max-w-2xl",
+    "title": {
+      "text": "Upcoming Events",
+      "classes": "text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 relative animate-heading",
+      "underline": {
+        "classes": "absolute -bottom-2 left-0 w-24 h-1.5 bg-gradient-to-r from-[#0066FF] to-[#5045E8] rounded-full"
+      }
+    },
+    "description": {
+      "text": "Join us for this exciting 3-day event filled with innovative talks, and networking opportunities designed to inspire and connect innovators from all backgrounds.",
+      "classes": "text-base md:text-lg text-gray-700 leading-relaxed animate-text"
+    },
+    "calendarLink": {
+      "text": "View Calendar",
+      "href": "/events",
+      "classes": "mt-6 md:mt-0 inline-flex items-center justify-center px-5 py-3 rounded-lg text-sm md:text-base font-medium bg-gradient-to-r from-[#0066FF] to-[#5045E8] text-white hover:shadow-lg transition-all duration-300 group animate-button",
+      "icon": {
+        "classes": "h-5 w-5 mr-2 group-hover:animate-pulse"
+      }
+    }
+  },
+  "featuredEvent": {
+    "containerClasses": "mb-16 animate-card",
+    "headerClasses": "flex items-center mb-6",
+    "headerBar": {
+      "classes": "w-1.5 h-6 bg-[#EEAE22] rounded-full mr-3"
+    },
+    "headerTitle": {
+      "text": "Featured Event",
+      "classes": "text-xl md:text-2xl font-bold text-gray-900"
+    }
+  },
+  "categories": {
+    "options": ["All", "Workshop", "Conference", "Networking", "Hackathon"],
+    "containerClasses": "flex flex-wrap items-center gap-3 mb-8",
+    "labelClasses": "flex items-center text-gray-700 mr-2",
+    "labelIcon": {
+      "classes": "h-5 w-5 mr-1"
+    },
+    "labelText": {
+      "text": "Filter:",
+      "classes": "font-medium"
+    },
+    "buttonClasses": {
+      "base": "px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
+      "active": "bg-[#0066FF] text-white shadow-md",
+      "inactive": "bg-gray-100 text-gray-700 hover:bg-gray-200"
+    }
+  },
+  "eventsGrid": {
+    "containerClasses": "relative",
+    "desktopClasses": "hidden lg:grid lg:grid-cols-3 gap-8 pb-4",
+    "cardContainerClasses": "animate-card event-card-container",
+    "mobileCarousel": {
+      "containerClasses": "lg:hidden overflow-hidden",
+      "innerClasses": "flex transition-transform duration-500 ease-out",
+      "itemClasses": "w-full sm:w-1/2 md:w-1/3 px-2",
+      "navigation": {
+        "containerClasses": "flex justify-center mt-8 gap-4",
+        "buttonClasses": {
+          "base": "w-10 h-10 rounded-full flex items-center justify-center",
+          "active": "bg-[#0066FF] text-white hover:bg-[#0066FF]/90",
+          "disabled": "bg-gray-200 text-gray-400 cursor-not-allowed"
+        },
+        "iconClasses": "h-5 w-5"
+      }
+    }
+  },
+  "viewAllLink": {
+    "containerClasses": "flex justify-center mt-16",
+    "linkClasses": "inline-flex items-center justify-center px-8 py-4 border-2 border-[#0066FF] rounded-lg text-base font-medium text-[#0066FF] hover:bg-[#0066FF]/5 transition-all duration-300 group gsap-hover-button animate-button",
+    "text": "View All Events",
+    "icon": {
+      "classes": "w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-2",
+      "path": "M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+    }
+  },
+  "events": [
+    {
+      "id": "iic-quest-3.0",
+      "title": "IIC Quest 3.0",
+      "date": "June 11-13",
+      "time": "07:00 AM",
+      "location": "Itahari International College",
+      "description": "IICQuest 3.0 stands as the third chapter in the growing legacy of innovation organized by Innovation Lab at Itahari International College. Evolving from the foundations of IICQuest 1.0 and 2.0, this year's program offers a dynamic 3-day experience centered around a 36-hours hackathon that empowers students to build impactful, real-world solutions. This event will be commenced on June 11 and will end on June 13.",
+      "imageUrl": "/images/quest.JPG",
+      "category": "Event",
+      "attendees": "500+",
+      "featured": true
+    }
+  ]
+}

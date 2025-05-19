@@ -1,0 +1,61 @@
+{
+  "sectionClasses": "sticky top-20 bg-white border-b border-gray-200 shadow-sm z-30",
+  "container": {
+    "classes": "container mx-auto px-4"
+  },
+  "tabsContainer": {
+    "classes": "flex space-x-2 md:space-x-8 overflow-x-auto tabs-container py-1 scrollbar-hide"
+  },
+  "tabs": [
+    {
+      "id": "about",
+      "text": "About",
+      "baseClasses": "py-3 md:py-4 px-3 md:px-6 border-b-2 font-medium text-xs md:text-base transition-all duration-300 whitespace-nowrap tab-button",
+      "activeClasses": "border-[#0066FF] text-[#0066FF] font-semibold",
+      "inactiveClasses": "border-transparent text-gray-500 hover:text-[#0066FF]/70 hover:border-[#0066FF]/30"
+    },
+    {
+      "id": "agenda",
+      "text": "Agenda",
+      "baseClasses": "py-3 md:py-4 px-3 md:px-6 border-b-2 font-medium text-xs md:text-base transition-all duration-300 whitespace-nowrap tab-button",
+      "activeClasses": "border-[#0066FF] text-[#0066FF] font-semibold",
+      "inactiveClasses": "border-transparent text-gray-500 hover:text-[#0066FF]/70 hover:border-[#0066FF]/30"
+    },
+    {
+      "id": "sub-events",
+      "text": "Sub-Events",
+      "baseClasses": "py-3 md:py-4 px-3 md:px-6 border-b-2 font-medium text-xs md:text-base transition-all duration-300 whitespace-nowrap tab-button",
+      "activeClasses": "border-[#0066FF] text-[#0066FF] font-semibold",
+      "inactiveClasses": "border-transparent text-gray-500 hover:text-[#0066FF]/70 hover:border-[#0066FF]/30"
+    },
+    {
+      "id": "gallery",
+      "text": "Gallery",
+      "baseClasses": "py-3 md:py-4 px-3 md:px-6 border-b-2 font-medium text-xs md:text-base transition-all duration-300 whitespace-nowrap tab-button",
+      "activeClasses": "border-[#0066FF] text-[#0066FF] font-semibold",
+      "inactiveClasses": "border-transparent text-gray-500 hover:text-[#0066FF]/70 hover:border-[#0066FF]/30"
+    }
+  ],
+  "animations": {
+    "tabButtons": {
+      "y": 20,
+      "opacity": 0,
+      "duration": 0.5,
+      "stagger": 0.1,
+      "ease": "power2.out",
+      "delay": "-=0.2"
+    },
+    "hoverEffects": {
+      "active": {
+        "color": "#0066FF",
+        "borderColor": "#0066FF",
+        "duration": 0.3
+      },
+      "inactive": {
+        "color": "#6B7280",
+        "borderColor": "transparent",
+        "duration": 0.3
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "sectionClasses": "py-20 md:py-24 bg-gray-50",
+  "container": {
+    "classes": "container"
+  },
+  "header": {
+    "containerClasses": "mb-12",
+    "content": {
+      "containerClasses": "max-w-xl",
+      "title": {
+        "text": "Event Highlights",
+        "classes": "text-3xl md:text-4xl font-bold mb-3"
+      },
+      "description": {
+        "text": "Explore our previous events and access recordings, presentations, and resources.",
+        "classes": "text-base text-gray-600"
+      }
+    }
+  },
+  "grid": {
+    "containerClasses": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+  },
+  "card": {
+    "containerClasses": "reveal animate-fadeInUp",
+    "linkClasses": "group",
+    "imageContainer": {
+      "classes": "relative rounded-xl overflow-hidden aspect-video shadow-sm transition-all duration-300 group-hover:shadow-md"
+    },
+    "image": {
+      "classes": "object-cover transition-transform duration-500 group-hover:scale-105",
+      "sizes": "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    },
+    "overlay": {
+      "classes": "absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"
+    },
+    "category": {
+      "classes": "absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-sm"
+    },
+    "content": {
+      "containerClasses": "absolute bottom-0 left-0 right-0 p-4",
+      "title": {
+        "classes": "text-white font-bold text-lg group-hover:text-[#66A3FF] transition-colors duration-300"
+      }
+    }
+  },
+  "events": [
+    {
+      "id": "hackathon-2023",
+      "title": "Innovation Lab Hackathon",
+      "date": "Aug 15, 2023",
+      "imageUrl": "/images/hackathon.JPG",
+      "category": "Hackathon",
+      "categoryColor": "bg-[#0066FF]"
+    },
+    {
+      "id": "judges-and-panelist",
+      "title": "Judges and Panelist Session",
+      "date": "Sep 5, 2023",
+      "imageUrl": "/images/judges_and_panelist.JPG",
+      "category": "Judges & Panelist",
+      "categoryColor": "bg-[#5045E8]"
+    },
+    {
+      "id": "project-showcase",
+      "title": "Project Showcase",
+      "date": "Sep 22, 2023",
+      "imageUrl": "/images/project_showcase.JPG",
+      "category": "Showcase",
+      "categoryColor": "bg-[#EEAE22]"
+    },
+    {
+      "id": "guest-speaker",
+      "title": "Guest Speaker Session",
+      "date": "Oct 10, 2023",
+      "imageUrl": "/images/guest_speaker.JPG",
+      "category": "Seminar",
+      "categoryColor": "bg-[#00C853]"
+    }
+  ]
+}

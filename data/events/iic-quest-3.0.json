@@ -1,0 +1,145 @@
+{
+  "id": "iic-quest-3.0",
+  "title": "IIC Quest 3.0",
+  "tagline": "Innovation Hackathon",
+  "date": {
+    "start": "2023-06-11",
+    "end": "2023-06-13",
+    "month": "Jun",
+    "day": "11",
+    "time": "9:30 AM",
+    "display": "Jun 11-13, 2023"
+  },
+  "location": "Itahari International College, Sunsari",
+  "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop",
+  "category": "Hackathon",
+  "categoryColor": "bg-[#0066FF]",
+  "description": "IIC Quest 3.0 is a 3-day hackathon organized by Itahari International College, designed to foster innovation, collaboration, and problem-solving skills among undergraduate students. Participants will work in teams to develop solutions to real-world challenges, with mentorship from industry experts and opportunities to win exciting prizes.",
+  "about": {
+    "description": "<p>IIC Quest 3.0 is the third iteration of our flagship hackathon event, bringing together the brightest minds from across the region to collaborate, innovate, and create impactful solutions to real-world problems.</p><p>Over the course of three intensive days, participants will form teams, ideate, design, and develop prototypes that address specific challenges in areas such as healthcare, education, sustainability, and smart cities. The event provides a unique platform for students to apply their theoretical knowledge to practical scenarios, fostering creativity and entrepreneurial thinking.</p><p>What sets IIC Quest apart is our focus on holistic development. Beyond coding and technical skills, participants will gain valuable experience in teamwork, time management, presentation skills, and working under pressure – all essential attributes for success in today's competitive job market.</p><p>Throughout the hackathon, teams will have access to mentors from various industries who will provide guidance, feedback, and insights to help refine their ideas and implementations. The event culminates in a demo day where teams present their solutions to a panel of judges comprising industry experts, investors, and academics.</p><p>Whether you're a seasoned developer or just starting your journey in technology, IIC Quest 3.0 offers something for everyone. Join us for an unforgettable experience of learning, networking, and innovation!</p>",
+    "expectations": "<p>At IIC Quest 3.0, participants can expect:</p><ul><li><strong>Challenging Problems:</strong> Real-world challenges provided by industry partners that require innovative solutions.</li><li><strong>Mentorship:</strong> Access to experienced mentors from various fields who will guide teams throughout the event.</li><li><strong>Workshops:</strong> Skill-building sessions on relevant technologies, design thinking, and presentation skills.</li><li><strong>Networking:</strong> Opportunities to connect with industry professionals, potential employers, and like-minded peers.</li><li><strong>Resources:</strong> Access to necessary tools, APIs, and resources to build your solutions.</li><li><strong>Prizes:</strong> Exciting prizes for winning teams, including cash rewards, internship opportunities, and more.</li><li><strong>Fun Activities:</strong> Engaging activities to break the ice and foster team bonding.</li><li><strong>Certificates:</strong> Participation certificates for all attendees and special recognition for winners.</li></ul><p>Most importantly, expect an environment that encourages creativity, collaboration, and learning. IIC Quest 3.0 is designed to be both challenging and enjoyable, pushing you to your limits while ensuring you have a memorable experience.</p>"
+  },
+  "subEvents": [
+    {
+      "id": "opening-ceremony",
+      "title": "Opening Ceremony",
+      "description": "Kickoff event featuring keynote speakers, event overview, and team formation activities.",
+      "date": "Jun 11, 2023",
+      "time": "9:30 AM - 11:00 AM",
+      "location": "Main Auditorium",
+      "category": "Ceremony",
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "design-thinking-workshop",
+      "title": "Design Thinking Workshop",
+      "description": "Interactive session on applying design thinking methodology to problem-solving.",
+      "date": "Jun 11, 2023",
+      "time": "11:30 AM - 1:00 PM",
+      "location": "Workshop Hall A",
+      "category": "Workshop",
+      "image": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "tech-talk-ai",
+      "title": "Tech Talk: AI in Innovation",
+      "description": "Expert discussion on leveraging artificial intelligence for innovative solutions.",
+      "date": "Jun 12, 2023",
+      "time": "10:00 AM - 11:30 AM",
+      "location": "Seminar Hall",
+      "category": "Learning",
+      "image": "https://images.unsplash.com/photo-1581092921461-7d65ca45393a?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "networking-dinner",
+      "title": "Networking Dinner",
+      "description": "Evening social event for participants to connect with industry professionals and peers.",
+      "date": "Jun 12, 2023",
+      "time": "7:00 PM - 9:00 PM",
+      "location": "College Cafeteria",
+      "category": "Networking",
+      "image": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069&auto=format&fit=crop"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "gallery-1",
+      "title": "Opening Keynote",
+      "description": "Industry expert delivering the opening keynote address",
+      "category": "Keynote",
+      "image": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-2",
+      "title": "Team Collaboration",
+      "description": "Participants working together on their projects",
+      "category": "Workshop",
+      "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-3",
+      "title": "Mentoring Session",
+      "description": "Mentor providing guidance to a team",
+      "category": "Workshop",
+      "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-4",
+      "title": "Panel Discussion",
+      "description": "Industry experts discussing innovation trends",
+      "category": "Discussion",
+      "image": "https://images.unsplash.com/photo-1560439514-4e9645039924?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-5",
+      "title": "Coding Challenge",
+      "description": "Participants during the intensive coding session",
+      "category": "Competition",
+      "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-6",
+      "title": "Networking Break",
+      "description": "Participants connecting during coffee break",
+      "category": "Networking",
+      "image": "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-7",
+      "title": "Project Demo",
+      "description": "Team presenting their solution to judges",
+      "category": "Demo",
+      "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "gallery-8",
+      "title": "Award Ceremony",
+      "description": "Winners receiving their prizes",
+      "category": "Ceremony",
+      "image": "https://images.unsplash.com/photo-1494172961521-33799ddd43a5?q=80&w=2071&auto=format&fit=crop"
+    }
+  ],
+  "relatedEvents": [
+    {
+      "id": "tech-summit-2023",
+      "title": "Tech Summit 2023",
+      "date": "Jul 15, 2023",
+      "location": "Kathmandu, Nepal",
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "startup-weekend",
+      "title": "Startup Weekend",
+      "date": "Aug 5-7, 2023",
+      "location": "Pokhara, Nepal",
+      "image": "https://images.unsplash.com/photo-1559223607-a43c990c692c?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": "ai-conference",
+      "title": "AI & Machine Learning Conference",
+      "date": "Sep 22, 2023",
+      "location": "Biratnagar, Nepal",
+      "image": "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2070&auto=format&fit=crop"
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+  "tabId": "gallery",
+  "containerClasses": "content-section mb-16 bg-gradient-to-b from-white to-gray-50 rounded-xl p-6 md:p-10 shadow-md border border-gray-100 relative overflow-hidden min-h-[300px]",
+  "header": {
+    "containerClasses": "relative mb-12 text-center max-w-3xl mx-auto",
+    "icon": {
+      "containerClasses": "inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#0066FF] text-white mb-4 shadow-lg shadow-[#0066FF]/20 gallery-icon",
+      "classes": "w-7 h-7 text-white",
+      "viewBox": "0 0 24 24",
+      "path": {
+        "d": "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+        "strokeLinecap": "round",
+        "strokeLinejoin": "round",
+        "strokeWidth": "2"
+      }
+    },
+    "title": {
+      "text": "Event Gallery",
+      "classes": "text-3xl font-bold text-gray-900 mb-4 gallery-title"
+    },
+    "divider": {
+      "classes": "w-24 h-1 bg-gradient-to-r from-[#0066FF] to-[#5045E8] rounded-full mx-auto mb-6 gallery-divider"
+    },
+    "description": {
+      "text": "Browse through images from our previous events to get a glimpse of what to expect. Our events are designed to foster collaboration, innovation, and learning in a dynamic environment.",
+      "classes": "text-gray-600 max-w-xl mx-auto text-lg gallery-description"
+    }
+  },
+  "filters": {
+    "containerClasses": "flex flex-wrap justify-center gap-2 md:gap-3 mb-10 gallery-filters",
+    "button": {
+      "baseClasses": "px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-medium transition-all duration-300 transform hover:-translate-y-0.5 gallery-filter-btn",
+      "activeClasses": "bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/20",
+      "inactiveClasses": "bg-white text-gray-700 border border-gray-200 hover:border-[#0066FF]/30 hover:text-[#0066FF]"
+    },
+    "categories": [
+      {
+        "id": "all",
+        "text": "All"
+      },
+      {
+        "id": "keynote",
+        "text": "Keynote"
+      },
+      {
+        "id": "workshop",
+        "text": "Workshop"
+      },
+      {
+        "id": "competition",
+        "text": "Competition"
+      },
+      {
+        "id": "discussion",
+        "text": "Discussion"
+      },
+      {
+        "id": "networking",
+        "text": "Networking"
+      },
+      {
+        "id": "showcase",
+        "text": "Showcase"
+      },
+      {
+        "id": "demo",
+        "text": "Demo"
+      },
+      {
+        "id": "ceremony",
+        "text": "Ceremony"
+      }
+    ]
+  },
+  "grid": {
+    "containerClasses": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 gallery-grid",
+    "item": {
+      "containerClasses": "relative group cursor-pointer rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 gallery-item",
+      "imageContainer": {
+        "classes": "relative aspect-[4/3] overflow-hidden"
+      },
+      "image": {
+        "classes": "object-cover transition-transform duration-500 group-hover:scale-110",
+        "sizes": "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      },
+      "overlay": {
+        "classes": "absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5"
+      },
+      "category": {
+        "containerClasses": "absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-semibold text-white shadow-sm gallery-category",
+        "colorClasses": {
+          "Keynote": "bg-[#0066FF]",
+          "Workshop": "bg-[#5045E8]",
+          "Competition": "bg-[#EEAE22]",
+          "Discussion": "bg-[#00C853]",
+          "Networking": "bg-[#FF5722]",
+          "Showcase": "bg-[#9C27B0]",
+          "Demo": "bg-[#607D8B]",
+          "Ceremony": "bg-[#795548]"
+        }
+      },
+      "title": {
+        "classes": "text-white text-lg font-bold mb-2 transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 gallery-item-title"
+      },
+      "description": {
+        "classes": "text-white/90 text-sm transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-75 gallery-item-description"
+      }
+    }
+  },
+  "lightbox": {
+    "containerClasses": "fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4",
+    "contentClasses": "relative max-w-5xl w-full flex flex-col",
+    "imageContainer": {
+      "classes": "relative w-full max-h-[90vh] overflow-hidden"
+    },
+    "closeButton": {
+      "containerClasses": "absolute top-6 right-6 w-12 h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all duration-300 z-10 hover:scale-110",
+      "classes": "w-7 h-7",
+      "viewBox": "0 0 24 24",
+      "path": {
+        "d": "M6 18L18 6M6 6l12 12",
+        "strokeLinecap": "round",
+        "strokeLinejoin": "round",
+        "strokeWidth": "2"
+      }
+    },
+    "details": {
+      "containerClasses": "bg-white p-4 rounded-b-lg",
+      "title": {
+        "classes": "text-xl font-bold text-gray-900 mb-2"
+      },
+      "category": {
+        "containerClasses": "inline-block px-2 py-1 rounded-full text-xs font-semibold text-white shadow-sm mb-2",
+        "colorClasses": {
+          "Keynote": "bg-[#0066FF]",
+          "Workshop": "bg-[#5045E8]",
+          "Competition": "bg-[#EEAE22]",
+          "Discussion": "bg-[#00C853]",
+          "Networking": "bg-[#FF5722]",
+          "Showcase": "bg-[#9C27B0]",
+          "Demo": "bg-[#607D8B]",
+          "Ceremony": "bg-[#795548]"
+        }
+      },
+      "description": {
+        "classes": "text-gray-600"
+      }
+    }
+  },
+  "animations": {
+    "header": {
+      "icon": {
+        "y": 20,
+        "opacity": 0,
+        "duration": 0.7,
+        "delay": 0.7,
+        "ease": "power3.out"
+      },
+      "title": {
+        "y": 20,
+        "opacity": 0,
+        "duration": 0.7,
+        "delay": 0.8,
+        "ease": "power2.out"
+      },
+      "divider": {
+        "width": 0,
+        "opacity": 0,
+        "duration": 0.7,
+        "delay": 0.9,
+        "ease": "power1.inOut"
+      },
+      "description": {
+        "y": 20,
+        "opacity": 0,
+        "duration": 0.7,
+        "delay": 1.0,
+        "ease": "power2.out"
+      }
+    },
+    "filters": {
+      "y": 20,
+      "opacity": 0,
+      "duration": 0.7,
+      "stagger": 0.1,
+      "delay": 0.8,
+      "ease": "power2.out"
+    },
+    "filterClick": {
+      "scale": 0.95,
+      "duration": 0.4,
+      "ease": "elastic.out(1.2, 0.5)"
+    },
+    "galleryItems": {
+      "y": 30,
+      "opacity": 0,
+      "duration": 0.8,
+      "stagger": 0.1,
+      "delay": 0.9,
+      "ease": "power3.out"
+    },
+    "category": {
+      "y": -5,
+      "duration": 3,
+      "ease": "sine.inOut",
+      "repeat": -1,
+      "yoyo": true,
+      "delay": "random(0.8)"
+    },
+    "hover": {
+      "image": {
+        "scale": 1.08,
+        "duration": 0.8,
+        "ease": "power1.out"
+      },
+      "title": {
+        "y": 10,
+        "duration": 0.4,
+        "ease": "power2.out"
+      }
+    },
+    "lightbox": {
+      "open": {
+        "opacity": 0,
+        "scale": 0.9,
+        "duration": 0.4,
+        "ease": "power2.out"
+      },
+      "close": {
+        "opacity": 0,
+        "scale": 0.9,
+        "duration": 0.3,
+        "ease": "power2.in"
+      }
+    }
+  }
+}

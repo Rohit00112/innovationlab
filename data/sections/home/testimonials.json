@@ -1,0 +1,83 @@
+{
+  "sectionId": "testimonials-section",
+  "sectionClasses": "py-16 md:py-24 lg:py-32 relative overflow-hidden bg-white",
+  "background": {
+    "gradient": {
+      "classes": "absolute inset-0 bg-gradient-to-br from-[#F8FAFF] to-white"
+    },
+    "pattern": {
+      "url": "/patterns/grid-pattern.svg",
+      "classes": "absolute inset-0 bg-[url('/patterns/grid-pattern.svg')] opacity-5"
+    },
+    "decorativeElements": [
+      {
+        "classes": "hero-decorative-element absolute top-20 left-[10%] w-16 h-16 md:w-24 md:h-24 bg-[#0066FF] opacity-5 rounded-full blur-xl"
+      },
+      {
+        "classes": "hero-decorative-element absolute bottom-20 right-[10%] w-24 h-24 md:w-32 md:h-32 bg-[#5045E8] opacity-5 rounded-full blur-2xl"
+      },
+      {
+        "classes": "hero-decorative-element absolute top-1/2 left-[20%] w-12 h-12 md:w-16 md:h-16 bg-[#EEAE22] opacity-5 rounded-full blur-lg"
+      }
+    ]
+  },
+  "header": {
+    "containerClasses": "text-center mb-12 md:mb-16",
+    "title": {
+      "text": "What People Say About Us",
+      "classes": "section-title text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-[#0066FF] to-[#5045E8] bg-clip-text text-transparent"
+    },
+    "description": {
+      "text": "Hear from participants, partners, and community members about their experiences with Innovation Lab.",
+      "classes": "section-description text-base md:text-lg text-gray-700 max-w-2xl mx-auto"
+    }
+  },
+  "testimonialCarousel": {
+    "containerClasses": "flex overflow-x-auto pb-12 gap-6 md:gap-8 snap-x hide-scrollbar",
+    "cardClasses": "snap-center flex-shrink-0 testimonial-card",
+    "navigation": {
+      "containerClasses": "flex flex-col items-center mt-8",
+      "dots": {
+        "containerClasses": "flex justify-center gap-2 mb-4",
+        "buttonClasses": {
+          "base": "carousel-control w-3 h-3 rounded-full transition-all duration-300",
+          "active": "bg-gradient-to-r from-[#0066FF] to-[#5045E8] w-8",
+          "inactive": "bg-gray-300 hover:bg-gray-400"
+        }
+      },
+      "arrows": {
+        "containerClasses": "hidden md:flex justify-center gap-4 mt-2",
+        "buttonClasses": "carousel-control p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-300",
+        "prevArrow": {
+          "path": "M15 18L9 12L15 6",
+          "stroke": "#0066FF",
+          "strokeWidth": "2",
+          "strokeLinecap": "round",
+          "strokeLinejoin": "round"
+        },
+        "nextArrow": {
+          "path": "M9 6L15 12L9 18",
+          "stroke": "#0066FF",
+          "strokeWidth": "2",
+          "strokeLinecap": "round",
+          "strokeLinejoin": "round"
+        }
+      }
+    },
+    "scrollbarStyles": {
+      "hideScrollbar": {
+        "msOverflowStyle": "none",
+        "scrollbarWidth": "none",
+        "webkitScrollbar": "display: none"
+      }
+    }
+  },
+  "testimonials": [
+    {
+      "quote": "\"The Innovation Lab at Itahari International College is a hub for Collaboration, Research and Innovation. This space fosters problem-solving, entrepreneurship, and Creativity , preparing students for future challenges. It has greatly enhanced academic excellence while inspiring innovation-driven mindsets. I am proud to lead this initiative, shaping the next generation of innovators.\"",
+      "name": "Er. Santosh Parajuli",
+      "role": "Programme Leader - BIT",
+      "imageUrl": "/images/Santosh_Parajuli.jpg"
+    }
+  ]
+}

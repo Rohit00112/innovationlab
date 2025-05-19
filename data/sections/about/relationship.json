@@ -1,0 +1,145 @@
+{
+  "sectionClasses": "section-padding relative overflow-hidden",
+  "background": {
+    "pattern": {
+      "containerClasses": "absolute inset-0 -z-10 opacity-[0.03]",
+      "style": {
+        "backgroundImage": "linear-gradient(135deg, #5045E8 10%, transparent 10%, transparent 50%, #5045E8 50%, #5045E8 60%, transparent 60%, transparent 100%)",
+        "backgroundSize": "20px 20px"
+      }
+    },
+    "decorativeElements": [
+      {
+        "classes": "absolute top-20 right-10 w-40 h-40 rounded-full bg-gradient-to-br from-[#0066FF]/5 to-[#5045E8]/5 blur-2xl"
+      },
+      {
+        "classes": "absolute bottom-20 left-10 w-60 h-60 rounded-full bg-gradient-to-br from-[#EEAE22]/5 to-[#F5C462]/5 blur-2xl"
+      }
+    ]
+  },
+  "content": {
+    "containerClasses": "container mx-auto relative z-10",
+    "wrapperClasses": "flex flex-col md:flex-row gap-12 lg:gap-16 items-center",
+    "leftImage": {
+      "containerClasses": "w-full md:w-1/2 h-[350px] md:h-[450px] lg:h-[500px] relative rounded-xl overflow-hidden shadow-xl card-hover",
+      "overlay": {
+        "classes": "absolute inset-0 bg-gradient-to-t from-[#21409A]/80 via-[#21409A]/30 to-transparent z-10"
+      },
+      "image": {
+        "src": "/images/partnership.JPG",
+        "alt": "IIC Partnership",
+        "classes": "object-cover transition-transform duration-700 hover:scale-105",
+        "sizes": "(max-width: 768px) 100vw, 50vw"
+      },
+      "caption": {
+        "containerClasses": "absolute bottom-0 left-0 w-full p-8 z-20",
+        "line": {
+          "classes": "w-20 h-1 bg-gradient-to-r from-[#EEAE22] to-[#F5C462] mb-4"
+        },
+        "title": {
+          "text": "Itahari International College",
+          "classes": "text-white text-lg font-medium"
+        },
+        "subtitle": {
+          "text": "Our academic foundation",
+          "classes": "text-white text-sm mt-2"
+        }
+      },
+      "decorativeElement": {
+        "containerClasses": "absolute top-6 right-6 w-16 h-16 rounded-full border-2 border-white/20 z-10 flex items-center justify-center",
+        "innerCircle": {
+          "classes": "w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center"
+        },
+        "icon": {
+          "viewBox": "0 0 24 24",
+          "path": "M12 14L11.2929 14.7071L12 15.4142L12.7071 14.7071L12 14ZM12 4L12.7071 3.29289L12 2.58579L11.2929 3.29289L12 4ZM4 12L3.29289 11.2929L2.58579 12L3.29289 12.7071L4 12ZM20 12L20.7071 12.7071L21.4142 12L20.7071 11.2929L20 12ZM11.2929 14.7071L15.2929 10.7071L13.8787 9.29289L9.87868 13.2929L11.2929 14.7071ZM15.2929 9.29289L11.2929 5.29289L9.87868 6.70711L13.8787 10.7071L15.2929 9.29289ZM11.2929 3.29289L7.29289 7.29289L8.70711 8.70711L12.7071 4.70711L11.2929 3.29289ZM7.29289 8.70711L11.2929 12.7071L12.7071 11.2929L8.70711 7.29289L7.29289 8.70711ZM3.29289 12.7071L7.29289 16.7071L8.70711 15.2929L4.70711 11.2929L3.29289 12.7071ZM7.29289 15.2929L11.2929 11.2929L9.87868 9.87868L5.87868 13.8787L7.29289 15.2929ZM12.7071 14.7071L16.7071 10.7071L15.2929 9.29289L11.2929 13.2929L12.7071 14.7071ZM16.7071 9.29289L12.7071 5.29289L11.2929 6.70711L15.2929 10.7071L16.7071 9.29289ZM12.7071 3.29289L8.70711 7.29289L10.1213 8.70711L14.1213 4.70711L12.7071 3.29289ZM8.70711 8.70711L12.7071 12.7071L14.1213 11.2929L10.1213 7.29289L8.70711 8.70711ZM20.7071 12.7071L16.7071 16.7071L15.2929 15.2929L19.2929 11.2929L20.7071 12.7071ZM16.7071 15.2929L12.7071 11.2929L11.2929 9.87868L15.2929 13.8787L16.7071 15.2929Z",
+          "fill": "white"
+        }
+      }
+    },
+    "rightContent": {
+      "containerClasses": "w-full md:w-1/2 flex flex-col gap-8",
+      "header": {
+        "containerClasses": "flex flex-col gap-3",
+        "badge": {
+          "text": "Innovation",
+          "classes": "inline-block px-4 py-1 bg-[#F0F4FF] text-[#0066FF] text-sm font-medium rounded-full mb-2 animate-fadeInUp"
+        },
+        "title": {
+          "text": "A part of Itahari International College",
+          "classes": "heading-3 text-gray-900 animate-fadeInUp animation-delay-100"
+        },
+        "subtitle": {
+          "text": "Where Ideas Ignite & Innovation Begins",
+          "classes": "text-lg font-medium text-[#0066FF] animate-fadeInUp animation-delay-200"
+        }
+      },
+      "paragraphs": {
+        "containerClasses": "flex flex-col gap-6 mt-2",
+        "items": [
+          {
+            "text": "Aligned with IIC's mission to transform lives through education, the Innovation Lab offers students practical opportunities to apply their knowledge, fostering creativity and technological advancement. By engaging in collaborative projects within the lab, students enhance their skills, preparing them to become globally competitive graduates.",
+            "classes": "body-base text-gray-700 animate-fadeInUp animation-delay-300"
+          },
+          {
+            "text": "Through this strategic partnership, the Lab provides IIC students with unique opportunities to gain hands-on experience working on cutting-edge projects while allowing industry partners to tap into fresh talent and innovative thinking.",
+            "classes": "body-base text-gray-700 animate-fadeInUp animation-delay-400"
+          },
+          {
+            "text": "The College provides institutional support, resources, and academic expertise, while the Innovation Lab brings industry connections, practical focus, and entrepreneurial mindset—creating a powerful synergy that benefits all stakeholders.",
+            "classes": "body-base text-gray-700 animate-fadeInUp animation-delay-500"
+          }
+        ]
+      },
+      "benefits": {
+        "containerClasses": "grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4",
+        "items": [
+          {
+            "containerClasses": "flex items-start gap-3 animate-fadeInUp animation-delay-600",
+            "icon": {
+              "containerClasses": "w-8 h-8 rounded-full bg-[#F0F4FF] flex items-center justify-center flex-shrink-0 mt-1",
+              "viewBox": "0 0 24 24",
+              "path": "M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z",
+              "stroke": "#0066FF",
+              "strokeWidth": "2",
+              "strokeLinecap": "round",
+              "strokeLinejoin": "round"
+            },
+            "content": {
+              "title": {
+                "text": "Real-world Experience",
+                "classes": "text-sm font-semibold text-gray-900"
+              },
+              "description": {
+                "text": "Students apply classroom knowledge to actual projects",
+                "classes": "text-xs text-gray-600"
+              }
+            }
+          },
+          {
+            "containerClasses": "flex items-start gap-3 animate-fadeInUp animation-delay-700",
+            "icon": {
+              "containerClasses": "w-8 h-8 rounded-full bg-[#F0F4FF] flex items-center justify-center flex-shrink-0 mt-1",
+              "viewBox": "0 0 24 24",
+              "path": "M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z",
+              "stroke": "#0066FF",
+              "strokeWidth": "2",
+              "strokeLinecap": "round",
+              "strokeLinejoin": "round"
+            },
+            "content": {
+              "title": {
+                "text": "Industry Connections",
+                "classes": "text-sm font-semibold text-gray-900"
+              },
+              "description": {
+                "text": "Direct access to leading companies and organizations",
+                "classes": "text-xs text-gray-600"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

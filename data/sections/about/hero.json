@@ -1,0 +1,113 @@
+{
+  "sectionClasses": "relative w-full min-h-[80vh] bg-white pt-32 pb-20 overflow-hidden mt-20",
+  "decorativeLine": {
+    "containerClasses": "absolute top-0 left-0 right-0 w-full h-1 z-10",
+    "gradient": {
+      "id": "lineGradient",
+      "x1": "0%",
+      "y1": "0%",
+      "x2": "100%",
+      "y2": "0%",
+      "stops": [
+        {
+          "offset": "10%",
+          "stopColor": "#5045E8"
+        },
+        {
+          "offset": "100%",
+          "stopColor": "#0066FF"
+        }
+      ]
+    },
+    "path": {
+      "stroke": "url(#lineGradient)",
+      "strokeWidth": "5",
+      "strokeDasharray": "50 50",
+      "d": "M0,2.5 L1440,2.5",
+      "classes": "animate-shimmer"
+    }
+  },
+  "background": {
+    "pattern": {
+      "containerClasses": "absolute inset-0 -z-20 opacity-3 bg-element",
+      "style": {
+        "backgroundImage": "radial-gradient(#0066FF 1px, transparent 1px), radial-gradient(#5045E8 1px, transparent 1px)",
+        "backgroundSize": "40px 40px",
+        "backgroundPosition": "0 0, 20px 20px"
+      }
+    },
+    "floatingShapes": [
+      {
+        "classes": "absolute top-1/4 right-[15%] w-64 h-64 rounded-full bg-gradient-to-r from-[#0066FF]/5 to-[#5045E8]/5 blur-3xl decorative-element"
+      },
+      {
+        "classes": "absolute bottom-1/4 left-[10%] w-48 h-48 rounded-full bg-gradient-to-r from-[#EEAE22]/5 to-[#F5C462]/5 blur-3xl decorative-element"
+      }
+    ],
+    "decorativeElements": [
+      {
+        "classes": "absolute bottom-0 right-0 w-32 h-32 md:w-48 md:h-48 bg-gradient-to-br from-[#0066FF]/10 to-[#5045E8]/10 rounded-full -mb-16 -mr-16 decorative-element"
+      },
+      {
+        "classes": "absolute top-40 left-0 w-24 h-24 bg-gradient-to-br from-[#EEAE22]/10 to-[#F5C462]/10 rounded-full -ml-12 decorative-element"
+      }
+    ],
+    "image": {
+      "containerClasses": "absolute top-0 right-0 w-full md:w-1/2 h-full -z-10 animate-image",
+      "overlayClasses": "absolute inset-0 bg-gradient-to-b from-white via-transparent to-white opacity-90 z-10",
+      "src": "/images/about_hero.JPG",
+      "alt": "Innovation Lab About Background",
+      "imageClasses": "object-cover opacity-15",
+      "sizes": "(max-width: 768px) 100vw, 50vw",
+      "priority": true
+    }
+  },
+  "content": {
+    "containerClasses": "container mx-auto px-4 md:px-8 lg:px-16 xl:px-32 relative z-10",
+    "wrapperClasses": "flex flex-col md:flex-row gap-12 lg:gap-16 items-center",
+    "leftContent": {
+      "containerClasses": "w-full md:w-2/5 flex flex-col",
+      "badge": {
+        "containerClasses": "relative mb-3",
+        "text": "About Us",
+        "classes": "inline-block px-4 py-1 bg-[#F0F4FF] text-[#0066FF] text-sm font-medium rounded-full mb-4 animate-heading"
+      },
+      "title": {
+        "containerClasses": "heading-1 text-[#0066FF] mb-8 relative font-black",
+        "text": "Innovation Lab",
+        "wrapperClasses": "relative inline-block animate-heading",
+        "underline": {
+          "classes": "absolute -bottom-3 left-0 w-24 h-1.5 bg-gradient-to-r from-[#EEAE22] to-[#F5C462]"
+        }
+      },
+      "decorativeElement": {
+        "containerClasses": "hidden md:block relative w-32 h-32 mt-8 decorative-element",
+        "blobs": [
+          {
+            "classes": "absolute inset-0 blob bg-[#0066FF]/10"
+          },
+          {
+            "classes": "absolute inset-0 blob bg-[#5045E8]/5"
+          }
+        ]
+      }
+    },
+    "rightContent": {
+      "containerClasses": "w-full md:w-3/5 flex flex-col gap-8",
+      "paragraphs": [
+        {
+          "classes": "body-base text-gray-700 animate-text relative pl-6 border-l-2 border-[#0066FF]/20",
+          "content": "<span class=\"font-semibold text-[#0066FF]\">We are a forward-thinking innovation hub</span> committed to empowering students through creativity, collaboration, and purpose-driven learning. Our team comprises educators, industry experts, mentors, and passionate students working together to bridge the gap between academia and industry providing a dynamic space that nurtures innovation, entrepreneurship, and leadership through workshops, mentorship, career guidance, and real-world projects."
+        },
+        {
+          "classes": "body-base text-gray-700 animate-text",
+          "content": "Our journey began with a vision to transform education by connecting knowledge with practical experience. From our inception, we have focused on fostering a culture of innovation and leadership among students. At present, we are located within a thriving academic environment at Itahari International College that connects students with state-of-the-art resources, collaborative spaces, and strong industry linkages."
+        },
+        {
+          "classes": "body-base text-gray-700 animate-text",
+          "content": "Whether on campus or through digital platforms, our reach continues to grow. We strive to create an ecosystem where ideas flourish, skills develop, and students become confident professionals ready to make an impact in the technology industry and beyond."
+        }
+      ]
+    }
+  }
+}
