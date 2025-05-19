@@ -151,9 +151,12 @@ const programs = [
 ];
 
 // Generate metadata for this page
-export function generateMetadata({ params }: { params: { programId: string } }): Metadata {
+export async function generateMetadata({ params }: { params: Promise<{ programId: string }> }): Promise<Metadata> {
+  // Await the params object to get the programId
+  const resolvedParams = await params;
+
   // Find the program with the matching ID
-  const program = programs.find(program => program.id === params.programId);
+  const program = programs.find(program => program.id === resolvedParams.programId);
 
   // If no program is found, return default metadata
   if (!program) {
@@ -185,9 +188,12 @@ export function generateMetadata({ params }: { params: { programId: string } }):
   };
 }
 
-export default function ProgramDetails({ params }: { params: { programId: string } }) {
+export default async function ProgramDetails({ params }: { params: Promise<{ programId: string }> }) {
+  // Await the params object to get the programId
+  const resolvedParams = await params;
+
   // Find the program with the matching ID
-  const program = programs.find(program => program.id === params.programId);
+  const program = programs.find(program => program.id === resolvedParams.programId);
 
   // If no program is found, return 404
   if (!program) {
