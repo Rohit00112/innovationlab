@@ -4,8 +4,6 @@ import React, { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
-// Removed unused imports
-// import { CalendarIcon, TagIcon } from '@heroicons/react/24/outline';
 import { gsap } from 'gsap';
 
 interface SimpleEventCardProps {
@@ -17,6 +15,7 @@ interface SimpleEventCardProps {
   imageUrl: string;
   category?: string;
   time?: string;
+  onImageClick?: (imageUrl: string, title: string) => void;
 }
 
 const SimpleEventCard: React.FC<SimpleEventCardProps> = ({
@@ -28,6 +27,7 @@ const SimpleEventCard: React.FC<SimpleEventCardProps> = ({
   imageUrl,
   category = "Event",
   time = "10:00 AM",
+  onImageClick,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -214,6 +214,8 @@ const SimpleEventCard: React.FC<SimpleEventCardProps> = ({
           className="object-cover card-image"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 20vw"
           quality={90}
+          onClick={() => onImageClick && onImageClick(imageUrl, title)}
+          style={{ cursor: onImageClick ? 'pointer' : 'default' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 card-overlay"></div>
 

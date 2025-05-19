@@ -14,7 +14,7 @@ interface FeaturedEventProps {
   location: string;
   description: string;
   imageUrl: string;
-  attendees: number;
+  attendees: number | string;
   category: string;
 }
 
@@ -100,7 +100,7 @@ const FeaturedEvent: React.FC<FeaturedEventProps> = ({
   }, []);
 
   return (
-    <div 
+    <div
       ref={cardRef}
       className="bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 flex flex-col md:flex-row h-full featured-event-card"
     >
@@ -115,7 +115,7 @@ const FeaturedEvent: React.FC<FeaturedEventProps> = ({
           quality={90}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-70"></div>
-        
+
         {/* Category badge */}
         <div className="absolute top-4 left-4 px-3 py-1 bg-[#0066FF] text-white text-sm font-medium rounded-full">
           {category}
@@ -135,21 +135,21 @@ const FeaturedEvent: React.FC<FeaturedEventProps> = ({
             </div>
             <span>{date}</span>
           </div>
-          
+
           <div className="flex items-center gap-2 text-gray-700 animate-on-hover">
             <div className="w-8 h-8 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0">
               <ClockIcon className="h-4 w-4 text-[#0066FF]" />
             </div>
             <span>{time}</span>
           </div>
-          
+
           <div className="flex items-center gap-2 text-gray-700 animate-on-hover">
             <div className="w-8 h-8 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0">
               <MapPinIcon className="h-4 w-4 text-[#0066FF]" />
             </div>
             <span>{location}</span>
           </div>
-          
+
           <div className="flex items-center gap-2 text-gray-700 animate-on-hover">
             <div className="w-8 h-8 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0">
               <UserGroupIcon className="h-4 w-4 text-[#0066FF]" />
@@ -172,7 +172,7 @@ const FeaturedEvent: React.FC<FeaturedEventProps> = ({
               <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
           </Link>
-          
+
           <Link
             href={`/events/${id}`}
             className="inline-flex items-center justify-center px-6 py-3 rounded-lg text-base font-medium border-2 border-[#0066FF] text-[#0066FF] hover:bg-[#0066FF]/5 transition-all duration-300 animate-on-hover"

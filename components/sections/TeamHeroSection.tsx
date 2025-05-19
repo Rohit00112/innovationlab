@@ -1,8 +1,6 @@
 "use client";
 
 import React from 'react';
-// Removed unused import
-// import Image from 'next/image';
 
 const TeamHeroSection: React.FC = () => {
   return (

@@ -42,7 +42,7 @@ const SmoothScroll: React.FC<SmoothScrollProps> = ({ children }) => {
 
       // Then apply animations with a delay
       setTimeout(() => {
-        sections.forEach((section) => {
+        sections.forEach(section => {
           // Add a subtle parallax effect to each section
           gsap.fromTo(
             section,

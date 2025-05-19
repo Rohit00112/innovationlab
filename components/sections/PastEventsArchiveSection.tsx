@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-// Removed unused imports
-// import Image from 'next/image';
-// import Link from 'next/link';
 import ModernEventCard from '../ui/ModernEventCard';
 import SearchBar from '../ui/SearchBar';
 

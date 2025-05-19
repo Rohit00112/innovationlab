@@ -5,11 +5,7 @@ import SimpleEventCard from '../ui/SimpleEventCard';
 import FeaturedEvent from '../ui/FeaturedEvent';
 import Link from 'next/link';
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-// Removed unused import
-// import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import { gsap } from 'gsap';
-// Removed unused import
-// import ImageModal from '../ui/ImageModal';
 
 // Import JSON data
 import upcomingEventsData from '@/data/sections/home/upcomingEvents.json';
@@ -17,17 +13,9 @@ import upcomingEventsData from '@/data/sections/home/upcomingEvents.json';
 const UpcomingEventsSection = forwardRef<HTMLDivElement>((_, ref) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  // Using 'All' as default category but not using setActiveCategory (commented out in UI)
+  // Using 'All' as default category
   const [activeCategory] = useState<string>('All');
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  // State for image modal - these are used in handleImageClick function
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
-  const [selectedTitle, setSelectedTitle] = useState('');
-
-  // Categories for filtering from JSON data - not currently used but kept for future use
-  // const categories = upcomingEventsData.categories.options;
 
   // Events data from JSON
   const upcomingEvents = upcomingEventsData.events;
@@ -70,19 +58,11 @@ const UpcomingEventsSection = forwardRef<HTMLDivElement>((_, ref) => {
     setCurrentSlide(0);
   }, [activeCategory]);
 
-  // Handler for image click - currently used in the component but modal functionality is disabled
+  // Handler for image click - placeholder for future modal functionality
   const handleImageClick = (imageUrl: string, title: string) => {
-    // These state updates don't have any effect since the modal is not rendered
-    setSelectedImage(imageUrl);
-    setSelectedTitle(title);
-    setModalOpen(true);
     // In the future, this will open an image modal
+    console.log(`Image clicked: ${title} - ${imageUrl}`);
   };
-
-  // Handler for closing modal - defined but not currently used
-  // const handleCloseModal = () => {
-  //   setModalOpen(false);
-  // };
 
   return (
     <section
