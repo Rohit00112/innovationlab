@@ -6,7 +6,8 @@ import ProgramsGridSection from '../sections/ProgramsGridSection';
 import ProgramsCTASection from '../sections/ProgramsCTASection';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useCardAnimation } from '@/hooks/useGSAPAnimations';
+// Removed unused import
+// import { useCardAnimation } from '@/hooks/useGSAPAnimations';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -18,7 +19,7 @@ const ProgramsPage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const programsGridRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  
+
   // State for active category filter
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
@@ -107,9 +108,9 @@ const ProgramsPage: React.FC = () => {
         <ProgramsHeroSection />
       </div>
       <div ref={programsGridRef}>
-        <ProgramsGridSection 
-          activeCategory={activeCategory} 
-          onCategoryChange={handleCategoryChange} 
+        <ProgramsGridSection
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
         />
       </div>
       <div ref={ctaRef}>

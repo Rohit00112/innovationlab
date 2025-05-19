@@ -3,7 +3,8 @@
 import React, { useRef, useEffect } from 'react';
 import HeroSection from '../sections/HeroSection';
 import MissionVisionSection from '../sections/MissionVisionSection';
-import ProgramsSection from '../sections/ProgramsSection';
+// Removed unused import
+// import ProgramsSection from '../sections/ProgramsSection';
 import UpcomingEventsSection from '../sections/UpcomingEventsSection';
 import TestimonialsSection from '../sections/TestimonialsSection';
 import CoreValuesSection from '../sections/CoreValuesSection';
@@ -13,7 +14,8 @@ const HomePage: React.FC = () => {
   // Create refs for each section
   const heroRef = useRef<HTMLDivElement>(null);
   const missionVisionRef = useRef<HTMLDivElement>(null);
-  const programsRef = useRef<HTMLDivElement>(null);
+  // Commented out unused ref
+  // const programsRef = useRef<HTMLDivElement>(null);
   const eventsRef = useRef<HTMLDivElement>(null);
   const testimonialsRef = useRef<HTMLDivElement>(null);
   const coreValuesRef = useRef<HTMLDivElement>(null);

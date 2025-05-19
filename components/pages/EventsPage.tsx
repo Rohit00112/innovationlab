@@ -4,8 +4,9 @@ import React, { useRef, useEffect } from 'react';
 import EventsHeroSection from '../sections/EventsHeroSection';
 import UpcomingEventsSection from '../sections/UpcomingEventsSection';
 import PastEventsSection from '../sections/PastEventsSection';
-import EventsCalendarSection from '../sections/EventsCalendarSection';
-import EventsNewsletterSection from '../sections/EventsNewsletterSection';
+// Removed unused imports
+// import EventsCalendarSection from '../sections/EventsCalendarSection';
+// import EventsNewsletterSection from '../sections/EventsNewsletterSection';
 import { useEventsPageAnimations, useEventsHeroAnimation, useEventCardAnimations } from '@/hooks/useGSAPAnimations';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -20,8 +21,9 @@ const EventsPage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const upcomingEventsRef = useRef<HTMLDivElement>(null);
   const pastEventsRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const newsletterRef = useRef<HTMLDivElement>(null);
+  // Commented out unused refs
+  // const calendarRef = useRef<HTMLDivElement>(null);
+  // const newsletterRef = useRef<HTMLDivElement>(null);
 
   // Apply hero animation with timeline-based sequential animations
   useEventsHeroAnimation(heroRef as React.RefObject<HTMLElement>);
@@ -45,6 +47,8 @@ const EventsPage: React.FC = () => {
     threshold: 0.15,
   });
 
+  // Commented out unused animations
+  /*
   useEventsPageAnimations(calendarRef as React.RefObject<HTMLElement>, {
     textDuration: 0,
     floatDuration: 0,
@@ -62,6 +66,7 @@ const EventsPage: React.FC = () => {
     floatRange: 8,
     threshold: 0.15,
   });
+  */
 
   // Apply enhanced hover animations to event cards
   useEventCardAnimations();
@@ -88,7 +93,7 @@ const EventsPage: React.FC = () => {
       <div ref={pastEventsRef}>
         <PastEventsSection />
       </div>
-     
+
     </>
   );
 };

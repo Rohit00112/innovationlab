@@ -2,7 +2,8 @@
 
 import { useRef, forwardRef, RefObject } from 'react';
 import { useCoreValuesAnimation } from '@/hooks/useGSAPAnimations';
-import Image from 'next/image';
+// Removed unused import
+// import Image from 'next/image';
 
 // Import JSON data
 import coreValuesData from '@/data/sections/home/coreValues.json';

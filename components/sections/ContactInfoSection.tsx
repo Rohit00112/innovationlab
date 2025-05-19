@@ -10,11 +10,11 @@ const ContactInfoSection: React.FC = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
-  
+
   // Initialize animations
   useEffect(() => {
     if (!sectionRef.current) return;
-    
+
     // Create a timeline for staggered animations
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -23,7 +23,7 @@ const ContactInfoSection: React.FC = () => {
         toggleActions: "play none none none"
       }
     });
-    
+
     // Animate title
     if (titleRef.current) {
       tl.fromTo(
@@ -33,66 +33,66 @@ const ContactInfoSection: React.FC = () => {
         0
       );
     }
-    
+
     // Animate map
     if (mapRef.current) {
       tl.fromTo(
         mapRef.current,
         { opacity: 0, y: 30, scale: 0.95 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           scale: 1,
           duration: 0.8,
-          ease: "back.out(1.2)" 
+          ease: "back.out(1.2)"
         },
         0.3
       );
     }
-    
+
     // Animate info items
     if (infoRef.current) {
       const items = infoRef.current.querySelectorAll('.info-item');
       tl.fromTo(
         items,
         { opacity: 0, y: 20 },
-        { 
-          opacity: 1, 
-          y: 0, 
+        {
+          opacity: 1,
+          y: 0,
           duration: 0.6,
           stagger: 0.15,
-          ease: "power3.out" 
+          ease: "power3.out"
         },
         0.2
       );
-      
+
       // Animate social links
       const socialLinks = infoRef.current.querySelector('.social-links-container');
       if (socialLinks) {
         tl.fromTo(
           socialLinks,
           { opacity: 0, y: 20 },
-          { 
-            opacity: 1, 
-            y: 0, 
+          {
+            opacity: 1,
+            y: 0,
             duration: 0.6,
-            ease: "power3.out" 
+            ease: "power3.out"
           },
           0.6
         );
       }
     }
-    
+
     return () => {
       // Clean up animations
       if (tl) tl.kill();
     };
   }, []);
-  
+
   return (
-    <section 
+    <section
       ref={sectionRef}
-      id="location" 
+      id="location"
       className="py-20 md:py-24 bg-white relative overflow-hidden"
     >
       {/* Background decorative elements */}
@@ -101,10 +101,10 @@ const ContactInfoSection: React.FC = () => {
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-gradient-to-br from-[#0066FF]/5 to-[#5045E8]/5 blur-3xl"></div>
         <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-gradient-to-tr from-[#5045E8]/5 to-[#0066FF]/5 blur-3xl"></div>
       </div>
-      
+
       <div className="container relative z-10">
         <div className="text-center mb-16">
-          <h2 
+          <h2
             ref={titleRef}
             className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 opacity-0"
           >
@@ -114,7 +114,7 @@ const ContactInfoSection: React.FC = () => {
             Visit our innovation hub or reach out through any of the contact methods below.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Map */}
           <div ref={mapRef} className="opacity-0">
@@ -134,12 +134,12 @@ const ContactInfoSection: React.FC = () => {
               </div>
             </GlassmorphicCard>
           </div>
-          
+
           {/* Contact Information */}
           <div ref={infoRef}>
             <GlassmorphicCard className="p-8 md:p-10 h-full">
               <h3 className="text-2xl font-bold mb-8 text-gray-900">Contact Information</h3>
-              
+
               <div className="space-y-8">
                 {/* Address */}
                 <div className="info-item flex items-start gap-5">
@@ -158,7 +158,7 @@ const ContactInfoSection: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Email */}
                 <div className="info-item flex items-start gap-5">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0066FF]/10 to-[#5045E8]/10 flex items-center justify-center flex-shrink-0">
@@ -170,10 +170,10 @@ const ContactInfoSection: React.FC = () => {
                   <div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">Email Us</h4>
                     <a href="mailto:info@innovationlab.com" className="text-[#0066FF] hover:underline">info@innovationlab.com</a>
-                    <p className="text-gray-600 mt-1 text-sm">We'll respond within 24 hours</p>
+                    <p className="text-gray-600 mt-1 text-sm">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
-                
+
                 {/* Phone */}
                 <div className="info-item flex items-start gap-5">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0066FF]/10 to-[#5045E8]/10 flex items-center justify-center flex-shrink-0">
@@ -187,15 +187,15 @@ const ContactInfoSection: React.FC = () => {
                     <p className="text-gray-600 mt-1 text-sm">Mon-Fri from 9am to 6pm</p>
                   </div>
                 </div>
-                
+
                 {/* Social Media */}
                 <div className="info-item pt-4">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Connect With Us</h4>
                   <div className="social-links-container">
-                    <ContactSocialLinks 
-                      size="md" 
-                      iconColor="text-[#0066FF]" 
-                      hoverColor="hover:text-[#5045E8]" 
+                    <ContactSocialLinks
+                      size="md"
+                      iconColor="text-[#0066FF]"
+                      hoverColor="hover:text-[#5045E8]"
                     />
                   </div>
                 </div>

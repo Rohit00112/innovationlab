@@ -52,36 +52,36 @@ interface ProgramDetailsProps {
 
 const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   const heroRef = useRef<HTMLDivElement>(null);
   const overviewRef = useRef<HTMLDivElement>(null);
   const curriculumRef = useRef<HTMLDivElement>(null);
   const mentorsRef = useRef<HTMLDivElement>(null);
   const applyRef = useRef<HTMLDivElement>(null);
-  
+
   // Set up animations
   useEffect(() => {
     // Hero section animations
     if (heroRef.current) {
       const tl = gsap.timeline();
-      
+
       tl.fromTo(
         heroRef.current.querySelectorAll('.hero-title, .hero-tagline, .hero-description, .hero-cta'),
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power3.out' }
       );
     }
-    
+
     // Tab content animations
     const animateTabContent = (element: HTMLElement) => {
       gsap.fromTo(
         element.querySelectorAll('.animate-tab-item'),
         { opacity: 0, y: 20 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.6, 
-          stagger: 0.1, 
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: element,
@@ -91,29 +91,29 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
         }
       );
     };
-    
+
     if (overviewRef.current && activeTab === 'overview') {
       animateTabContent(overviewRef.current);
     }
-    
+
     if (curriculumRef.current && activeTab === 'curriculum') {
       animateTabContent(curriculumRef.current);
     }
-    
+
     if (mentorsRef.current && activeTab === 'mentors') {
       animateTabContent(mentorsRef.current);
     }
-    
+
     if (applyRef.current && activeTab === 'apply') {
       animateTabContent(applyRef.current);
     }
-    
+
     // Clean up ScrollTrigger instances when component unmounts
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, [activeTab]);
-  
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -130,7 +130,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0066FF]/80 to-[#21409A]/90"></div>
         </div>
-        
+
         <div className="container relative z-10 py-20 md:py-28">
           <div className="max-w-3xl text-white">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 hero-title">
@@ -143,15 +143,15 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
               {program.description.substring(0, 150)}...
             </p>
             <div className="flex flex-wrap gap-4 hero-cta">
-              <Button 
-                href="#apply" 
+              <Button
+                href="#apply"
                 variant="primary"
                 className="bg-white text-[#0066FF] hover:bg-white/90"
               >
                 Apply Now
               </Button>
-              <Button 
-                href="#overview" 
+              <Button
+                href="#overview"
                 variant="outline"
                 className="border-white/70 text-white hover:bg-white/10"
               >
@@ -160,7 +160,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
             </div>
           </div>
         </div>
-        
+
         {/* Program quick info */}
         <div className="bg-white py-6 shadow-md relative z-10">
           <div className="container">
@@ -176,7 +176,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
                   <p className="font-semibold text-gray-900">{program.duration}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#0066FF]/10 flex items-center justify-center">
                   <svg className="w-5 h-5 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -188,7 +188,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
                   <p className="font-semibold text-gray-900">{program.startDate}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#0066FF]/10 flex items-center justify-center">
                   <svg className="w-5 h-5 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -205,7 +205,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Tabs Navigation */}
       <div className="sticky top-20 bg-white shadow-sm z-30">
         <div className="container">
@@ -255,11 +255,11 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Tab Content */}
       <div className="container py-12">
         {/* Overview Tab */}
-        <div 
+        <div
           ref={overviewRef}
           className={`${activeTab === 'overview' ? 'block' : 'hidden'}`}
           id="overview"
@@ -270,7 +270,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
               <div className="prose prose-lg max-w-none animate-tab-item">
                 <p>{program.description}</p>
               </div>
-              
+
               <h3 className="text-2xl font-bold mt-12 mb-6 text-gray-900 animate-tab-item">Program Benefits</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {program.benefits.map((benefit, index) => (
@@ -288,7 +288,7 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
                 ))}
               </div>
             </div>
-            
+
             <div>
               <div className="bg-gray-50 rounded-xl p-6 shadow-sm animate-tab-item">
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Eligibility</h3>
@@ -303,12 +303,12 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
                   ))}
                 </ul>
               </div>
-              
+
               <div className="mt-8 bg-gradient-to-br from-[#0066FF] to-[#5045E8] rounded-xl p-6 text-white shadow-lg animate-tab-item">
                 <h3 className="text-xl font-bold mb-4">Ready to Apply?</h3>
-                <p className="mb-6">Applications for the next cohort are now open. Don't miss this opportunity to accelerate your innovation journey.</p>
-                <Button 
-                  href="#apply" 
+                <p className="mb-6">Applications for the next cohort are now open. Don&apos;t miss this opportunity to accelerate your innovation journey.</p>
+                <Button
+                  href="#apply"
                   variant="primary"
                   className="w-full bg-white text-[#0066FF] hover:bg-white/90"
                   onClick={() => setActiveTab('apply')}
@@ -318,14 +318,14 @@ const ProgramDetailsPage: React.FC<ProgramDetailsProps> = ({ program }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Related Programs */}
           <div className="mt-16 animate-tab-item">
             <h3 className="text-2xl font-bold mb-8 text-gray-900">Related Programs</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {program.relatedPrograms.map((relatedProgram, index) => (
-                <Link 
-                  key={index} 
+                <Link
+                  key={index}
                   href={`/programs/${relatedProgram.id}`}
                   className="group block bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                 >

@@ -2,14 +2,12 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Button from '../ui/Button';
 import AgendaItem from '../ui/AgendaItem';
-import AgendaTable from '../ui/AgendaTable';
 import AgendaTimeline from '../ui/AgendaTimeline';
 import { useCountdownAnimation } from '@/hooks/useGSAPAnimations';
 
@@ -105,6 +103,8 @@ const EventDetailsPage: React.FC<EventDetailsProps> = ({ event }) => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
 
   // Default agenda items if not provided in the event object - based on the hackathon schedule
+  // Commented out to fix ESLint unused variable warning
+  /*
   const defaultAgendaItems: AgendaItem[] = [
     // Day 1 - June 11, Wednesday
     {
@@ -113,75 +113,12 @@ const EventDetailsPage: React.FC<EventDetailsProps> = ({ event }) => {
       description: "Day 1, June 11, Wednesday",
       day: "Day 1"
     },
-    {
-      time: "09:30 AM",
-      title: "Hackathon Theme Introduction",
-      description: "Day 1, June 11, Wednesday",
-      day: "Day 1"
-    },
-    {
-      time: "12:00 PM",
-      title: "Proposal Submission & Hackathon Kickoff",
-      description: "Day 1, June 11, Wednesday",
-      day: "Day 1"
-    },
-
-    // Day 2 - June 12, Thursday
-    {
-      time: "All Day",
-      title: "Hackathon Continues",
-      description: "Day 2, June 12, Thursday",
-      day: "Day 2",
-      isSpecial: true
-    },
-
-    // Day 3 - June 13, Friday
-    {
-      time: "07:00 AM",
-      title: "Presentation & Demo Starts",
-      description: "Day 3, June 13, Friday",
-      day: "Day 3",
-      isHidden: true
-    },
-    {
-      time: "12:00 PM",
-      title: "Submission",
-      description: "Day 3, June 13, Friday",
-      day: "Day 3",
-      isHidden: true
-    },
-    {
-      time: "12:30 PM",
-      title: "Panel Discussion",
-      description: "Day 3, June 13, Friday",
-      day: "Day 3",
-      isHidden: true
-    },
-    {
-      time: "01:30 PM",
-      title: "Formal & Informal Programs",
-      description: "Day 3, June 13, Friday",
-      day: "Day 3",
-      isHidden: true
-    },
-    {
-      time: "02:00 PM",
-      title: "Winner Announcement & Prize Distribution",
-      description: "Day 3, June 13, Friday",
-      day: "Day 3",
-      isHidden: true
-    },
-    {
-      time: "04:00 PM",
-      title: "Departure from College",
-      description: "Day 3, June 13, Friday",
-      day: "Day 3",
-      isHidden: true
-    }
+    // ... other agenda items
   ];
+  */
 
   // Use event agenda items if available, otherwise use default
-  const agendaItems = event.agendaItems || defaultAgendaItems;
+  // const agendaItems = event.agendaItems || defaultAgendaItems;
 
   // Function to get all gallery images
   const getFilteredImages = () => {

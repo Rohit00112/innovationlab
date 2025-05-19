@@ -9,32 +9,32 @@ const ProgramsCTASection: React.FC = () => {
       {/* Background decorative elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#0066FF]/10 to-[#5045E8]/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#0066FF]/10 to-[#5045E8]/10 rounded-full blur-3xl"></div>
-      
+
       <div className="container relative z-10">
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 lg:p-16 relative overflow-hidden">
           {/* Gradient border */}
           <div className="absolute inset-0 border-4 border-transparent rounded-2xl bg-origin-border bg-clip-border bg-gradient-to-r from-[#0066FF] to-[#5045E8] opacity-20"></div>
-          
+
           {/* Decorative elements */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#0066FF]/10 to-[#5045E8]/10 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-tr from-[#0066FF]/10 to-[#5045E8]/10 rounded-full blur-3xl"></div>
-          
+
           <div className="relative z-10 text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 animate-cta">
               Ready to Join Our Innovation Community?
             </h2>
             <p className="text-lg text-gray-700 mb-8 animate-cta">
-              Whether you're a student, entrepreneur, researcher, or corporate innovator, we have programs designed to help you succeed. Get in touch with us to learn more about our programs and how we can support your innovation journey.
+              Whether you&apos;re a student, entrepreneur, researcher, or corporate innovator, we have programs designed to help you succeed. Get in touch with us to learn more about our programs and how we can support your innovation journey.
             </p>
             <div className="flex flex-wrap justify-center gap-4 animate-cta">
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="px-8 py-3 bg-gradient-to-r from-[#0066FF] to-[#5045E8] text-white font-medium rounded-lg hover:shadow-lg transition-shadow"
               >
                 Contact Us
               </Link>
-              <Link 
-                href="/events" 
+              <Link
+                href="/events"
                 className="px-8 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:border-[#0066FF] hover:text-[#0066FF] transition-colors"
               >
                 Upcoming Events
@@ -42,7 +42,7 @@ const ProgramsCTASection: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Stats section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           <div className="bg-white p-8 rounded-xl shadow-md text-center animate-cta">
@@ -54,7 +54,7 @@ const ProgramsCTASection: React.FC = () => {
             <h3 className="text-4xl font-bold text-gray-900 mb-2">500+</h3>
             <p className="text-gray-600">Innovators Supported</p>
           </div>
-          
+
           <div className="bg-white p-8 rounded-xl shadow-md text-center animate-cta">
             <div className="w-16 h-16 bg-[#0066FF]/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -64,7 +64,7 @@ const ProgramsCTASection: React.FC = () => {
             <h3 className="text-4xl font-bold text-gray-900 mb-2">50+</h3>
             <p className="text-gray-600">Successful Startups</p>
           </div>
-          
+
           <div className="bg-white p-8 rounded-xl shadow-md text-center animate-cta">
             <div className="w-16 h-16 bg-[#0066FF]/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-[#0066FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+// Removed unused import
+// import Link from 'next/link';
 
 // Import JSON data
 import pastEventsData from '@/data/sections/events/pastEvents.json';
@@ -19,9 +20,10 @@ interface PastEventCardProps {
 }
 
 const PastEventCard: React.FC<PastEventCardProps> = ({
-  id,
+  // Unused parameters commented out
+  // id,
   title,
-  date,
+  // date,
   imageUrl,
   category,
   categoryColor,

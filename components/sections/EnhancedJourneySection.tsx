@@ -209,7 +209,7 @@ const EnhancedJourneySection: React.FC = () => {
     // Clean up
     return () => {
       if (tl) tl.kill();
-      let triggers = ScrollTrigger.getAll();
+      const triggers = ScrollTrigger.getAll();
       triggers.forEach(trigger => trigger.kill());
 
       // Kill any ongoing animations for decorative elements

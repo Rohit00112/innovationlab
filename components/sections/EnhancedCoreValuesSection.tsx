@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useEffect } from 'react';
-import Link from 'next/link';
+// Removed unused import
+// import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -146,7 +147,7 @@ const EnhancedCoreValuesSection: React.FC = () => {
     // Clean up
     return () => {
       if (tl) tl.kill();
-      let triggers = ScrollTrigger.getAll();
+      const triggers = ScrollTrigger.getAll();
       triggers.forEach(trigger => trigger.kill());
     };
   }, []);

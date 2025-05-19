@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from 'react';
+import Link from 'next/link';
 import ModernEventCard from '../ui/ModernEventCard';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -137,15 +138,15 @@ const ModernEventsSection: React.FC = () => {
           <p className="section-description text-lg text-gray-700 mb-8">
             Join us for these exciting events and workshops designed to inspire innovation and foster collaboration in technology.
           </p>
-          <a 
-            href="/events" 
+          <Link
+            href="/events"
             className="section-button inline-flex items-center justify-center px-6 py-3 rounded-lg text-base font-medium bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors duration-300"
           >
             View All Events
             <svg className="w-5 h-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
-          </a>
+          </Link>
         </div>
 
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
