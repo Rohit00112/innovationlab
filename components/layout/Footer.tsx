@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
               <p className="text-sm text-gray-300 mb-2">Itahari International College</p>
               <p className="text-sm text-gray-300 mb-2">Sundar Haraicha, Morang</p>
               <p className="text-sm text-gray-300 mb-2">Email: <a href="mailto:innovation.lab@iic.edu.np" className="hover:text-white transition-colors">innovation.lab@iic.edu.np</a></p>
-              <p className="text-sm text-gray-300 mb-2">Phone: <a href="tel:+9779802776830" className="hover:text-white transition-colors">+977-9802776830</a></p>
+              <p className="text-sm text-gray-300 mb-2">Phone: <a href="tel:+9779802776830" className="hover:text-white transition-colors">+977-9801597005</a></p>
             </address>
           </div>
         </div>

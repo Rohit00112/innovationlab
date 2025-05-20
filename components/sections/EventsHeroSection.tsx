@@ -100,15 +100,6 @@ const EventsHeroSection: React.FC = () => {
           style={{ objectPosition: heroData.background.image.objectPosition }}
         />
 
-        {/* Enhanced event date badge with 3D effect - repositioned to background */}
-        <div className={heroData.background.badges.eventDate.classes}>
-          <div className={heroData.background.badges.eventDate.labelClasses}>
-            {heroData.background.badges.eventDate.labelText}
-          </div>
-          <div className={heroData.background.badges.eventDate.dateClasses}>
-            {nextEventDateString}
-          </div>
-        </div>
 
         {/* Event type badge - conditionally rendered if it exists */}
         {heroData.background.badges.eventType && (
@@ -121,14 +112,14 @@ const EventsHeroSection: React.FC = () => {
       </div>
 
       {/* Image attribution */}
-      <div className={heroData.background.attribution.classes}>
+      {/* <div className={heroData.background.attribution.classes}>
         {heroData.background.attribution.text}
         <a href={heroData.background.attribution.authorLink} target="_blank" rel="noopener noreferrer" className="underline hover:text-white">
           {heroData.background.attribution.authorName}
         </a> on <a href={heroData.background.attribution.sourceLink} target="_blank" rel="noopener noreferrer" className="underline hover:text-white">
           {heroData.background.attribution.sourceName}
         </a>
-      </div>
+      </div> */}
 
 
 
@@ -148,26 +139,6 @@ const EventsHeroSection: React.FC = () => {
             <h1 className={heroData.content.leftContent.heading.containerClasses}>
               <span className={heroData.content.leftContent.heading.line1.classes}>
                 {heroData.content.leftContent.heading.line1.text}
-              </span>
-              <span className={heroData.content.leftContent.heading.line2.classes}>
-                {heroData.content.leftContent.heading.line2.text}
-                <svg
-                  className={heroData.content.leftContent.heading.line2.underline.classes}
-                  height={heroData.content.leftContent.heading.line2.underline.height}
-                  viewBox={heroData.content.leftContent.heading.line2.underline.viewBox}
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d={heroData.content.leftContent.heading.line2.underline.path.d}
-                    stroke={heroData.content.leftContent.heading.line2.underline.path.stroke}
-                    strokeWidth={heroData.content.leftContent.heading.line2.underline.path.strokeWidth}
-                    strokeLinecap={heroData.content.leftContent.heading.line2.underline.path.strokeLinecap as "round" | "inherit" | "butt" | "square" | undefined}
-                  />
-                </svg>
-              </span>
-              <span className={heroData.content.leftContent.heading.line3.classes}>
-                {heroData.content.leftContent.heading.line3.text}
               </span>
             </h1>
 
@@ -198,9 +169,9 @@ const EventsHeroSection: React.FC = () => {
               </Button>
             </div>
 
-            {/* Countdown and buttons container - positioned side by side */}
+            {/* Countdown container with improved mobile centering */}
             <div className={heroData.content.leftContent.countdown.containerClasses}>
-              {/* Countdown timer */}
+              {/* Countdown timer with centered layout */}
               <div ref={countdownRef} className={heroData.content.leftContent.countdown.timerClasses}>
                 {heroData.content.leftContent.countdown.units.map((unit, index) => (
                   <div key={index} className={unit.classes}>

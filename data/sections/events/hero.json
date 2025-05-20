@@ -20,14 +20,6 @@
         "labelText": "NEXT EVENT",
         "dateClasses": "text-lg font-bold text-gray-900"
       }
-    },
-    "attribution": {
-      "classes": "absolute bottom-0 right-0 text-xs text-white/70 px-2 py-1 bg-black/30 rounded-tl-md z-20",
-      "text": "Photo by ",
-      "authorLink": "https://unsplash.com/@brookecagle",
-      "authorName": "Brooke Cagle",
-      "sourceName": "Unsplash",
-      "sourceLink": "https://unsplash.com"
     }
   },
   "content": {
@@ -39,12 +31,12 @@
         "containerClasses": "inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-md rounded-full mb-6 animate-heading",
         "dotClasses": "w-2 h-2 rounded-full bg-[#EEAE22] mr-2 animate-pulse",
         "textClasses": "text-white text-sm font-medium",
-        "text": "Innovation Lab Events"
+        "text": "Innovation Lab Presents"
       },
       "heading": {
         "containerClasses": "text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight",
         "line1": {
-          "text": "Connect, Learn,",
+          "text": "IICQuest 3.0",
           "classes": "block animate-heading"
         },
         "line2": {
@@ -91,37 +83,37 @@
         }
       },
       "countdown": {
-        "containerClasses": "mt-12 flex flex-col md:flex-row items-center gap-8",
-        "timerClasses": "flex flex-wrap gap-4 p-4 bg-white/10 backdrop-blur-md rounded-xl countdown-element",
+        "containerClasses": "mt-8 sm:mt-12 flex flex-col md:flex-row items-center justify-center md:justify-start gap-8",
+        "timerClasses": "flex flex-wrap justify-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white/10 backdrop-blur-md rounded-xl countdown-element w-full max-w-xs sm:max-w-md mx-auto md:mx-0",
         "units": [
           {
             "type": "days",
-            "classes": "text-center px-4 py-2",
-            "valueClasses": "text-3xl font-bold text-white mb-1",
+            "classes": "text-center px-3 sm:px-4 py-2",
+            "valueClasses": "text-2xl sm:text-3xl font-bold text-white mb-1",
             "labelClasses": "text-sm text-white/80",
             "label": "Days",
             "initialValue": "30"
           },
           {
             "type": "hours",
-            "classes": "text-center px-4 py-2",
-            "valueClasses": "text-3xl font-bold text-white mb-1",
+            "classes": "text-center px-3 sm:px-4 py-2",
+            "valueClasses": "text-2xl sm:text-3xl font-bold text-white mb-1",
             "labelClasses": "text-sm text-white/80",
             "label": "Hours",
             "initialValue": "12"
           },
           {
             "type": "minutes",
-            "classes": "text-center px-4 py-2",
-            "valueClasses": "text-3xl font-bold text-white mb-1",
+            "classes": "text-center px-3 sm:px-4 py-2",
+            "valueClasses": "text-2xl sm:text-3xl font-bold text-white mb-1",
             "labelClasses": "text-sm text-white/80",
             "label": "Minutes",
             "initialValue": "30"
           },
           {
             "type": "seconds",
-            "classes": "text-center px-4 py-2",
-            "valueClasses": "text-3xl font-bold text-white mb-1",
+            "classes": "text-center px-3 sm:px-4 py-2",
+            "valueClasses": "text-2xl sm:text-3xl font-bold text-white mb-1",
             "labelClasses": "text-sm text-white/80",
             "label": "Seconds",
             "initialValue": "00"

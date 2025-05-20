@@ -12,7 +12,7 @@ const events = [
     date: {
       month: 'June',
       day: '11',
-      time: '08:00 A.M',
+      time: '07:00 A.M',
     },
     location: 'Itahari International College',
     description: 'IICQuest 3.0 stands as the third chapter in the growing legacy of innovation organized by Innovation Lab at Itahari International College. Evolving from the foundations of IICQuest 1.0 and 2.0, this year’s program offers a dynamic 3-day experience centered around a 36-hours hackathon that empowers students to build impactful, real-world solutions. This event will be commenced on June 11, 2025 and will end on June 13, 2025.Complementing the hackathon is a Talent and Innovation Showcase featuring a Job Fair and Project Exhibition, creating opportunities for industry interaction, career exploration, and academic recognition. IICQuest 3.0 is not just a continuation—it is a platform where innovation meets opportunity where code meets cause, and where student potential finds its purpose.',
@@ -131,7 +131,7 @@ const events = [
         description: 'The Project Exhibition at IICQuest 3.0 celebrates the creativity, hard work, and technical prowess of graduating students. This platform allows students to present their academic projects to a wide audience, including peers, faculty, industry professionals, and recruiters. Highlights include live project demonstrations and prototypes, interactive Q&A sessions with industry experts, real-time feedback and improvement suggestions, opportunities for collaboration and networking, and recognition for outstanding and socially impactful projects. Why Visit? Get inspired by student-led innovation, discover practical solutions to real-world problems, and connect with the next generation of innovators and problem solvers.',
         date: {
           month: 'June',
-          day: '12',
+          day: '11-13',
           time: '11:00 A.M',
         },
         location: 'Itahari International College',

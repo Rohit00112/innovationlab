@@ -140,7 +140,7 @@ const HeroSection = forwardRef<HTMLDivElement>((_, ref) => {
       <div className="container relative z-40 flex flex-col items-center justify-center min-h-screen text-center pt-16 pb-32 md:pt-20 md:pb-36 lg:pt-24 lg:pb-40 px-6 md:px-8">
         <div className="flex flex-col items-center">
           <div className="bg-[#EEAE22] text-white px-4 py-1.5 md:px-5 md:py-2 rounded-full mb-6 md:mb-8 lg:mb-10 shadow-lg">
-            <p className="text-xs md:text-sm font-medium tracking-wide">Where Ideas Get Shaped</p>
+            <p className="text-xs md:text-sm font-medium tracking-wide">Where Ideas Get Shape</p>
           </div>
         </div>
 
@@ -155,20 +155,19 @@ const HeroSection = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
           <a
             ref={registerBtnRef}
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfDn9Evo7cRpeGIe45MWdvbYKRB3rj8wpVjNGV5FwwFnBGPRg/viewform"
+            href="/events"
             className="inline-flex items-center justify-center bg-[#0066FF] text-white font-medium text-base px-6 md:px-8 py-3 rounded-full shadow-md w-full sm:w-auto relative z-30"
-            target="_blank"
             rel="noopener noreferrer"
             style={{
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
             }}
           >
-            REGISTER
+            Explore Events
           </a>
 
           <a
             ref={readMoreBtnRef}
-            href="/events/iic-quest-3.0"
+            href="/about"
             className="inline-flex items-center justify-center bg-transparent border-2 border-white text-white font-medium text-base px-6 md:px-8 py-3 rounded-full w-full sm:w-auto relative z-30"
             style={{
               boxShadow: "none"

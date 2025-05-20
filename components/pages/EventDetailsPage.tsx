@@ -1110,28 +1110,7 @@ const EventDetailsPage: React.FC<EventDetailsProps> = ({ event }) => {
                 {heroData.content.actionButtons.registerButton.icon.text}
               </span>
             </Button>
-            <Button
-              href={heroData.content.actionButtons.shareButton.href}
-              variant={heroData.content.actionButtons.shareButton.variant as "primary" | "secondary" | "outline" | undefined}
-              size={heroData.content.actionButtons.shareButton.size as "sm" | "md" | "lg" | undefined}
-              className={heroData.content.actionButtons.shareButton.classes}
-            >
-              {heroData.content.actionButtons.shareButton.text}
-              <svg
-                className={heroData.content.actionButtons.shareButton.icon.classes}
-                fill="none"
-                stroke="currentColor"
-                viewBox={heroData.content.actionButtons.shareButton.icon.viewBox}
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap={heroData.content.actionButtons.shareButton.icon.path.strokeLinecap as "round" | "inherit" | "butt" | "square" | undefined}
-                  strokeLinejoin={heroData.content.actionButtons.shareButton.icon.path.strokeLinejoin as "round" | "inherit" | "miter" | "bevel" | undefined}
-                  strokeWidth={heroData.content.actionButtons.shareButton.icon.path.strokeWidth}
-                  d={heroData.content.actionButtons.shareButton.icon.path.d}
-                ></path>
-              </svg>
-            </Button>
+            
           </div>
         </div>
       </div>

@@ -1137,7 +1137,7 @@ const ContactFormSection: React.FC = () => {
       </div>
 
       {/* Map Section with margins */}
-      <div id={contactFormData.sectionId} className={contactFormData.map.containerClasses}>
+      <div id="map-section" className={contactFormData.map.containerClasses}>
         <div className={contactFormData.container.classes}>
           <div className={contactFormData.map.header.wrapperClasses}>
             <div>
