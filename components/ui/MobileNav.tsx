@@ -19,7 +19,6 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/events', label: 'Events' },
-    { href: '/team', label: 'Our Team' },
     { href: '/contact', label: 'Contact' },
   ];
 
