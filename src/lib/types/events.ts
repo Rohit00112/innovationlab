@@ -8,6 +8,14 @@ export const EVENT_STATUSES = [
 
 export type EventStatus = (typeof EVENT_STATUSES)[number]
 
+export const ALLOWED_REGISTRATION_TYPES = [
+  "individual",
+  "team",
+  "both",
+] as const
+
+export type AllowedRegistrationType = (typeof ALLOWED_REGISTRATION_TYPES)[number]
+
 export interface EventOrganizer {
   id: number
   name: string | null
@@ -32,6 +40,7 @@ export interface EventRecord {
   image: string | null
   isVirtual: boolean
   hasRegistration: boolean
+  allowedRegistrationTypes: AllowedRegistrationType
   enableProposalSubmission: boolean
   startsAt: string
   endsAt: string | null

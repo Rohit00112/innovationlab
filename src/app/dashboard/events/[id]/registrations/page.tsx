@@ -1,13 +1,13 @@
-import { cookies } from "next/headers";
-import { redirect, notFound } from "next/navigation";
-import { format } from "date-fns";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft, Mail, Phone, Users, User, ChevronDown, ChevronUp } from "lucide-react";
+"use client"
 
-import { getSessionUser } from "@/lib/auth/service";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Download, Mail, Phone, Users as UsersIcon, User, FileText, CheckCircle, XCircle, Clock } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
     Table,
     TableBody,
@@ -15,228 +15,278 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/ui/table"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import type { EventRegistrationRecord, RegistrationStatus } from "@/lib/types/registrations"
+import { getEventRegistrations } from "@/lib/http/registrations"
 
-interface TeamMember {
-    name: string;
-    email?: string;
-    phone?: string;
+const statusConfig: Record<RegistrationStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: any }> = {
+    confirmed: { label: "Confirmed", variant: "default", icon: CheckCircle },
+    pending: { label: "Pending", variant: "secondary", icon: Clock },
+    cancelled: { label: "Cancelled", variant: "destructive", icon: XCircle },
 }
 
-interface EventRegistration {
-    id: number;
-    registrationType: "individual" | "team";
-    teamName: string | null;
-    participantName: string;
-    participantEmail: string;
-    participantPhone: string | null;
-    notes: string | null;
-    teamMembers: string | null;
-    status: string;
-    createdAt: string;
-    user: {
-        id: number;
-        name: string | null;
-        email: string;
-        avatarUrl: string | null;
-    } | null;
-}
+export default function EventRegistrationsPage() {
+    const params = useParams()
+    const router = useRouter()
+    const eventId = parseInt(params.id as string)
 
-interface RegistrationsResponse {
-    data: EventRegistration[];
-    event: {
-        id: number;
-        title: string;
-    };
-    total: number;
-}
+    const [registrations, setRegistrations] = useState<EventRegistrationRecord[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
-interface PageProps {
-    params: Promise<{ id: string }>;
-}
+    useEffect(() => {
+        async function fetchRegistrations() {
+            try {
+                setIsLoading(true)
+                const response = await getEventRegistrations(eventId)
+                setRegistrations(response.data)
+            } catch (err) {
+                setError("Failed to load registrations")
+                console.error(err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
 
-async function fetchRegistrations(eventId: string, sessionCookie: string): Promise<RegistrationsResponse | null> {
-    const baseUrl = resolveApiBaseUrl();
+        if (!isNaN(eventId)) {
+            fetchRegistrations()
+        }
+    }, [eventId])
 
-    const response = await fetch(`${baseUrl}/api/events/${eventId}/registrations`, {
-        headers: {
-            Cookie: sessionCookie ? `session_token=${sessionCookie}` : "",
-        },
-        cache: "no-store",
-    });
-
-    if (!response.ok) {
-        return null;
+    const getInitials = (name: string) => {
+        return name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2)
     }
 
-    return response.json();
-}
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    }
 
-function RegistrationCard({ registration }: { registration: EventRegistration }) {
-    const isTeam = registration.registrationType === "team";
-    const teamMembers: TeamMember[] = registration.teamMembers
-        ? JSON.parse(registration.teamMembers)
-        : [];
+    const exportToCSV = () => {
+        const headers = ["Name", "Email", "Phone", "Type", "Team Name", "Status", "Registered At"]
+        const rows = registrations.map((reg) => [
+            reg.participantName,
+            reg.participantEmail,
+            reg.participantPhone || "-",
+            reg.registrationType,
+            reg.teamName || "-",
+            reg.status,
+            formatDate(reg.createdAt),
+        ])
+
+        const csvContent = [
+            headers.join(","),
+            ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+        ].join("\n")
+
+        const blob = new Blob([csvContent], { type: "text/csv" })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.setAttribute("hidden", "")
+        a.setAttribute("href", url)
+        a.setAttribute("download", `event-${eventId}-registrations.csv`)
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+    }
+
+    const individualCount = registrations.filter((r) => r.registrationType === "individual").length
+    const teamCount = registrations.filter((r) => r.registrationType === "team").length
+    const confirmedCount = registrations.filter((r) => r.status === "confirmed").length
 
     return (
-        <div className="border border-foreground/20 p-4 space-y-4">
-            <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-full ${isTeam ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-green-100 dark:bg-green-900/30'}`}>
-                        {isTeam ? (
-                            <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                        ) : (
-                            <User className="h-5 w-5 text-green-600 dark:text-green-400" />
-                        )}
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">
-                                {isTeam ? registration.teamName : registration.participantName}
-                            </h3>
-                            <Badge variant={isTeam ? "default" : "secondary"}>
-                                {isTeam ? "Team" : "Individual"}
-                            </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            Registered {format(new Date(registration.createdAt), "MMM d, yyyy 'at' h:mm a")}
-                        </p>
-                    </div>
-                </div>
-                <Badge
-                    variant={registration.status === "confirmed" ? "default" : "secondary"}
-                >
-                    {registration.status}
-                </Badge>
-            </div>
-
-            {/* Primary Contact */}
-            <div className="pl-12 space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                    {isTeam ? "Team Leader" : "Contact Info"}
-                </p>
-                <div className="text-sm space-y-1">
-                    <p className="font-medium">{registration.participantName}</p>
-                    <div className="flex items-center gap-4 text-muted-foreground">
-                        <a href={`mailto:${registration.participantEmail}`} className="flex items-center gap-1 hover:underline">
-                            <Mail className="h-3 w-3" />
-                            {registration.participantEmail}
-                        </a>
-                        {registration.participantPhone && (
-                            <span className="flex items-center gap-1">
-                                <Phone className="h-3 w-3" />
-                                {registration.participantPhone}
-                            </span>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Team Members */}
-            {isTeam && teamMembers.length > 0 && (
-                <div className="pl-12 space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">
-                        Team Members ({teamMembers.length})
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center gap-4">
+                <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+                    <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <div className="flex-1">
+                    <h1 className="text-3xl font-bold tracking-tight">Event Registrations</h1>
+                    <p className="text-muted-foreground mt-1">
+                        Manage and view all registrations for this event
                     </p>
-                    <div className="grid gap-2 md:grid-cols-2">
-                        {teamMembers.map((member, index) => (
-                            <div key={index} className="text-sm p-2 bg-foreground/5 rounded">
-                                <p className="font-medium">{member.name || "Unnamed"}</p>
-                                {member.email && (
-                                    <p className="text-muted-foreground text-xs">{member.email}</p>
-                                )}
-                                {member.phone && (
-                                    <p className="text-muted-foreground text-xs">{member.phone}</p>
-                                )}
-                            </div>
-                        ))}
-                    </div>
                 </div>
-            )}
-
-            {/* Notes */}
-            {registration.notes && (
-                <div className="pl-12">
-                    <p className="text-sm font-medium text-muted-foreground mb-1">Notes</p>
-                    <p className="text-sm text-foreground/70">{registration.notes}</p>
-                </div>
-            )}
-        </div>
-    );
-}
-
-export default async function EventRegistrationsPage({ params }: PageProps) {
-    const resolvedParams = await params;
-    const eventId = resolvedParams.id;
-
-    const cookieStore = await cookies();
-    const session = await getSessionUser(cookieStore);
-
-    if (!session) {
-        redirect("/login");
-    }
-
-    // Check admin/editor role
-    if (!["admin", "editor"].includes(session.user.role)) {
-        redirect("/dashboard");
-    }
-
-    const sessionCookie = cookieStore.get("session_token");
-    const data = await fetchRegistrations(eventId, sessionCookie?.value ?? "");
-
-    if (!data) {
-        notFound();
-    }
-
-    const teamCount = data.data.filter(r => r.registrationType === "team").length;
-    const individualCount = data.data.filter(r => r.registrationType === "individual").length;
-
-    return (
-        <div className="container mx-auto py-10 px-4 space-y-8">
-            <div className="flex items-center justify-between">
-                <div>
-                    <Link
-                        href="/dashboard/events"
-                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Back to Events
-                    </Link>
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        Registrations for &quot;{data.event.title}&quot;
-                    </h1>
-                    <div className="flex items-center gap-4 mt-2 text-muted-foreground">
-                        <span>{data.total} total registrations</span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {teamCount} teams
-                        </span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                            <User className="h-4 w-4" />
-                            {individualCount} individuals
-                        </span>
-                    </div>
-                </div>
+                <Button onClick={exportToCSV} className="rounded-xl" disabled={registrations.length === 0}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Export CSV
+                </Button>
             </div>
 
-            {data.data.length === 0 ? (
-                <Card>
-                    <CardContent className="py-10 text-center">
-                        <p className="text-muted-foreground">
-                            No one has registered for this event yet.
-                        </p>
-                    </CardContent>
+            <Separator />
+
+            {/* Stats Cards */}
+            <div className="grid gap-4 md:grid-cols-4">
+                <Card className="rounded-2xl border-border/50 shadow-sm p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Total Registrations</p>
+                            <p className="text-2xl font-bold mt-1">{registrations.length}</p>
+                        </div>
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <UsersIcon className="h-6 w-6 text-primary" />
+                        </div>
+                    </div>
                 </Card>
-            ) : (
-                <div className="space-y-4">
-                    {data.data.map((registration) => (
-                        <RegistrationCard key={registration.id} registration={registration} />
-                    ))}
+
+                <Card className="rounded-2xl border-border/50 shadow-sm p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Individuals</p>
+                            <p className="text-2xl font-bold mt-1">{individualCount}</p>
+                        </div>
+                        <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                            <User className="h-6 w-6 text-blue-500" />
+                        </div>
+                    </div>
+                </Card>
+
+                <Card className="rounded-2xl border-border/50 shadow-sm p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Teams</p>
+                            <p className="text-2xl font-bold mt-1">{teamCount}</p>
+                        </div>
+                        <div className="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+                            <UsersIcon className="h-6 w-6 text-purple-500" />
+                        </div>
+                    </div>
+                </Card>
+
+                <Card className="rounded-2xl border-border/50 shadow-sm p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Confirmed</p>
+                            <p className="text-2xl font-bold mt-1">{confirmedCount}</p>
+                        </div>
+                        <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                            <CheckCircle className="h-6 w-6 text-emerald-500" />
+                        </div>
+                    </div>
+                </Card>
+            </div>
+
+            {/* Registrations Table */}
+            <Card className="rounded-2xl border-border/50 shadow-sm overflow-hidden">
+                <div className="border-t border-border/50">
+                    <Table>
+                        <TableHeader className="bg-muted/40">
+                            <TableRow className="hover:bg-muted/40 border-border/50">
+                                <TableHead className="w-[300px]">Participant</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Contact</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Registered</TableHead>
+                                <TableHead className="text-right">Details</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                        Loading registrations...
+                                    </TableCell>
+                                </TableRow>
+                            ) : error ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-32 text-center text-destructive">
+                                        {error}
+                                    </TableCell>
+                                </TableRow>
+                            ) : registrations.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                        No registrations yet
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                registrations.map((registration) => {
+                                    const StatusIcon = statusConfig[registration.status].icon
+                                    return (
+                                        <TableRow key={registration.id} className="group hover:bg-muted/20 border-border/50">
+                                            <TableCell>
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar className="h-9 w-9 border border-border/50">
+                                                        <AvatarImage src={registration.user?.avatarUrl ?? undefined} />
+                                                        <AvatarFallback className="bg-primary/10 text-primary">
+                                                            {getInitials(registration.participantName)}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div className="flex flex-col gap-0.5">
+                                                        <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                                                            {registration.participantName}
+                                                        </span>
+                                                        {registration.teamName && (
+                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                <UsersIcon className="h-3 w-3" />
+                                                                {registration.teamName}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className="capitalize">
+                                                    {registration.registrationType}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex flex-col gap-1 text-sm">
+                                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                                        <Mail className="h-3 w-3" />
+                                                        {registration.participantEmail}
+                                                    </div>
+                                                    {registration.participantPhone && (
+                                                        <div className="flex items-center gap-2 text-muted-foreground">
+                                                            <Phone className="h-3 w-3" />
+                                                            {registration.participantPhone}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant={statusConfig[registration.status].variant} className="capitalize gap-1">
+                                                    <StatusIcon className="h-3 w-3" />
+                                                    {statusConfig[registration.status].label}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">
+                                                {formatDate(registration.createdAt)}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {registration.proposalLink && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        asChild
+                                                        className="h-8 text-muted-foreground hover:text-primary"
+                                                    >
+                                                        <Link href={registration.proposalLink} target="_blank">
+                                                            <FileText className="h-4 w-4" />
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            )}
+                        </TableBody>
+                    </Table>
                 </div>
-            )}
+            </Card>
         </div>
-    );
+    )
 }

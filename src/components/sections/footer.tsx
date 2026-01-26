@@ -35,7 +35,7 @@ const menuDefaults: FooterMenuItem[] = [
   {
     title: "Connect",
     links: [
-  { text: "Contact Us", url: "/contact" },
+      { text: "Contact Us", url: "/contact" },
       { text: "Join Community", url: "#" },
       { text: "Support", url: "#" },
       { text: "FAQs", url: "#" },
@@ -56,70 +56,55 @@ export function Footer({
   copyright = "© 2025 Innovation Lab, Itahari International College. All rights reserved.",
 }: FooterProps) {
   return (
-    <footer className="border-t border-foreground/10 bg-background">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Main Footer Content */}
-        <div className="py-16 grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          {/* Brand Section */}
+    <footer className="relative bg-background pt-20 pb-10 overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50"></div>
+
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
+        <div className="grid gap-16 lg:grid-cols-[1.5fr_1fr_1fr_1fr] mb-16">
           <div className="space-y-6">
             <Link
               href="/"
-              className="flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-foreground"
+              className="flex items-center gap-3 text-sm font-bold tracking-wide text-foreground group w-fit"
             >
-              <span className="flex h-12 w-12 items-center justify-center border border-foreground/20 text-xs font-bold">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-violet-600 text-white shadow-md group-hover:shadow-primary/20 transition-all duration-300">
                 IL
               </span>
-              INNOVATION LAB
+              <span className="group-hover:text-primary transition-colors">INNOVATION LAB</span>
             </Link>
-            <p className="text-sm leading-relaxed text-foreground/70 max-w-sm">
+            <p className="text-sm leading-relaxed text-foreground/60 max-w-sm">
               Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation at Itahari International College.
             </p>
-            
-            {/* Social Links */}
-            <div className="flex items-center gap-3 pt-4">
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center border border-foreground/20 hover:border-foreground/40 transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center border border-foreground/20 hover:border-foreground/40 transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center border border-foreground/20 hover:border-foreground/40 transition-colors"
-                aria-label="GitHub"
-              >
-                <Github className="h-4 w-4" />
-              </a>
-              <a
-                href="mailto:hello@innovationlab.com"
-                className="flex h-10 w-10 items-center justify-center border border-foreground/20 hover:border-foreground/40 transition-colors"
-                aria-label="Email"
-              >
-                <Mail className="h-4 w-4" />
-              </a>
+
+            <div className="flex items-center gap-3 pt-2">
+              {[
+                { icon: Linkedin, label: "LinkedIn" },
+                { icon: Twitter, label: "Twitter" },
+                { icon: Github, label: "GitHub" },
+                { icon: Mail, label: "Email" }
+              ].map((social, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/50 border border-border/50 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
+                  aria-label={social.label}
+                >
+                  <social.icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Menu Sections */}
           {menuItems.map((section) => (
-            <div key={section.title} className="space-y-5">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground/90">
+            <div key={section.title} className="space-y-6">
+              <h3 className="text-sm font-bold tracking-wide text-foreground">
                 {section.title}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {section.links.map((link) => (
                   <li key={link.text}>
                     <Link
                       href={link.url}
-                      className="text-sm text-foreground/70 transition-colors hover:text-foreground"
+                      className="text-sm text-foreground/60 transition-colors hover:text-primary hover:pl-1"
                     >
                       {link.text}
                     </Link>
@@ -130,15 +115,14 @@ export function Footer({
           ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-foreground/10 py-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs text-foreground/60">{copyright}</p>
-          <div className="flex flex-wrap gap-6">
+        <div className="border-t border-border/50 pt-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <p className="text-xs text-foreground/50">{copyright}</p>
+          <div className="flex flex-wrap gap-8">
             {bottomLinks.map((link) => (
               <Link
                 key={link.text}
                 href={link.url}
-                className="text-xs text-foreground/60 hover:text-foreground transition-colors"
+                className="text-xs text-foreground/50 hover:text-foreground transition-colors"
               >
                 {link.text}
               </Link>

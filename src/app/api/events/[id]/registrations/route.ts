@@ -1,41 +1,33 @@
-import { NextResponse } from "next/server";
-import { eq, desc } from "drizzle-orm";
+import { NextRequest, NextResponse } from "next/server"
+import { cookies } from "next/headers"
+import { getSessionUser } from "@/lib/auth/service"
+import { db } from "@/lib/db"
+import { eventRegistrations, users } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
 
-import { requireUser } from "@/lib/api/auth";
-import { ApiError, toErrorResponse } from "@/lib/api/errors";
-import { db } from "@/lib/db";
-import { eventRegistrations, events, users } from "@/lib/db/schema";
-
-interface RouteParams {
-    params: Promise<{ id: string }>;
-}
-
-// GET: List all registrations for an event (admin/editor only)
-export async function GET(request: Request, context: RouteParams) {
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
     try {
-        const session = await requireUser({ roles: ["admin", "editor"] });
-        const params = await context.params;
-        const eventId = Number.parseInt(params.id, 10);
+        const cookieStore = await cookies()
+        const session = await getSessionUser(cookieStore)
 
-        if (Number.isNaN(eventId)) {
-            throw new ApiError(400, "Invalid event ID");
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        // Check event exists
-        const [event] = await db
-            .select({ id: events.id, title: events.title })
-            .from(events)
-            .where(eq(events.id, eventId))
-            .limit(1);
-
-        if (!event) {
-            throw new ApiError(404, "Event not found");
+        const eventId = parseInt(params.id)
+        if (isNaN(eventId)) {
+            return NextResponse.json({ error: "Invalid event ID" }, { status: 400 })
         }
 
-        // Get all registrations with user info and enhanced fields
+        // Fetch all registrations for this event with user details
         const registrations = await db
             .select({
                 id: eventRegistrations.id,
+                userId: eventRegistrations.userId,
+                eventId: eventRegistrations.eventId,
                 registrationType: eventRegistrations.registrationType,
                 teamName: eventRegistrations.teamName,
                 participantName: eventRegistrations.participantName,
@@ -43,6 +35,7 @@ export async function GET(request: Request, context: RouteParams) {
                 participantPhone: eventRegistrations.participantPhone,
                 notes: eventRegistrations.notes,
                 teamMembers: eventRegistrations.teamMembers,
+                proposalLink: eventRegistrations.proposalLink,
                 status: eventRegistrations.status,
                 createdAt: eventRegistrations.createdAt,
                 user: {
@@ -55,14 +48,17 @@ export async function GET(request: Request, context: RouteParams) {
             .from(eventRegistrations)
             .leftJoin(users, eq(eventRegistrations.userId, users.id))
             .where(eq(eventRegistrations.eventId, eventId))
-            .orderBy(desc(eventRegistrations.createdAt));
+            .orderBy(eventRegistrations.createdAt)
 
         return NextResponse.json({
             data: registrations,
-            event: { id: event.id, title: event.title },
-            total: registrations.length
-        });
+            total: registrations.length,
+        })
     } catch (error) {
-        return toErrorResponse(error);
+        console.error("Error fetching event registrations:", error)
+        return NextResponse.json(
+            { error: "Failed to fetch registrations" },
+            { status: 500 }
+        )
     }
 }

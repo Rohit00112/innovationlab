@@ -111,6 +111,13 @@ export const eventStatusEnum = pgEnum("event_status", [
   "cancelled"
 ]);
 
+export const allowedRegistrationTypesEnum = pgEnum("allowed_registration_types", [
+  "individual",
+  "team",
+  "both"
+]);
+
+
 export const events = pgTable(
   "events",
   {
@@ -124,6 +131,7 @@ export const events = pgTable(
     registrationUrl: text("registration_url"),
     isVirtual: boolean("is_virtual").notNull().default(false),
     hasRegistration: boolean("has_registration").notNull().default(true),
+    allowedRegistrationTypes: allowedRegistrationTypesEnum("allowed_registration_types").notNull().default("both"),
     enableProposalSubmission: boolean("enable_proposal_submission").notNull().default(false),
     startsAt: timestamp("starts_at", { withTimezone: true, mode: "date" }).notNull(),
     endsAt: timestamp("ends_at", { withTimezone: true, mode: "date" }),

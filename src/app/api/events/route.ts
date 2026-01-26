@@ -208,6 +208,7 @@ export async function POST(request: Request) {
         image: payload.image ? payload.image.trim() : null,
         isVirtual: payload.isVirtual ?? false,
         hasRegistration: payload.hasRegistration ?? true,
+        allowedRegistrationTypes: payload.allowedRegistrationTypes ?? "both",
         enableProposalSubmission: payload.enableProposalSubmission ?? false,
         startsAt,
         endsAt,

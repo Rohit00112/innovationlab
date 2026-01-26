@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field'
+import type { AllowedRegistrationType } from '@/lib/types/events'
 
 interface TeamMember {
     name: string
@@ -24,6 +25,7 @@ interface EventRegistrationFormProps {
     userEmail?: string
     userName?: string
     enableProposalSubmission: boolean
+    allowedRegistrationTypes: AllowedRegistrationType
 }
 
 export function EventRegistrationForm({
@@ -33,11 +35,14 @@ export function EventRegistrationForm({
     userEmail = '',
     userName = '',
     enableProposalSubmission,
+    allowedRegistrationTypes = 'both',
 }: EventRegistrationFormProps) {
     const router = useRouter()
     const [isSubmitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
-    const [registrationType, setRegistrationType] = useState<'individual' | 'team'>('individual')
+    const [registrationType, setRegistrationType] = useState<'individual' | 'team'>(
+        allowedRegistrationTypes === 'team' ? 'team' : 'individual'
+    )
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([{ name: '', email: '', phone: '' }])
 
     const addTeamMember = () => {
@@ -125,33 +130,49 @@ export function EventRegistrationForm({
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Registration Type Toggle */}
-                        <div className="space-y-3">
-                            <FieldLabel>Registration Type</FieldLabel>
-                            <div className="grid grid-cols-2 gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setRegistrationType('individual')}
-                                    className={`flex items-center justify-center gap-2 p-4 border rounded-lg transition-colors ${registrationType === 'individual'
-                                        ? 'border-primary bg-primary/5 text-primary'
-                                        : 'border-foreground/20 hover:border-foreground/40'
-                                        }`}
-                                >
-                                    <User className="h-5 w-5" />
-                                    <span className="font-medium">Individual</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setRegistrationType('team')}
-                                    className={`flex items-center justify-center gap-2 p-4 border rounded-lg transition-colors ${registrationType === 'team'
-                                        ? 'border-primary bg-primary/5 text-primary'
-                                        : 'border-foreground/20 hover:border-foreground/40'
-                                        }`}
-                                >
-                                    <Users className="h-5 w-5" />
-                                    <span className="font-medium">Team/Group</span>
-                                </button>
+                        {allowedRegistrationTypes === 'both' ? (
+                            <div className="space-y-3">
+                                <FieldLabel>Registration Type</FieldLabel>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setRegistrationType('individual')}
+                                        className={`flex items-center justify-center gap-2 p-4 border rounded-lg transition-colors ${registrationType === 'individual'
+                                            ? 'border-primary bg-primary/5 text-primary'
+                                            : 'border-foreground/20 hover:border-foreground/40'
+                                            }`}
+                                    >
+                                        <User className="h-5 w-5" />
+                                        <span className="font-medium">Individual</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setRegistrationType('team')}
+                                        className={`flex items-center justify-center gap-2 p-4 border rounded-lg transition-colors ${registrationType === 'team'
+                                            ? 'border-primary bg-primary/5 text-primary'
+                                            : 'border-foreground/20 hover:border-foreground/40'
+                                            }`}
+                                    >
+                                        <Users className="h-5 w-5" />
+                                        <span className="font-medium">Team/Group</span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border/50">
+                                <div>
+                                    <p className="text-sm font-medium text-muted-foreground">Registration For</p>
+                                    <p className="text-lg font-bold capitalize">
+                                        {allowedRegistrationTypes === 'individual' ? 'Individual' : 'Team / Group'}
+                                    </p>
+                                </div>
+                                {allowedRegistrationTypes === 'individual' ? (
+                                    <User className="h-6 w-6 text-primary" />
+                                ) : (
+                                    <Users className="h-6 w-6 text-primary" />
+                                )}
+                            </div>
+                        )}
 
                         {/* Team Name (for team registration) */}
                         {registrationType === 'team' && (

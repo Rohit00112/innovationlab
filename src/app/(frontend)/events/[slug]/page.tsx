@@ -10,6 +10,7 @@ import {
   MapPin,
   Users,
   FileText,
+  User,
 } from "lucide-react";
 
 import { LexicalRenderer } from "@/components/blocks/editor-x/viewer";
@@ -17,6 +18,7 @@ import { EventRegisterButton } from "@/components/event-register-button";
 import { SubEventsList } from "@/components/sub-events-list";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 import type { EventRecord } from "@/lib/types/events";
+import { Button } from "@/components/ui/button";
 
 export const revalidate = 60;
 
@@ -55,8 +57,8 @@ function formatSchedule(event: EventRecord) {
   }
 
   const date = start.toLocaleDateString(undefined, {
-    month: "short",
-    day: "2-digit",
+    month: "long",
+    day: "numeric",
     year: "numeric",
   });
 
@@ -233,63 +235,84 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const imageUrl = event.image && event.image.trim() ? event.image.trim() : null;
 
   return (
-    <main className="w-full bg-background text-foreground">
-      <section className="py-10">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <Link
-            href="/events"
-            className="inline-flex items-center gap-2 border border-foreground/20 px-4 py-2 text-xs font-medium uppercase tracking-wider text-foreground/60 hover:border-foreground/40 hover:text-foreground/80 transition-colors mb-12"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Events
-          </Link>
+    <main className="w-full bg-background text-foreground min-h-screen">
+      <section className="relative pt-32 pb-20 bg-muted/20 border-b border-border/50">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          {/* Breadcrumb / Back Link */}
+          <Button variant="ghost" className="rounded-full hover:bg-background/50 hover:text-primary mb-8 pl-0" asChild>
+            <Link href="/events">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Events
+            </Link>
+          </Button>
 
-          <div className="mt-0">
-            <div className="relative h-96 w-full overflow-hidden border border-foreground/20">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-2">
+                  {tags.slice(0, 2).map(tag => (
+                    <span key={tag} className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight">
+                  {event.title}
+                </h1>
+              </div>
+
+              {event.summary && (
+                <p className="text-xl leading-relaxed text-foreground/80 font-medium">
+                  {event.summary}
+                </p>
+              )}
+
+              <div className="flex flex-col gap-6 p-6 rounded-2xl bg-card border border-border/50 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                    <CalendarDays className="h-5 w-5 text-foreground/70" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Date & Time</p>
+                    <p className="text-sm font-semibold mt-1">{schedule.date}</p>
+                    <p className="text-sm text-muted-foreground">{schedule.time}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                    <MapPin className="h-5 w-5 text-foreground/70" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Location</p>
+                    <p className="text-sm font-semibold mt-1">{locationLabel}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                    <User className="h-5 w-5 text-foreground/70" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Organizer</p>
+                    <p className="text-sm font-semibold mt-1">{event.organizer?.name ?? event.organizer?.email ?? "Innovation Lab"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl shadow-2xl border border-border/50">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10 pointer-events-none"></div>
               {imageUrl ? (
                 <Image
                   src={imageUrl}
                   alt={event.title}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 80vw"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
                 />
               ) : (
-                <div className="absolute inset-0 bg-foreground/5" />
-              )}
-            </div>
-
-            <div className="border-x border-b border-foreground/20 p-8 sm:p-12 space-y-6">
-              <div className="flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-2 border border-foreground/20 px-3 py-2 text-xs font-medium uppercase tracking-wider text-foreground/60">
-                  <CalendarDays className="h-3.5 w-3.5" />
-                  {schedule.date}
-                </span>
-                <span className="inline-flex items-center gap-2 border border-foreground/20 px-3 py-2 text-xs font-medium uppercase tracking-wider text-foreground/60">
-                  <Clock className="h-3.5 w-3.5" />
-                  {schedule.time}
-                </span>
-                <span className="inline-flex items-center gap-2 border border-foreground/20 px-3 py-2 text-xs font-medium uppercase tracking-wider text-foreground/60">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {locationLabel}
-                </span>
-              </div>
-
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                {event.title}
-              </h1>
-
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="border border-foreground/20 px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-foreground/60"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                  <CalendarDays className="w-16 h-16 text-muted-foreground/20" />
                 </div>
               )}
             </div>
@@ -297,117 +320,64 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </div>
       </section>
 
-      <section className="py-10 border-t border-foreground/10">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-8">
-              {event.summary && (
-                <div className="space-y-4">
-                  <div className="inline-flex border border-foreground/20 px-4 py-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
-                      Overview
-                    </p>
-                  </div>
-                  <p className="text-lg leading-relaxed text-foreground/70">
-                    {event.summary}
-                  </p>
-                </div>
-              )}
-
-              {descriptionContent.lexicalState ? (
-                <div className="space-y-4">
-                  {/* <div className="inline-flex border border-foreground/20 px-4 py-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
-                      Details
-                    </p>
-                  </div> */}
+      <section className="py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-16 lg:grid-cols-[1fr_20rem] items-start">
+            <div className="space-y-12">
+              {/* Description Content */}
+              <div>
+                <span className="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-semibold tracking-wide uppercase mb-6">
+                  About the Event
+                </span>
+                {descriptionContent.lexicalState ? (
                   <LexicalRenderer
                     state={descriptionContent.lexicalState}
-                    contentClassName="space-y-6 text-base leading-relaxed text-foreground/70 [&_strong]:text-foreground [&_em]:italic [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:mt-8 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:tracking-tight [&_h3]:mt-6"
+                    contentClassName="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary"
                   />
-                </div>
-              ) : descriptionContent.paragraphs.length > 0 ? (
-                <div className="space-y-4">
-                  <div className="inline-flex border border-foreground/20 px-4 py-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
-                      Details
-                    </p>
-                  </div>
-                  <div className="space-y-6 text-base leading-relaxed text-foreground/70">
+                ) : descriptionContent.paragraphs.length > 0 ? (
+                  <div className="space-y-6 text-lg leading-relaxed text-foreground/80">
                     {descriptionContent.paragraphs.map((paragraph, index) => (
                       <p key={index}>{paragraph}</p>
                     ))}
                   </div>
-                </div>
-              ) : null}
+                ) : (
+                  <p className="text-lg text-muted-foreground italic">No additional details available.</p>
+                )}
+              </div>
 
               {/* Sub-Events Section */}
-              <SubEventsList parentEventId={event.id} />
+              <div className="pt-8 border-t border-border/50">
+                <SubEventsList parentEventId={event.id} />
+              </div>
             </div>
 
-            <div className="lg:col-span-1 space-y-6">
-              <div className="border border-foreground/20 p-6 space-y-4">
-                <div className="inline-flex border border-foreground/20 px-3 py-1.5">
-                  <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
-                    Schedule
-                  </p>
+            <div className="space-y-8 lg:sticky lg:top-24">
+              {/* Registration Card */}
+              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-lg space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold mb-1">Ready to join?</h3>
+                  <p className="text-sm text-muted-foreground">Secure your spot for this event.</p>
                 </div>
-                <div className="space-y-3 text-sm text-foreground/70">
-                  <div className="flex items-start gap-3 pb-3 border-b border-foreground/10">
-                    <CalendarDays className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{schedule.date}</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{schedule.time}</span>
-                  </div>
-                </div>
+
+                <EventRegisterButton eventId={event.id} eventSlug={event.slug} hasRegistration={event.hasRegistration} />
+
+                {event.registrationUrl && (
+                  <Button variant="outline" className="w-full rounded-xl" asChild>
+                    <Link
+                      href={event.registrationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      External Registration <ArrowUpRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                )}
               </div>
 
-              <div className="border border-foreground/20 p-6 space-y-4">
-                <div className="inline-flex border border-foreground/20 px-3 py-1.5">
-                  <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
-                    Event Info
-                  </p>
-                </div>
-                <div className="space-y-3 text-sm text-foreground/70">
-                  <div className="flex items-start gap-3 pb-3 border-b border-foreground/10">
-                    <Users className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{event.organizer?.name ?? event.organizer?.email ?? "Innovation Lab"}</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{locationLabel}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Native Registration */}
-              <EventRegisterButton eventId={event.id} eventSlug={event.slug} hasRegistration={event.hasRegistration} />
-
-              {/* External Registration Link */}
-              {event.registrationUrl && (
-                <Link
-                  href={event.registrationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full border border-foreground/30 px-6 py-4 text-center text-xs font-medium uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    External Registration
-                    <ArrowUpRight className="h-4 w-4" />
-                  </span>
-                </Link>
-              )}
-
-              {/* Event Resources */}
+              {/* Resources Card */}
               {event.documents && event.documents.length > 0 && (
-                <div className="border border-foreground/20 p-6 space-y-4">
-                  <div className="inline-flex border border-foreground/20 px-3 py-1.5">
-                    <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
-                      Resources
-                    </p>
-                  </div>
+                <div className="bg-muted/30 p-6 rounded-2xl border border-border/50 space-y-4">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Resources</h3>
                   <div className="space-y-3">
                     {event.documents.map((doc, index) => (
                       <Link
@@ -415,10 +385,12 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                         href={doc.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-start gap-3 group"
+                        className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border/50 hover:border-primary/50 transition-colors group"
                       >
-                        <FileText className="h-4 w-4 mt-0.5 flex-shrink-0 text-foreground/70 group-hover:text-foreground transition-colors" />
-                        <span className="text-sm text-foreground/70 group-hover:text-foreground underline-offset-4 group-hover:underline transition-all">
+                        <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                          <FileText className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">
                           {doc.title}
                         </span>
                       </Link>
@@ -433,3 +405,4 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
     </main>
   );
 }
+

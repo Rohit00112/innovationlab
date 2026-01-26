@@ -108,9 +108,9 @@ function formatTimestamp(value: string) {
     return Number.isNaN(date.getTime())
       ? "—"
       : date.toLocaleString(undefined, {
-          dateStyle: "medium",
-          timeStyle: "short"
-        });
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
   } catch (error) {
     return "—";
   }
@@ -277,23 +277,25 @@ export default function TestimonialsDashboard() {
 
       <Separator />
 
-      <Card className="border border-border !w-[80vw]">
-        <CardHeader className="gap-6 md:flex md:flex-row md:items-end md:justify-between">
-          <div>
-            <CardTitle>All Testimonials</CardTitle>
-            <CardDescription>Filter by status or keywords to find submissions quickly.</CardDescription>
+      <Card className="rounded-2xl border-border/50 shadow-sm overflow-hidden">
+        <div className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-muted/20 border-b border-border/50">
+          <div className="relative flex-1 md:max-w-sm">
+            <form onSubmit={handleSearchSubmit}>
+              <Input
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                placeholder="Search body copy..."
+                className="rounded-xl bg-background border-border/50"
+                type="search"
+              />
+            </form>
           </div>
-          <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
+
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex items-center gap-2">
-              <Label htmlFor="status-filter" className="text-sm font-medium">
-                Status
-              </Label>
-              <Select
-                value={statusFilter}
-                onValueChange={(value) => setStatusFilter(value as TestimonialStatus)}
-              >
-                <SelectTrigger id="status-filter" className="w-[160px]">
-                  <SelectValue />
+              <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as TestimonialStatus)}>
+                <SelectTrigger id="status-filter" className="w-[150px] rounded-xl border-border/50 bg-background">
+                  <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
                   {TESTIMONIAL_STATUSES.map((status) => (
@@ -305,30 +307,20 @@ export default function TestimonialsDashboard() {
               </Select>
             </div>
 
-            <form onSubmit={handleSearchSubmit} className="flex w-full gap-2 md:w-auto">
-              <Input
-                value={searchInput}
-                onChange={(event) => setSearchInput(event.target.value)}
-                placeholder="Search body copy"
-                className="md:w-64"
-                type="search"
-              />
-              <Button type="submit" variant="outline">
-                Apply
-              </Button>
-            </form>
-
-            <Button type="button" variant="ghost" onClick={handleResetFilters}>
+            <Button type="button" variant="ghost" onClick={handleResetFilters} className="rounded-xl">
               Reset
             </Button>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        </div>
+
+        <div className="p-0">
           {error && (
-            <Alert variant="destructive">
-              <AlertTitle>Unable to load testimonials</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="p-6">
+              <Alert variant="destructive">
+                <AlertTitle>Unable to load testimonials</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            </div>
           )}
 
           <TestimonialsTable
@@ -338,7 +330,7 @@ export default function TestimonialsDashboard() {
             onEdit={openEditDialog}
             onDelete={handleDelete}
           />
-        </CardContent>
+        </div>
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
@@ -499,12 +491,12 @@ interface TableProps {
 
 function TestimonialsTable({ data, isLoading, deletingId, onEdit, onDelete }: TableProps) {
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-border">
+    <div className="border-t border-border/50">
       <Table>
         {/* <TableCaption>Most recent testimonials appear first.</TableCaption> */}
-        <TableHeader>
-          <TableRow>
-            <TableHead className="min-w-[220px]">Author</TableHead>
+        <TableHeader className="bg-muted/40">
+          <TableRow className="hover:bg-muted/40 border-border/50">
+            <TableHead className="w-[300px]">Author</TableHead>
             <TableHead>Headline</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Updated</TableHead>
@@ -514,7 +506,7 @@ function TestimonialsTable({ data, isLoading, deletingId, onEdit, onDelete }: Ta
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
+              <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
                 <div className="flex items-center justify-center gap-2">
                   <Spinner className="size-5" />
                   Loading testimonials…
@@ -523,21 +515,21 @@ function TestimonialsTable({ data, isLoading, deletingId, onEdit, onDelete }: Ta
             </TableRow>
           ) : data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+              <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
                 No testimonials match the selected filters.
               </TableCell>
             </TableRow>
           ) : (
             data.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="min-w-[220px]">
+              <TableRow key={item.id} className="group hover:bg-muted/20 border-border/50 transition-colors">
+                <TableCell>
                   <div className="flex items-center gap-3">
-                    <Avatar>
+                    <Avatar className="h-9 w-9 border border-border/50">
                       <AvatarImage src={item.avatarUrl ?? undefined} alt={item.author} />
-                      <AvatarFallback>{getInitials(item.author)}</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary">{getInitials(item.author)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-medium leading-none">{item.author}</span>
+                      <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.author}</span>
                       {(item.role || item.company) && (
                         <span className="text-xs text-muted-foreground">
                           {[item.role, item.company].filter(Boolean).join(" · ")}
@@ -547,38 +539,40 @@ function TestimonialsTable({ data, isLoading, deletingId, onEdit, onDelete }: Ta
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="max-w-[360px] space-y-1">
-                    <p className="font-medium leading-tight">
+                  <div className="max-w-[360px] space-y-1 py-1">
+                    <p className="font-medium text-sm text-foreground">
                       {item.headline ? item.headline : "Untitled testimonial"}
                     </p>
-                    <p className="line-clamp-2 text-sm text-muted-foreground">{item.quote}</p>
-                    {item.isFeatured && <Badge variant="secondary">Featured</Badge>}
+                    <p className="line-clamp-1 text-xs text-muted-foreground">{item.quote}</p>
+                    {item.isFeatured && <Badge variant="secondary" className="mt-1 h-5 text-[10px] px-1.5 bg-primary/10 text-primary border-primary/20">Featured</Badge>}
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={statusBadgeVariant[item.status]}>{statusLabel[item.status]}</Badge>
+                  <Badge variant={statusBadgeVariant[item.status]} className="capitalize shadow-none">{statusLabel[item.status]}</Badge>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {formatTimestamp(item.updatedAt)}
                 </TableCell>
-                <TableCell className="flex justify-end gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onEdit(item)}
-                    className="px-2"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => onDelete(item)}
-                    className="px-2"
-                    disabled={deletingId === item.id}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2 pr-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onEdit(item)}
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-primary"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onDelete(item)}
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                      disabled={deletingId === item.id}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

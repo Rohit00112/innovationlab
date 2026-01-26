@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarDays, Edit, MapPin, Plus, Trash2, Video, FileText, Link as LinkIcon, X } from "lucide-react"
+import { CalendarDays, Edit, MapPin, Plus, Trash2, Video, FileText, Link as LinkIcon, X, Search, Filter, MoreHorizontal, Calendar, Users, User } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 import { SerializedEditorState } from "lexical"
@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Table,
@@ -52,9 +53,19 @@ import { HttpError } from "@/lib/http/api-client"
 import { createEvent, deleteEvent, listEvents, updateEvent } from "@/lib/http/events"
 import {
   EVENT_STATUSES,
+  ALLOWED_REGISTRATION_TYPES,
+  type AllowedRegistrationType,
   type EventRecord,
   type EventStatus,
 } from "@/lib/types/events"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const eventFormSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -68,6 +79,7 @@ const eventFormSchema = z.object({
   isVirtual: z.boolean().default(false),
   hasRegistration: z.boolean().default(true),
   enableProposalSubmission: z.boolean().default(false),
+  allowedRegistrationTypes: z.enum(ALLOWED_REGISTRATION_TYPES),
   startsAt: z.string().min(1, "Start date and time is required"),
   endsAt: z.union([z.string(), z.literal(""), z.null()]).optional(),
   status: z.enum(EVENT_STATUSES),
@@ -235,6 +247,7 @@ const defaultFormValues: EventFormValues = {
   isVirtual: false,
   hasRegistration: true,
   enableProposalSubmission: false,
+  allowedRegistrationTypes: "both",
   startsAt: "",
   endsAt: "",
   status: "draft",
@@ -370,6 +383,7 @@ export default function EventsDashboard() {
       isVirtual: record.isVirtual,
       hasRegistration: record.hasRegistration,
       enableProposalSubmission: record.enableProposalSubmission,
+      allowedRegistrationTypes: record.allowedRegistrationTypes,
       startsAt: toDatetimeLocal(record.startsAt),
       endsAt: toDatetimeLocal(record.endsAt),
       status: record.status,
@@ -442,6 +456,7 @@ export default function EventsDashboard() {
       isVirtual: values.isVirtual,
       hasRegistration: values.hasRegistration,
       enableProposalSubmission: values.enableProposalSubmission,
+      allowedRegistrationTypes: values.allowedRegistrationTypes,
       startsAt: startsAtIso,
       endsAt: fromDatetimeLocal(values.endsAt ?? null),
       status: values.status,
@@ -468,37 +483,44 @@ export default function EventsDashboard() {
   }
 
   return (
-    <section className="w-full space-y-8 p-8">
+    <div className="space-y-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Events</h2>
-          <p className="text-muted-foreground">Schedule and publish Innovation Lab happenings.</p>
+          <p className="text-muted-foreground mt-1">Schedule and publish Innovation Lab happenings.</p>
         </div>
-        <Button onClick={openCreateDialog}>
+        <Button onClick={openCreateDialog} className="rounded-full shadow-md hover:shadow-lg transition-all">
           <Plus className="mr-2 h-4 w-4" />
           New Event
         </Button>
       </div>
 
-      <Separator />
 
-      <Card className="border border-border !w-[80vw] max-w-full">
-        <CardHeader className="gap-6 md:flex md:flex-row md:items-end md:justify-between">
-          <div>
-            <CardTitle>Event Program</CardTitle>
-            <CardDescription>Filter by status, search by title, or focus on virtual sessions.</CardDescription>
+
+      <Card className="rounded-2xl border-border/50 shadow-sm overflow-hidden">
+        <div className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-muted/20 border-b border-border/50">
+          <div className="relative flex-1 md:max-w-sm">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <form onSubmit={handleSearchSubmit}>
+              <Input
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                placeholder="Search events..."
+                className="pl-9 rounded-xl bg-background border-border/50"
+                type="search"
+              />
+            </form>
           </div>
-          <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
+
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex items-center gap-2">
-              <Label htmlFor="status-filter" className="text-sm font-medium">
-                Status
-              </Label>
               <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as EventStatus | "all")}>
-                <SelectTrigger id="status-filter" className="w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
+                <SelectTrigger id="status-filter" className="w-[150px] rounded-xl border-border/50 bg-background">
+                  <Filter className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                  <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   {EVENT_STATUSES.map((status) => (
                     <SelectItem key={status} value={status}>
                       {statusLabel[status]}
@@ -509,50 +531,38 @@ export default function EventsDashboard() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Label htmlFor="format-filter" className="text-sm font-medium">
-                Format
-              </Label>
               <Select
                 value={String(eventFilters.isVirtual ?? "all")}
                 onValueChange={(value) =>
                   setEventFilters({ isVirtual: value === "all" ? "all" : value === "true" })
                 }
               >
-                <SelectTrigger id="format-filter" className="w-[150px]">
+                <SelectTrigger id="format-filter" className="w-[150px] rounded-xl border-border/50 bg-background">
+                  <Video className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
                   <SelectValue placeholder="Format" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All formats</SelectItem>
+                  <SelectItem value="all">All Formats</SelectItem>
                   <SelectItem value="true">Virtual</SelectItem>
-                  <SelectItem value="false">In person</SelectItem>
+                  <SelectItem value="false">In Person</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <form onSubmit={handleSearchSubmit} className="flex w-full gap-2 md:w-auto">
-              <Input
-                value={searchInput}
-                onChange={(event) => setSearchInput(event.target.value)}
-                placeholder="Search title"
-                className="md:w-64"
-                type="search"
-              />
-              <Button type="submit" variant="outline">
-                Apply
-              </Button>
-            </form>
-
-            <Button type="button" variant="ghost" onClick={handleResetFilters}>
+            <Button type="button" variant="ghost" onClick={handleResetFilters} className="rounded-xl">
               Reset
             </Button>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        </div>
+
+        <div className="p-0">
           {error && (
-            <Alert variant="destructive">
-              <AlertTitle>Unable to load events</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="p-6">
+              <Alert variant="destructive">
+                <AlertTitle>Unable to load events</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            </div>
           )}
 
           <EventsTable
@@ -562,12 +572,15 @@ export default function EventsDashboard() {
             onEdit={openEditDialog}
             onDelete={handleDelete}
           />
-        </CardContent>
+        </div>
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="flex !max-w-none !w-screen !h-screen flex-col overflow-hidden p-0 sm:max-w-none !border-none !rounded-none">
-          <div className="border-b px-6 py-4">
+        <DialogContent
+          showCloseButton={false}
+          className="!fixed !inset-0 !top-0 !left-0 !w-screen !h-screen !max-w-none !m-0 !p-0 !rounded-none !border-none !translate-x-0 !translate-y-0 data-[state=open]:!zoom-in-100 data-[state=closed]:!zoom-out-100 flex flex-col bg-background shadow-none"
+        >
+          <div className="px-6 py-4 border-b flex items-center justify-between">
             <DialogHeader>
               <DialogTitle>{dialogMode === "create" ? "Create Event" : "Edit Event"}</DialogTitle>
               <DialogDescription>
@@ -576,384 +589,360 @@ export default function EventsDashboard() {
                   : `Update details for "${activeEvent?.title ?? ""}".`}
               </DialogDescription>
             </DialogHeader>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" onClick={() => handleDialogOpenChange(false)}>Cancel</Button>
+              <Button onClick={form.handleSubmit((onSubmit as any))} disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
           </div>
-
-          <Form {...form}>
-            <form className="flex flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit((onSubmit as any))}>
-              <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
-                <div className="w-full shrink-0 space-y-5 overflow-y-auto border-b px-6 py-6 md:max-w-md md:border-b-0 md:border-r">
-                  <FormField
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="AI Innovation Summit" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="slug"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Slug</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="ai-innovation-summit" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="summary"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Summary</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            rows={3}
-                            placeholder="Give attendees a quick reason to join the event"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Location</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Innovation Lab Auditorium" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                    <div className="space-y-0.5">
-                      <Label>External Registration Link</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Use an external site (e.g. Eventbrite, Zoom) for registration.
-                      </p>
-                    </div>
-                    <Switch
-                      checked={hasExternalRegistration}
-                      onCheckedChange={(checked) => {
-                        setHasExternalRegistration(checked)
-                        if (!checked) {
-                          form.setValue("registrationUrl", "")
-                        }
-                      }}
-                    />
-                  </div>
-
-                  {hasExternalRegistration && (
-                    <FormField
-                      name="registrationUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Registration URL</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="url" placeholder="https://tickets.example.com/event" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
-                  <FormField
-                    name="image"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Cover image URL</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="url" placeholder="https://images.example.com/event-cover.jpg" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="space-y-4 rounded-md border p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label>Event Resources</Label>
-                        <p className="text-sm text-muted-foreground">Add handbooks, slides, or other links.</p>
+          <div className="flex-1 flex overflow-hidden">
+            <Form {...form}>
+              <form className="flex-1 flex overflow-hidden" onSubmit={form.handleSubmit((onSubmit as any))}>
+                <div className="flex flex-1 overflow-hidden">
+                  {/* Left Panel - Form Fields */}
+                  <div className="w-[500px] flex-shrink-0 overflow-y-auto p-6 border-r border-border/50 space-y-6">
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          name="title"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Title</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="Event Name" className="rounded-lg" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          name="slug"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Slug</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="event-url-slug" className="rounded-lg" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => appendDocument({ title: "", url: "" })}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add Resource
-                      </Button>
-                    </div>
 
-                    <div className="space-y-3">
-                      {documentFields.map((field, index) => (
-                        <div key={field.id} className="flex items-start gap-3">
-                          <FormField
-                            control={form.control}
-                            name={`documents.${index}.title`}
-                            render={({ field }) => (
-                              <FormItem className="flex-1">
-                                <FormControl>
-                                  <div className="relative">
-                                    <FileText className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                    <Input {...field} className="pl-9" placeholder="Resource Title (e.g. Handbook)" />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`documents.${index}.url`}
-                            render={({ field }) => (
-                              <FormItem className="flex-1">
-                                <FormControl>
-                                  <div className="relative">
-                                    <LinkIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                    <Input {...field} className="pl-9" type="url" placeholder="https://..." />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="shrink-0 text-muted-foreground hover:text-destructive"
-                            onClick={() => removeDocument(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Remove</span>
-                          </Button>
-                        </div>
-                      ))}
-                      {documentFields.length === 0 && (
-                        <p className="text-sm text-muted-foreground italic">No resources added yet.</p>
-                      )}
-                    </div>
-                  </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          name="startsAt"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Starts At</FormLabel>
+                              <FormControl>
+                                <Input type="datetime-local" value={field.value ?? ""} onChange={field.onChange} step={60} className="rounded-lg" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          name="endsAt"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Ends At</FormLabel>
+                              <FormControl>
+                                <Input type="datetime-local" value={field.value ?? ""} onChange={field.onChange} step={60} className="rounded-lg" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                  <FormField
-                    name="parentEventId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Parent Event (optional)</FormLabel>
-                        <Select
-                          onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
-                          value={field.value?.toString() ?? ""}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select parent event (for sub-events)" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="none">No parent (standalone event)</SelectItem>
-                            {eventItems
-                              .filter((e) => e.id !== activeEvent?.id) // Can't be parent of itself
-                              .map((event) => (
-                                <SelectItem key={event.id} value={event.id.toString()}>
-                                  {event.title}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                        <p className="text-sm text-muted-foreground">
-                          Select a parent event to make this a sub-event/session.
-                        </p>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="isVirtual"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between rounded-md border px-3 py-2">
-                        <div className="space-y-0.5">
-                          <FormLabel>Virtual session</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Toggle if attendees will join remotely.
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="hasRegistration"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between rounded-md border px-3 py-2">
-                        <div className="space-y-0.5">
-                          <FormLabel>Enable Registration</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Turn off for announcement-only events.
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    name="enableProposalSubmission"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center justify-between rounded-md border px-3 py-2">
-                        <div className="space-y-0.5">
-                          <FormLabel>Enable Proposal Submission</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Users can submit a proposal link during registration.
-                          </p>
-                        </div>
-                        <FormControl>
-                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-                    <FormField
-                      name="startsAt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Starts at</FormLabel>
-                          <FormControl>
-                            <Input type="datetime-local" value={field.value ?? ""} onChange={field.onChange} step={60} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      name="endsAt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Ends at</FormLabel>
-                          <FormControl>
-                            <Input type="datetime-local" value={field.value ?? ""} onChange={field.onChange} step={60} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-                    <FormField
-                      name="status"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Status</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                      <FormField
+                        name="summary"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Summary</FormLabel>
                             <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a status" />
-                              </SelectTrigger>
+                              <Textarea
+                                {...field}
+                                rows={2}
+                                placeholder="Brief description for cards..."
+                                className="resize-none rounded-lg"
+                              />
                             </FormControl>
-                            <SelectContent>
-                              {EVENT_STATUSES.map((status) => (
-                                <SelectItem key={status} value={status}>
-                                  {statusLabel[status]}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      name="publishedAt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Publish at</FormLabel>
-                          <FormControl>
-                            <Input type="datetime-local" value={field.value ?? ""} onChange={field.onChange} step={60} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          name="location"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Location</FormLabel>
+                              <FormControl>
+                                <Input {...field} placeholder="e.g. Main Auditorium" className="rounded-lg" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          name="isVirtual"
+                          render={({ field }) => (
+                            <FormItem className="flex items-center justify-between rounded-lg border p-3 mt-7">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-sm">Virtual Event</FormLabel>
+                              </div>
+                              <FormControl>
+                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                <div className="flex-1 overflow-hidden">
-                  <FormField
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem className="flex h-full flex-col">
-                        <div className="border-b px-6 py-4">
-                          <FormLabel>Agenda and details</FormLabel>
+                      <div className="p-4 rounded-xl border bg-muted/20 space-y-4">
+                        <h3 className="font-medium text-sm">Registration & Resources</h3>
+
+                        <div className="flex items-center justify-between rounded-lg border bg-background p-3">
+                          <div className="space-y-0.5">
+                            <Label className="text-sm">External Registration</Label>
+                            <p className="text-xs text-muted-foreground">Use Eventbrite, Luma, etc.</p>
+                          </div>
+                          <Switch
+                            checked={hasExternalRegistration}
+                            onCheckedChange={(checked) => {
+                              setHasExternalRegistration(checked)
+                              if (!checked) {
+                                form.setValue("registrationUrl", "")
+                              }
+                            }}
+                          />
                         </div>
-                        <div className="flex-1 overflow-auto px-6 py-4">
-                          <div className="h-full min-h-[400px]">
-                            <Editor
-                              key={editorKey}
-                              editorSerializedState={editorState}
-                              onSerializedChange={(value) => {
-                                setEditorState(value)
-                                field.onChange(JSON.stringify(value))
-                              }}
-                            />
+
+                        {!hasExternalRegistration && (
+                          <FormField
+                            control={form.control}
+                            name="allowedRegistrationTypes"
+                            render={({ field }) => (
+                              <FormItem className="space-y-3 rounded-lg border bg-background p-4 shadow-sm">
+                                <div className="flex items-center justify-between">
+                                  <FormLabel className="text-sm font-semibold">Registration Type</FormLabel>
+                                  <Badge variant="secondary" className="text-[10px] uppercase tracking-wider h-5">Internal Form</Badge>
+                                </div>
+                                <FormControl>
+                                  <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="grid grid-cols-3 gap-3"
+                                  >
+                                    <div className="relative">
+                                      <RadioGroupItem
+                                        value="individual"
+                                        id="individual"
+                                        className="peer sr-only"
+                                      />
+                                      <Label
+                                        htmlFor="individual"
+                                        className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                      >
+                                        <User className="mb-2 h-5 w-5 text-primary" />
+                                        <span className="text-[11px] font-bold">Single</span>
+                                      </Label>
+                                    </div>
+                                    <div className="relative">
+                                      <RadioGroupItem
+                                        value="team"
+                                        id="team"
+                                        className="peer sr-only"
+                                      />
+                                      <Label
+                                        htmlFor="team"
+                                        className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                      >
+                                        <Users className="mb-2 h-5 w-5 text-primary" />
+                                        <span className="text-[11px] font-bold">Group</span>
+                                      </Label>
+                                    </div>
+                                    <div className="relative">
+                                      <RadioGroupItem
+                                        value="both"
+                                        id="both"
+                                        className="peer sr-only"
+                                      />
+                                      <Label
+                                        htmlFor="both"
+                                        className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                      >
+                                        <div className="flex -space-x-1 mb-2">
+                                          <User className="h-4 w-4 text-primary" />
+                                          <Users className="h-4 w-4 text-primary" />
+                                        </div>
+                                        <span className="text-[11px] font-bold">Both</span>
+                                      </Label>
+                                    </div>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+
+                        {hasExternalRegistration && (
+                          <FormField
+                            name="registrationUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm">Registration URL</FormLabel>
+                                <FormControl>
+                                  <Input {...field} type="url" placeholder="https://..." className="rounded-lg" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm">Resources (Slides, Links)</Label>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => appendDocument({ title: "", url: "" })}
+                              className="h-7 text-xs"
+                            >
+                              <Plus className="mr-1 h-3 w-3" /> Add
+                            </Button>
+                          </div>
+                          <div className="space-y-2">
+                            {documentFields.map((field, index) => (
+                              <div key={field.id} className="flex gap-2 items-start">
+                                <FormField
+                                  name={`documents.${index}.title`}
+                                  render={({ field }) => (
+                                    <Input {...field} placeholder="Title" className="h-8 text-sm rounded-md w-32 flex-shrink-0" />
+                                  )}
+                                />
+                                <FormField
+                                  name={`documents.${index}.url`}
+                                  render={({ field }) => (
+                                    <Input {...field} placeholder="URL" className="h-8 text-sm rounded-md flex-1" />
+                                  )}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-destructive"
+                                  onClick={() => removeDocument(index)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                        <div className="px-6 pb-4">
-                          <FormMessage />
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
+                      </div>
 
-              {formError && (
-                <div className="border-t px-6 py-4">
-                  <Alert variant="destructive">
-                    <AlertTitle>Unable to save event</AlertTitle>
-                    <AlertDescription>{formError}</AlertDescription>
-                  </Alert>
-                </div>
-              )}
+                      <FormField
+                        name="image"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Cover Image URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} type="url" placeholder="https://..." className="rounded-lg" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-              <DialogFooter className="border-t px-6 py-4">
-                <Button type="button" variant="outline" onClick={() => handleDialogOpenChange(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Saving..." : "Save changes"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          name="status"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="rounded-lg">
+                                    <SelectValue placeholder="Status" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {EVENT_STATUSES.map((status) => (
+                                    <SelectItem key={status} value={status}>
+                                      {statusLabel[status]}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          name="publishedAt"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Publish Date</FormLabel>
+                              <FormControl>
+                                <Input type="datetime-local" value={field.value ?? ""} onChange={field.onChange} step={60} className="rounded-lg" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {formError && (
+                        <Alert variant="destructive">
+                          <AlertTitle>Error saving event</AlertTitle>
+                          <AlertDescription>{formError}</AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right Panel - Editor */}
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <div className="p-6 border-b border-border/50">
+                      <h3 className="font-semibold text-lg">Details & Agenda</h3>
+                      <p className="text-sm text-muted-foreground mt-1">Write event details, schedule, and agenda</p>
+                    </div>
+                    <div className="flex-1 overflow-hidden p-6">
+                      <FormField
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem className="h-full flex flex-col">
+                            <div className="flex-1 rounded-lg border overflow-hidden">
+                              <Editor
+                                key={editorKey}
+                                editorSerializedState={editorState}
+                                onSerializedChange={(value) => {
+                                  setEditorState(value)
+                                  field.onChange(JSON.stringify(value))
+                                }}
+                              />
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </Form>
+          </div>
         </DialogContent>
       </Dialog>
-    </section >
+    </div>
   )
 }
 
@@ -967,14 +956,14 @@ interface EventsTableProps {
 
 function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTableProps) {
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-border">
+    <div className="border-t border-border/50">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="min-w-[240px]">Title</TableHead>
+        <TableHeader className="bg-muted/40">
+          <TableRow className="hover:bg-muted/40 border-border/50">
+            <TableHead className="w-[350px]">Event</TableHead>
             <TableHead>Schedule</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Format</TableHead>
+            <TableHead>Location</TableHead>
             <TableHead>Organizer</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -982,7 +971,7 @@ function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTa
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+              <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
                 <div className="flex items-center justify-center gap-2">
                   <Spinner className="size-5" />
                   Loading events...
@@ -991,52 +980,74 @@ function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTa
             </TableRow>
           ) : data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
+              <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
                 No events match the selected filters.
               </TableCell>
             </TableRow>
           ) : (
             data.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.id} className="group hover:bg-muted/20 border-border/50 transition-colors">
                 <TableCell>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium leading-tight">{item.title}</span>
-                    <span className="text-sm text-muted-foreground line-clamp-2">
+                  <div className="flex flex-col gap-1 py-1">
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</span>
+                    <span className="text-xs text-muted-foreground line-clamp-1 max-w-[300px]">
                       {item.summary ?? "No summary provided"}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  <span className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4" />
-                    {formatDateRange(item.startsAt, item.endsAt)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-muted-foreground/70" />
+                    <span className="whitespace-nowrap">{formatDateRange(item.startsAt, item.endsAt)}</span>
+                  </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={statusBadgeVariant[item.status]}>{statusLabel[item.status]}</Badge>
+                  <Badge variant={statusBadgeVariant[item.status]} className="capitalize shadow-none">
+                    {statusLabel[item.status]}
+                  </Badge>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  <span className="flex items-center gap-2">
-                    {item.isVirtual ? <Video className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
-                    {item.isVirtual ? "Virtual" : item.location ?? "On site"}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {item.isVirtual ? <Video className="h-4 w-4 text-blue-500/70" /> : <MapPin className="h-4 w-4 text-orange-500/70" />}
+                    <span>{item.isVirtual ? "Virtual" : item.location ?? "On site"}</span>
+                  </div>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {item.organizer?.name ?? item.organizer?.email ?? "-"}
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold">
+                      {(item.organizer?.name || item.organizer?.email || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <span className="whitespace-nowrap max-w-[120px] truncate">{item.organizer?.name ?? item.organizer?.email ?? "-"}</span>
+                  </div>
                 </TableCell>
-                <TableCell className="flex justify-end gap-2">
-                  <Button size="sm" variant="outline" onClick={() => onEdit(item)} className="px-2">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => onDelete(item)}
-                    className="px-2"
-                    disabled={deletingId === item.id}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[180px]">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem asChild>
+                        <a href={`/dashboard/events/${item.id}/registrations`}>
+                          <Users className="mr-2 h-4 w-4" /> View Registrations
+                        </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit(item)}>
+                        <Edit className="mr-2 h-4 w-4" /> Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => onDelete(item)}
+                        disabled={deletingId === item.id}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))

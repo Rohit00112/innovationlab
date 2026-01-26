@@ -14,6 +14,7 @@ export const eventSelection = {
   image: events.image,
   isVirtual: events.isVirtual,
   hasRegistration: events.hasRegistration,
+  allowedRegistrationTypes: events.allowedRegistrationTypes,
   enableProposalSubmission: events.enableProposalSubmission,
   startsAt: events.startsAt,
   endsAt: events.endsAt,

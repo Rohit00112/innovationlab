@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Plus, Edit, Trash2 } from "lucide-react"
+import { Plus, Edit, Trash2, Search, Filter, MoreHorizontal, Calendar, ArrowRight } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { SerializedEditorState } from "lexical"
@@ -17,6 +17,7 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
+    CardFooter,
 } from "@/components/ui/card"
 import {
     Dialog,
@@ -36,7 +37,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+
 import { Spinner } from "@/components/ui/spinner"
 import {
     Table,
@@ -59,6 +60,14 @@ import {
     type NewsRecord,
     type NewsStatus,
 } from "@/lib/types/news"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const newsFormSchema = z.object({
     title: z.string().min(3, "Title is required"),
@@ -398,75 +407,70 @@ export default function NewsDashboard() {
     }
 
     return (
-        <section className="w-full space-y-8 p-8">
+        <div className="space-y-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">News</h2>
-                    <p className="text-muted-foreground">
-                        Create and manage Innovation Lab announcements.
+                    <h2 className="text-3xl font-bold tracking-tight">News Articles</h2>
+                    <p className="text-muted-foreground mt-1">
+                        Create, manage, and publish news coverage.
                     </p>
                 </div>
-                <Button onClick={openCreateDialog}>
+                <Button onClick={openCreateDialog} className="rounded-full shadow-md hover:shadow-lg transition-all">
                     <Plus className="mr-2 h-4 w-4" />
                     New Article
                 </Button>
             </div>
 
-            <Separator />
-
-            <Card className="border border-border !w-[80vw] max-w-full">
-                <CardHeader className="gap-6 md:flex md:flex-row md:items-end md:justify-between">
-                    <div>
-                        <CardTitle>Articles</CardTitle>
-                        <CardDescription>Filter and edit published content.</CardDescription>
-                    </div>
-                    <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
-                        <div className="flex items-center gap-2">
-                            <Label htmlFor="status-filter" className="text-sm font-medium">
-                                Status
-                            </Label>
-                            <Select
-                                value={statusFilter}
-                                onValueChange={(value) => setStatusFilter(value as NewsStatus | "all")}
-                            >
-                                <SelectTrigger id="status-filter" className="w-[180px]">
-                                    <SelectValue placeholder="Filter by status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All statuses</SelectItem>
-                                    {NEWS_STATUSES.map((status) => (
-                                        <SelectItem key={status} value={status}>
-                                            {statusLabel[status]}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <form onSubmit={handleSearchSubmit} className="flex w-full gap-2 md:w-auto">
+            <Card className="rounded-2xl border-border/50 shadow-sm overflow-hidden">
+                <div className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-muted/20 border-b border-border/50">
+                    <div className="relative flex-1 md:max-w-sm">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <form onSubmit={handleSearchSubmit}>
                             <Input
                                 value={searchInput}
                                 onChange={(event) => setSearchInput(event.target.value)}
-                                placeholder="Search title"
-                                className="md:w-64"
+                                placeholder="Search articles..."
+                                className="pl-9 rounded-xl bg-background border-border/50"
                                 type="search"
                             />
-                            <Button type="submit" variant="outline">
-                                Apply
-                            </Button>
                         </form>
-
-                        <Button type="button" variant="ghost" onClick={handleResetFilters}>
-                            Reset
-                        </Button>
                     </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
+
+                    <div className="flex items-center gap-2">
+                        <Select
+                            value={statusFilter}
+                            onValueChange={(value) => setStatusFilter(value as NewsStatus | "all")}
+                        >
+                            <SelectTrigger className="w-[160px] rounded-xl border-border/50 bg-background">
+                                <Filter className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Statuses</SelectItem>
+                                {NEWS_STATUSES.map((status) => (
+                                    <SelectItem key={status} value={status}>
+                                        {statusLabel[status]}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {(statusFilter !== "published" || searchValue) && (
+                            <Button variant="ghost" onClick={handleResetFilters} size="sm" className="h-10 px-3 rounded-xl text-muted-foreground hover:text-foreground">
+                                Reset
+                            </Button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-0">
                     {error && (
-                        <Alert variant="destructive">
-                            <AlertTitle>Unable to load news</AlertTitle>
-                            <AlertDescription>{error}</AlertDescription>
-                        </Alert>
+                        <div className="p-6">
+                            <Alert variant="destructive">
+                                <AlertTitle>Unable to load news</AlertTitle>
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
+                        </div>
                     )}
 
                     <NewsTable
@@ -476,189 +480,194 @@ export default function NewsDashboard() {
                         onEdit={openEditDialog}
                         onDelete={handleDelete}
                     />
-                </CardContent>
+                </div>
             </Card>
 
             <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
-                <DialogContent className="flex !max-w-none !w-screen !h-screen flex-col overflow-hidden p-0 sm:max-w-none !border-none !rounded-none">
-                    <div className="border-b px-6 py-4">
+                <DialogContent
+                    showCloseButton={false}
+                    className="!fixed !inset-0 !top-0 !left-0 !w-screen !h-screen !max-w-none !m-0 !p-0 !rounded-none !border-none !translate-x-0 !translate-y-0 data-[state=open]:!zoom-in-100 data-[state=closed]:!zoom-out-100 flex flex-col bg-background shadow-none"
+                >
+                    <div className="px-6 py-4 border-b flex items-center justify-between">
                         <DialogHeader>
                             <DialogTitle>{dialogMode === "create" ? "Create Article" : "Edit Article"}</DialogTitle>
                             <DialogDescription>
                                 {dialogMode === "create"
-                                    ? "Publish new stories and updates for the Innovation Lab."
-                                    : `Update details for "${activeNews?.title ?? ""}".`}
+                                    ? "Write and publish a new article for the platform."
+                                    : "Make changes to the existing article."}
                             </DialogDescription>
                         </DialogHeader>
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" onClick={() => handleDialogOpenChange(false)}>Cancel</Button>
+                            <Button onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
+                                {isSubmitting ? "Saving..." : "Save Changes"}
+                            </Button>
+                        </div>
                     </div>
 
-                    <Form {...form}>
-                        <form className="flex flex-1 flex-col overflow-hidden" onSubmit={form.handleSubmit(onSubmit)}>
-                            <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
-                                <div className="w-full shrink-0 space-y-5 overflow-y-auto border-b px-6 py-6 md:max-w-md md:border-b-0 md:border-r">
-                                    <FormField
-                                        control={form.control}
-                                        name="title"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Title</FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} placeholder="Generative AI Bootcamp kickoff" />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="slug"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Slug</FormLabel>
-                                                <FormControl>
-                                                    <Input {...field} placeholder="generative-ai-bootcamp" />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="excerpt"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Excerpt</FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        {...field}
-                                                        rows={3}
-                                                        placeholder="Summarize the announcement in a few sentences"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <FormField
-                                        control={form.control}
-                                        name="coverImageUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Cover image URL</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        type="url"
-                                                        placeholder="https://cdn.example.com/news/cover.jpg"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    <div className="grid gap-4 md:grid-cols-2 md:gap-6">
-                                        <FormField
-                                            control={form.control}
-                                            name="status"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Status</FormLabel>
-                                                    <Select onValueChange={field.onChange} value={field.value}>
+                    <div className="flex-1 flex overflow-hidden">
+                        <Form {...form}>
+                            <form className="flex-1 flex overflow-hidden" onSubmit={form.handleSubmit(onSubmit)}>
+                                <div className="flex flex-1 overflow-hidden">
+                                    {/* Left Panel - Form Fields */}
+                                    <div className="w-[400px] flex-shrink-0 overflow-y-auto p-6 border-r border-border/50 space-y-6">
+                                        <div className="space-y-6">
+                                            <FormField
+                                                control={form.control}
+                                                name="title"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Title</FormLabel>
                                                         <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select a status" />
-                                                            </SelectTrigger>
+                                                            <Input {...field} placeholder="Enter article title" className="rounded-lg" />
                                                         </FormControl>
-                                                        <SelectContent>
-                                                            {NEWS_STATUSES.map((status) => (
-                                                                <SelectItem key={status} value={status}>
-                                                                    {statusLabel[status]}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
 
-                                        <FormField
-                                            control={form.control}
-                                            name="publishedAt"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Publish at</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            type="datetime-local"
-                                                            value={field.value ?? ""}
-                                                            onChange={field.onChange}
-                                                            step={60}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
+                                            <FormField
+                                                control={form.control}
+                                                name="slug"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Slug</FormLabel>
+                                                        <FormControl>
+                                                            <Input {...field} placeholder="article-url-slug" className="rounded-lg" />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="excerpt"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Excerpt</FormLabel>
+                                                        <FormControl>
+                                                            <Textarea
+                                                                {...field}
+                                                                rows={3}
+                                                                placeholder="Brief summary for list views..."
+                                                                className="resize-none rounded-lg"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="coverImageUrl"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Cover Image URL</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                type="url"
+                                                                placeholder="https://..."
+                                                                className="rounded-lg"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="status"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Status</FormLabel>
+                                                        <Select onValueChange={field.onChange} value={field.value}>
+                                                            <FormControl>
+                                                                <SelectTrigger className="rounded-lg">
+                                                                    <SelectValue placeholder="Select status" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {NEWS_STATUSES.map((status) => (
+                                                                    <SelectItem key={status} value={status}>
+                                                                        {statusLabel[status]}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="publishedAt"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Publish Date</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                type="datetime-local"
+                                                                value={field.value ?? ""}
+                                                                onChange={field.onChange}
+                                                                step={60}
+                                                                className="rounded-lg"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            {formError && (
+                                                <Alert variant="destructive">
+                                                    <AlertTitle>Error saving article</AlertTitle>
+                                                    <AlertDescription>{formError}</AlertDescription>
+                                                </Alert>
                                             )}
-                                        />
+                                        </div>
+                                    </div>
+
+                                    {/* Right Panel - Editor */}
+                                    <div className="flex-1 flex flex-col overflow-hidden">
+                                        <div className="p-6 border-b border-border/50">
+                                            <h3 className="font-semibold text-lg">Content</h3>
+                                            <p className="text-sm text-muted-foreground mt-1">Write your article content below</p>
+                                        </div>
+                                        <div className="flex-1 overflow-hidden p-6">
+                                            <FormField
+                                                control={form.control}
+                                                name="content"
+                                                render={({ field }) => (
+                                                    <FormItem className="h-full flex flex-col">
+                                                        <div className="flex-1 rounded-lg border overflow-hidden">
+                                                            <Editor
+                                                                key={editorKey}
+                                                                editorSerializedState={editorState}
+                                                                onSerializedChange={(value) => {
+                                                                    setEditorState(value)
+                                                                    field.onChange(JSON.stringify(value))
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
+                            </form>
+                        </Form>
+                    </div>
 
-                                <div className="flex-1 overflow-hidden">
-                                    <FormField
-                                        control={form.control}
-                                        name="content"
-                                        render={({ field }) => (
-                                            <FormItem className="flex h-full flex-col">
-                                                <div className="border-b px-6 py-4">
-                                                    <FormLabel>Body</FormLabel>
-                                                </div>
-                                                <div className="flex-1 overflow-auto px-6 py-4">
-                                                    <div className="h-full min-h-[400px]">
-                                                        <Editor
-                                                            key={editorKey}
-                                                            editorSerializedState={editorState}
-                                                            onSerializedChange={(value) => {
-                                                                setEditorState(value)
-                                                                field.onChange(JSON.stringify(value))
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="px-6 pb-4">
-                                                    <FormMessage />
-                                                </div>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-
-                            {formError && (
-                                <div className="border-t px-6 py-4">
-                                    <Alert variant="destructive">
-                                        <AlertTitle>Unable to save article</AlertTitle>
-                                        <AlertDescription>{formError}</AlertDescription>
-                                    </Alert>
-                                </div>
-                            )}
-
-                            <DialogFooter className="border-t px-6 py-4">
-                                <Button type="button" variant="outline" onClick={() => handleDialogOpenChange(false)}>
-                                    Cancel
-                                </Button>
-                                <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting ? "Saving..." : "Save changes"}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    </Form>
                 </DialogContent>
             </Dialog>
-        </section>
+        </div>
     )
 }
 
@@ -672,22 +681,21 @@ interface NewsTableProps {
 
 function NewsTable({ data, isLoading, deletingId, onEdit, onDelete }: NewsTableProps) {
     return (
-        <div className="w-full overflow-hidden rounded-xl border border-border">
+        <div className="border-t border-border/50">
             <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="min-w-[260px]">Title</TableHead>
+                <TableHeader className="bg-muted/40">
+                    <TableRow className="hover:bg-muted/40 border-border/50">
+                        <TableHead className="w-[400px]">Article</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Published</TableHead>
-                        <TableHead>Updated</TableHead>
                         <TableHead>Author</TableHead>
+                        <TableHead>Date</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {isLoading ? (
                         <TableRow>
-                            <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
+                            <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
                                 <div className="flex items-center justify-center gap-2">
                                     <Spinner className="size-5" />
                                     Loading articles...
@@ -696,46 +704,63 @@ function NewsTable({ data, isLoading, deletingId, onEdit, onDelete }: NewsTableP
                         </TableRow>
                     ) : data.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
+                            <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
                                 No articles match the selected filters.
                             </TableCell>
                         </TableRow>
                     ) : (
                         data.map((item) => (
-                            <TableRow key={item.id}>
+                            <TableRow key={item.id} className="group hover:bg-muted/20 border-border/50 transition-colors">
                                 <TableCell>
-                                    <div className="flex flex-col gap-1">
-                                        <span className="font-medium leading-tight">{item.title}</span>
-                                        <span className="text-sm text-muted-foreground line-clamp-2">
+                                    <div className="flex flex-col gap-1 py-1">
+                                        <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</span>
+                                        <span className="text-xs text-muted-foreground line-clamp-1 max-w-[350px]">
                                             {item.excerpt ?? "No excerpt provided"}
                                         </span>
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <Badge variant={statusBadgeVariant[item.status]}>{statusLabel[item.status]}</Badge>
+                                    <Badge variant={statusBadgeVariant[item.status]} className="capitalize shadow-none">
+                                        {statusLabel[item.status]}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="text-sm text-foreground/80">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold">
+                                            {(item.author?.name || item.author?.email || "U").charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="whitespace-nowrap">{item.author?.name ?? item.author?.email ?? "-"}</span>
+                                    </div>
                                 </TableCell>
                                 <TableCell className="text-sm text-muted-foreground">
-                                    {formatTimestamp(item.publishedAt)}
+                                    <div className="flex flex-col">
+                                        <span>{formatTimestamp(item.publishedAt)}</span>
+                                        {/* <span className="text-[10px] text-muted-foreground/60">Updated: {formatTimestamp(item.updatedAt)}</span> */}
+                                    </div>
                                 </TableCell>
-                                <TableCell className="text-sm text-muted-foreground">
-                                    {formatTimestamp(item.updatedAt)}
-                                </TableCell>
-                                <TableCell className="text-sm text-muted-foreground">
-                                    {item.author?.name ?? item.author?.email ?? "-"}
-                                </TableCell>
-                                <TableCell className="flex justify-end gap-2">
-                                    <Button size="sm" variant="outline" onClick={() => onEdit(item)} className="px-2">
-                                        <Edit className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        onClick={() => onDelete(item)}
-                                        className="px-2"
-                                        disabled={deletingId === item.id}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                <TableCell className="text-right">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground">
+                                                <span className="sr-only">Open menu</span>
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-[160px]">
+                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuItem onClick={() => onEdit(item)}>
+                                                <Edit className="mr-2 h-4 w-4" /> Edit
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem
+                                                className="text-destructive focus:text-destructive"
+                                                onClick={() => onDelete(item)}
+                                                disabled={deletingId === item.id}
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </TableCell>
                             </TableRow>
                         ))

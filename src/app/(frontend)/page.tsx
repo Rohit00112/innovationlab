@@ -20,6 +20,8 @@ import {
     Lightbulb,
     Code2,
     Briefcase,
+    Clock,
+    MapPin,
 } from "lucide-react";
 
 import { HttpError } from "@/lib/http/api-client";
@@ -562,19 +564,19 @@ export default function Frontend() {
     const displayTestimonials =
         testimonials.length > 0
             ? testimonials.map((item) => ({
-                  key: `testimonial-${item.id}`,
-                  image: safeUrl(item.avatarUrl),
-                  quote: item.quote,
-                  author: item.author,
-                  role: [item.role, item.company].filter(Boolean).join(" · ") || undefined,
-              }))
+                key: `testimonial-${item.id}`,
+                image: safeUrl(item.avatarUrl),
+                quote: item.quote,
+                author: item.author,
+                role: [item.role, item.company].filter(Boolean).join(" · ") || undefined,
+            }))
             : FALLBACK_TESTIMONIALS.map((item, index) => ({
-                  key: `fallback-${index}`,
-                  image: item.avatarUrl,
-                  quote: item.quote,
-                  author: item.author,
-                  role: item.role,
-              }));
+                key: `fallback-${index}`,
+                image: item.avatarUrl,
+                quote: item.quote,
+                author: item.author,
+                role: item.role,
+            }));
 
     const testimonialCount = displayTestimonials.length;
     const primaryNews = newsCards[0] ?? null;
@@ -586,92 +588,129 @@ export default function Frontend() {
         <main className="w-full bg-background text-foreground">
 
 
-            <section className="relative min-h-[90vh] flex items-center border-b border-foreground/10">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 w-full">
-                    <div className="grid gap-20 lg:grid-cols-2 lg:gap-16 items-center">
-                        <div className="space-y-8">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 border border-foreground/20 text-xs uppercase tracking-widest text-foreground/70">
-                                <div className="w-2 h-2 bg-primary rounded-full"></div>
+            <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+                {/* Animated Background Elements */}
+                <div className="absolute inset-0 bg-background z-0">
+                    <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-70"></div>
+                    <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob opacity-70"></div>
+                    <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-secondary/80 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000 opacity-70"></div>
+                    <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-accent/60 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000 opacity-70"></div>
+                </div>
+
+                <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 w-full">
+                    <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                        <div className="space-y-8 relative">
+                            {/* Decorative element */}
+                            <div className="absolute -left-8 -top-8 w-24 h-24 border-t-2 border-l-2 border-primary/20 rounded-tl-3xl"></div>
+
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-black/20 backdrop-blur-md border border-primary/10 rounded-full text-xs font-medium tracking-wide text-primary shadow-sm">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
                                 Itahari International College
                             </div>
-                            
+
                             <div className="space-y-6">
                                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
                                     INNOVATION
                                     <br />
-                                    <span className="text-foreground/60">LAB</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">LAB</span>
                                 </h1>
-                                <p className="text-xl leading-relaxed text-foreground/70 max-w-xl">
+                                <p className="text-xl leading-relaxed text-foreground/80 max-w-xl">
                                     Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation.
                                 </p>
                             </div>
 
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
-                                <Button size="lg" className="px-8 text-sm uppercase tracking-wider">
+                                <Button size="lg" className="px-8 text-sm font-medium h-12 rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/30">
                                     Explore Projects
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="px-8 text-sm uppercase tracking-wider"
+                                    className="px-8 text-sm font-medium h-12 rounded-xl border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
                                 >
                                     Get Involved
                                 </Button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4">
-                                <div className="border border-foreground/10 p-8 hover:border-foreground/30 transition-colors">
-                                    <div className="w-12 h-12 mb-6 flex items-center justify-center border border-foreground/20">
-                                        <Target className="h-6 w-6" />
+                        <div className="relative">
+                            <div className="grid grid-cols-2 gap-6 relative z-10">
+                                <div className="space-y-6 pt-12">
+                                    <div className="glass-card p-8 rounded-2xl">
+                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary/10 rounded-xl text-primary">
+                                            <Target className="h-6 w-6" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">500+</h3>
+                                        <p className="text-sm font-medium text-foreground/60">Projects Delivered</p>
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-2">500+</h3>
-                                    <p className="text-sm uppercase tracking-wider text-foreground/60">Projects</p>
+                                    <div className="glass-card p-8 rounded-2xl bg-primary/5 border-primary/20">
+                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary text-primary-foreground rounded-xl shadow-lg shadow-primary/30">
+                                            <Users className="h-6 w-6" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">50+</h3>
+                                        <p className="text-sm font-medium text-foreground/60">Active Members</p>
+                                    </div>
                                 </div>
-                                <div className="border border-foreground/10 p-8 hover:border-foreground/30 transition-colors">
-                                    <div className="w-12 h-12 mb-6 flex items-center justify-center border border-foreground/20">
-                                        <Users className="h-6 w-6" />
+                                <div className="space-y-6">
+                                    <div className="glass-card p-8 rounded-2xl bg-gradient-to-br from-card to-secondary/50">
+                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-secondary rounded-xl text-secondary-foreground">
+                                            <Trophy className="h-6 w-6" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">25</h3>
+                                        <p className="text-sm font-medium text-foreground/60">Awards Won</p>
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-2">50+</h3>
-                                    <p className="text-sm uppercase tracking-wider text-foreground/60">Members</p>
+                                    <div className="glass-card p-8 rounded-2xl">
+                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-accent/20 rounded-xl text-accent-foreground">
+                                            <CalendarDays className="h-6 w-6" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">12+</h3>
+                                        <p className="text-sm font-medium text-foreground/60">Years Legacy</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="space-y-4 pt-12">
-                                <div className="border border-foreground/10 p-8 hover:border-foreground/30 transition-colors">
-                                    <div className="w-12 h-12 mb-6 flex items-center justify-center border border-foreground/20">
-                                        <Trophy className="h-6 w-6" />
-                                    </div>
-                                    <h3 className="text-2xl font-bold mb-2">25</h3>
-                                    <p className="text-sm uppercase tracking-wider text-foreground/60">Awards</p>
-                                </div>
-                                <div className="border border-foreground/10 p-8 hover:border-foreground/30 transition-colors">
-                                    <div className="w-12 h-12 mb-6 flex items-center justify-center border border-foreground/20">
-                                        <CalendarDays className="h-6 w-6" />
-                                    </div>
-                                    <h3 className="text-2xl font-bold mb-2">12+</h3>
-                                    <p className="text-sm uppercase tracking-wider text-foreground/60">Years</p>
-                                </div>
-                            </div>
+
+                            {/* Floating decorative elements */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl -z-10"></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section className="py-16 border-b border-foreground/10">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <section className="py-24 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-                        <div className="space-y-6">
+                        <div className="space-y-8 relative">
+                            {/* Accent card background */}
+                            <div className="absolute -inset-4 bg-gradient-to-br from-primary/5 to-transparent rounded-3xl -z-10 blur-xl"></div>
+
                             <div className="space-y-4">
-                                <p className="text-xs uppercase tracking-widest text-foreground/50">What We Do</p>
-                                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-                                    Innovation Through Collaboration
+                                <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
+                                    Our Mission
+                                </span>
+                                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+                                    Innovation Through <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Collaboration</span>
                                 </h2>
                             </div>
                             <p className="text-lg leading-relaxed text-foreground/70">
-                                At the Innovation Lab, we empower students to transform bold ideas into real-world solutions. Through collaborative experimentation, cutting-edge technology, and creative thinking, we're shaping the future.
+                                At the Innovation Lab, we empower students to transform bold ideas into real-world solutions. Through collaborative experimentation, cutting-edge technology, and creative thinking, we're shaping the future one project at a time.
                             </p>
+
+                            <div className="p-6 rounded-2xl bg-muted/50 border border-border/50 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all duration-500"></div>
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Sparkles className="w-5 h-5 text-primary" />
+                                        <h3 className="font-semibold text-foreground">Why join us?</h3>
+                                    </div>
+                                    <p className="text-sm text-foreground/70">
+                                        Gain hands-on experience, access mentorship from industry leaders, and build a portfolio that stands out.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="space-y-6">
@@ -679,26 +718,31 @@ export default function Frontend() {
                                 {
                                     icon: Lightbulb,
                                     title: "Ideation & Design",
-                                    description: "From concept to prototype, we help students explore innovative solutions to real-world challenges."
+                                    description: "From concept to prototype, we help students explore innovative solutions to real-world challenges.",
+                                    color: "bg-orange-500/10 text-orange-600"
                                 },
                                 {
                                     icon: Code2,
                                     title: "Technical Development",
-                                    description: "Hands-on experience with cutting-edge tools, frameworks, and technologies across multiple domains."
+                                    description: "Hands-on experience with cutting-edge tools, frameworks, and technologies across multiple domains.",
+                                    color: "bg-blue-500/10 text-blue-600"
                                 },
                                 {
                                     icon: Briefcase,
                                     title: "Project Execution",
-                                    description: "Transform ideas into fully-realized projects with mentorship and industry-standard practices."
+                                    description: "Transform ideas into fully-realized projects with mentorship and industry-standard practices.",
+                                    color: "bg-green-500/10 text-green-600"
                                 }
                             ].map((item, index) => {
                                 const Icon = item.icon;
                                 return (
-                                    <div key={index} className="border-l-2 border-foreground/20 pl-6 py-2">
+                                    <div key={index} className="group p-6 rounded-2xl border border-transparent hover:border-border/50 hover:bg-card/50 hover:shadow-lg transition-all duration-300">
                                         <div className="flex items-start gap-4">
-                                            <Icon className="h-6 w-6 mt-1 flex-shrink-0" />
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color} group-hover:scale-110 transition-transform duration-300`}>
+                                                <Icon className="h-6 w-6" />
+                                            </div>
                                             <div>
-                                                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                                                <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
                                                 <p className="text-foreground/70 leading-relaxed">{item.description}</p>
                                             </div>
                                         </div>
@@ -710,14 +754,16 @@ export default function Frontend() {
                 </div>
             </section>
 
-            <section className="py-16 border-b border-foreground/10">
+            <section className="py-24 bg-muted/30 border-y border-border/50">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
                         <div className="space-y-4">
-                            <p className="text-xs uppercase tracking-widest text-foreground/50">Latest Updates</p>
+                            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase border border-border/50">
+                                Latest Updates
+                            </span>
                             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">News & Insights</h2>
                         </div>
-                        <Button variant="outline" className="w-fit" asChild>
+                        <Button variant="outline" className="w-fit rounded-full px-6 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" asChild>
                             <Link href="/news">
                                 View All News
                                 <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -726,7 +772,7 @@ export default function Frontend() {
                     </div>
 
                     {newsError && (
-                        <p className="mb-8 text-sm text-destructive border border-destructive/20 p-4">
+                        <p className="mb-8 text-sm text-destructive border border-destructive/20 p-4 rounded-xl bg-destructive/5">
                             {newsError}
                         </p>
                     )}
@@ -735,38 +781,48 @@ export default function Frontend() {
                         {newsCards.map((item, index) => (
                             <article
                                 key={`${item.href}-${index}`}
-                                className="group border border-foreground/10 hover:border-foreground/30 transition-colors"
+                                className="group flex flex-col bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px]"
                             >
                                 {item.image && (
                                     <div className="relative h-64 w-full overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
                                         <Image
                                             src={item.image}
                                             alt={item.title}
                                             fill
-                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            className="object-cover transition-transform duration-700 group-hover:scale-110"
                                             sizes="(max-width: 1024px) 100vw, 33vw"
                                         />
+                                        <div className="absolute top-4 left-4 z-20">
+                                            <span className="inline-block px-3 py-1 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-xs font-semibold shadow-sm">
+                                                {item.category}
+                                            </span>
+                                        </div>
                                     </div>
                                 )}
-                                <div className="p-8 space-y-4">
-                                    <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-foreground/50">
-                                        <span>{item.category}</span>
-                                        <span>•</span>
+                                <div className="flex-1 p-8 flex flex-col space-y-4">
+                                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                                        <CalendarDays className="w-3 h-3" />
                                         <span>{item.date}</span>
+                                        <span>•</span>
+                                        <span>{item.readTime}</span>
                                     </div>
-                                    <h3 className="text-xl font-semibold leading-tight group-hover:text-foreground/80 transition-colors">
+                                    <h3 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                                         {item.title}
                                     </h3>
-                                    <p className="text-sm leading-relaxed text-foreground/70 line-clamp-3">
+                                    <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3 mb-4 flex-1">
                                         {item.description}
                                     </p>
+
                                     {item.href === "#" ? (
-                                        <Button variant="link" className="p-0 h-auto text-sm" disabled>
-                                            Read More →
+                                        <Button variant="ghost" className="p-0 h-auto text-sm font-semibold hover:bg-transparent hover:text-primary justify-start" disabled>
+                                            Read Article <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                                         </Button>
                                     ) : (
-                                        <Button variant="link" className="p-0 h-auto text-sm" asChild>
-                                            <Link href={item.href}>Read More →</Link>
+                                        <Button variant="ghost" className="p-0 h-auto text-sm font-semibold hover:bg-transparent hover:text-primary justify-start" asChild>
+                                            <Link href={item.href}>
+                                                Read Article <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                            </Link>
                                         </Button>
                                     )}
                                 </div>
@@ -776,14 +832,20 @@ export default function Frontend() {
                 </div>
             </section>
 
-            <section className="py-16 border-b border-foreground/10">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <section className="py-24 relative overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full filter blur-3xl opacity-60"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
                     <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
                         <div className="space-y-4">
-                            <p className="text-xs uppercase tracking-widest text-foreground/50">Upcoming</p>
+                            <span className="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-semibold tracking-wide uppercase">
+                                Upcoming
+                            </span>
                             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Events & Workshops</h2>
                         </div>
-                        <Button variant="outline" className="w-fit" asChild>
+                        <Button variant="outline" className="w-fit rounded-full px-6 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" asChild>
                             <Link href="/events">
                                 View All Events
                                 <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -792,71 +854,114 @@ export default function Frontend() {
                     </div>
 
                     {eventsError && (
-                        <p className="mb-8 text-sm text-destructive border border-destructive/20 p-4">
+                        <p className="mb-8 text-sm text-destructive border border-destructive/20 p-4 rounded-xl bg-destructive/5">
                             {eventsError}
                         </p>
                     )}
 
-                    <div className="grid gap-8 lg:grid-cols-3">
-                        {eventCards.map((event, index) => (
-                            <article
-                                key={`${event.link}-${index}`}
-                                className="border border-foreground/10 hover:border-foreground/30 transition-colors overflow-hidden group"
-                            >
-                                {event.image && (
-                                    <div className="relative h-56 w-full overflow-hidden">
-                                        <Image
-                                            src={event.image}
-                                            alt={event.title}
-                                            fill
-                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                            sizes="(max-width: 1024px) 100vw, 33vw"
-                                        />
-                                    </div>
-                                )}
-                                <div className="p-8 space-y-6">
-                                    <div className="space-y-2">
-                                        <div className="text-xs uppercase tracking-wider text-foreground/50">
-                                            {event.date}
-                                        </div>
-                                        <div className="text-sm text-foreground/70">{event.time}</div>
-                                    </div>
+                    <div className="grid gap-8">
+                        {eventCards.map((event, index) => {
+                            // Extract date components if possible
+                            let day = "";
+                            let month = "";
+                            try {
+                                const dateParts = new Date(event.date);
+                                if (!isNaN(dateParts.getTime())) {
+                                    day = dateParts.getDate().toString();
+                                    month = dateParts.toLocaleString('default', { month: 'short' });
+                                } else {
+                                    // Fallback for pre-formatted strings
+                                    const parts = event.date.split(" ");
+                                    if (parts.length >= 2) {
+                                        month = parts[0];
+                                        day = parts[1].replace(",", "");
+                                    }
+                                }
+                            } catch (e) {
+                                day = "??";
+                                month = "DEC";
+                            }
 
-                                    <div className="space-y-3">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1 border border-foreground/20 text-xs uppercase tracking-wider text-foreground/60">
-                                            {event.category}
-                                        </div>
-                                        <h3 className="text-xl font-semibold leading-tight">{event.title}</h3>
-                                        <p className="text-sm leading-relaxed text-foreground/70">{event.description}</p>
-                                    </div>
-
-                                    <div className="pt-4 border-t border-foreground/10 flex items-center justify-between">
-                                        <span className="text-xs uppercase tracking-wider text-foreground/50">
-                                            {event.location}
-                                        </span>
-                                        {event.link === "#" ? (
-                                            <Button variant="link" className="p-0 h-auto text-sm" disabled>
-                                                Learn More →
-                                            </Button>
-                                        ) : (
-                                            <Button variant="link" className="p-0 h-auto text-sm" asChild>
-                                                <Link href={event.link}>Learn More →</Link>
-                                            </Button>
+                            return (
+                                <article
+                                    key={`${event.link}-${index}`}
+                                    className="group relative bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-2px]"
+                                >
+                                    <div className="flex flex-col md:flex-row h-full">
+                                        {event.image && (
+                                            <div className="relative h-48 md:h-auto md:w-1/3 overflow-hidden">
+                                                <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
+                                                <Image
+                                                    src={event.image}
+                                                    alt={event.title}
+                                                    fill
+                                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    sizes="(max-width: 768px) 100vw, 33vw"
+                                                />
+                                            </div>
                                         )}
+                                        <div className="flex-1 p-8 flex flex-col justify-between relative">
+                                            <div className="space-y-4">
+                                                <div className="flex items-start justify-between">
+                                                    <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                                                        <Clock className="w-4 h-4" />
+                                                        <span>{event.time}</span>
+                                                    </div>
+                                                    <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold shadow-sm">
+                                                        {event.category}
+                                                    </span>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <h3 className="text-2xl font-bold leading-tight group-hover:text-primary transition-colors">
+                                                        {event.title}
+                                                    </h3>
+                                                    <p className="text-foreground/70 line-clamp-2">
+                                                        {event.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="pt-6 mt-6 border-t border-border/50 flex items-center justify-between">
+                                                <div className="flex items-center gap-2 text-sm text-foreground/60">
+                                                    <MapPin className="w-4 h-4" />
+                                                    <span>{event.location}</span>
+                                                </div>
+
+                                                {event.link === "#" ? (
+                                                    <Button size="sm" variant="ghost" className="rounded-full px-4 hover:bg-primary hover:text-primary-foreground" disabled>
+                                                        Details <ArrowRight className="ml-2 h-4 w-4" />
+                                                    </Button>
+                                                ) : (
+                                                    <Button size="sm" variant="ghost" className="rounded-full px-4 hover:bg-primary hover:text-primary-foreground" asChild>
+                                                        <Link href={event.link}>Details <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Stylized Date Badge */}
+                                        <div className="absolute top-4 right-4 md:left-8 md:top-8 md:right-auto z-20 bg-background/95 backdrop-blur shadow-lg rounded-2xl p-3 flex flex-col items-center justify-center min-w-[70px] border border-border/50 text-center">
+                                            <span className="text-xs font-bold uppercase text-primary tracking-wider">{month || "UP"}</span>
+                                            <span className="text-2xl font-bold text-foreground leading-none mt-1">{day || "NY"}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
-                        ))}
+                                </article>
+                            )
+                        })}
                     </div>
                 </div>
             </section>
 
-            <section className="py-16 border-b border-foreground/10">
+            <section className="py-24 relative overflow-hidden bg-muted/30">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/20 rounded-full filter blur-3xl opacity-50 -z-10"></div>
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
                         <div className="space-y-8">
                             <div className="space-y-4">
-                                <p className="text-xs uppercase tracking-widest text-foreground/50">Our Focus</p>
+                                <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
+                                    Our Focus
+                                </span>
                                 <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
                                     Innovation Tracks
                                 </h2>
@@ -866,41 +971,56 @@ export default function Frontend() {
                             </p>
 
                             <div className="grid gap-4 pt-8">
-                                <div className="border border-foreground/10 p-6">
-                                    <div className="flex items-center gap-4 mb-3">
-                                        <div className="w-10 h-10 border border-foreground/20 flex items-center justify-center">
-                                            <CheckCircle2 className="h-5 w-5" />
-                                        </div>
-                                        <h3 className="text-lg font-semibold">Mentorship Programs</h3>
+                                <div className="glass-card p-6 rounded-2xl flex items-start gap-4 hover:bg-card/80 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
+                                        <CheckCircle2 className="h-5 w-5" />
                                     </div>
-                                    <p className="text-sm text-foreground/70 pl-14">110+ industry mentors guiding student projects</p>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1">Mentorship Programs</h3>
+                                        <p className="text-sm text-foreground/70">110+ industry mentors guiding student projects</p>
+                                    </div>
                                 </div>
-                                <div className="border border-foreground/10 p-6">
-                                    <div className="flex items-center gap-4 mb-3">
-                                        <div className="w-10 h-10 border border-foreground/20 flex items-center justify-center">
-                                            <CheckCircle2 className="h-5 w-5" />
-                                        </div>
-                                        <h3 className="text-lg font-semibold">Global Collaborations</h3>
+                                <div className="glass-card p-6 rounded-2xl flex items-start gap-4 hover:bg-card/80 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 shrink-0">
+                                        <CheckCircle2 className="h-5 w-5" />
                                     </div>
-                                    <p className="text-sm text-foreground/70 pl-14">72+ international pilot projects launched</p>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1">Global Collaborations</h3>
+                                        <p className="text-sm text-foreground/70">72+ international pilot projects launched</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid gap-6">
-                            {highlightTracks.map((track) => {
+                        <div className="grid gap-6 relative">
+                            {highlightTracks.map((track, index) => {
                                 const Icon = track.icon;
+                                const colors = [
+                                    "from-violet-500/10 to-transparent border-violet-500/20",
+                                    "from-pink-500/10 to-transparent border-pink-500/20",
+                                    "from-cyan-500/10 to-transparent border-cyan-500/20"
+                                ];
+                                const iconColors = [
+                                    "bg-violet-500/10 text-violet-600",
+                                    "bg-pink-500/10 text-pink-600",
+                                    "bg-cyan-500/10 text-cyan-600"
+                                ];
+
                                 return (
                                     <div
                                         key={track.title}
-                                        className="border border-foreground/10 p-8 hover:border-foreground/30 transition-colors"
+                                        className={`group relative p-8 rounded-3xl border bg-gradient-to-br ${colors[index % colors.length]} hover:shadow-lg transition-all duration-300 hover:scale-[1.02]`}
                                     >
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-12 h-12 border border-foreground/20 flex items-center justify-center flex-shrink-0">
-                                                <Icon className="h-6 w-6" />
+                                        <div className="absolute right-4 top-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                                            <Icon className="w-32 h-32" />
+                                        </div>
+
+                                        <div className="flex items-start gap-6 relative z-10">
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 ${iconColors[index % iconColors.length]} shadow-sm`}>
+                                                <Icon className="h-7 w-7" />
                                             </div>
-                                            <div className="space-y-2">
-                                                <h3 className="text-xl font-semibold">{track.title}</h3>
+                                            <div className="space-y-3">
+                                                <h3 className="text-2xl font-bold">{track.title}</h3>
                                                 <p className="text-sm leading-relaxed text-foreground/70">
                                                     {track.description}
                                                 </p>
@@ -914,19 +1034,25 @@ export default function Frontend() {
                 </div>
             </section>
 
-            <section className="py-16 border-b border-foreground/10">
+            <section className="py-24 relative overflow-hidden">
+                <div className="absolute -left-20 top-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-50 -z-10"></div>
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <div className="space-y-4 mb-16">
-                        <p className="text-xs uppercase tracking-widest text-foreground/50">What People Say</p>
-                        <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Testimonials</h2>
+                    <div className="space-y-4 mb-16 text-center max-w-2xl mx-auto">
+                        <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase border border-border/50">
+                            Community
+                        </span>
+                        <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Stories from the Lab</h2>
                     </div>
 
                     {testimonialsLoading && (
-                        <div className="text-center text-foreground/60 py-12">Loading testimonials...</div>
+                        <div className="text-center text-foreground/60 py-12 flex items-center justify-center gap-2">
+                            <CircleDashed className="animate-spin w-5 h-5" />
+                            Loading stories...
+                        </div>
                     )}
 
                     {testimonialsError && (
-                        <p className="text-sm text-destructive border border-destructive/20 p-4 mb-8">
+                        <p className="text-sm text-destructive border border-destructive/20 p-4 mb-8 rounded-xl bg-destructive/5 text-center">
                             {testimonialsError}
                         </p>
                     )}
@@ -936,14 +1062,17 @@ export default function Frontend() {
                             displayTestimonials.map((item: any) => (
                                 <div
                                     key={item.key}
-                                    className="border border-foreground/10 p-8 space-y-6 hover:border-foreground/30 transition-colors"
+                                    className="glass-card p-8 rounded-3xl space-y-6 flex flex-col relative group"
                                 >
-                                    <p className="text-base leading-relaxed text-foreground/80">
-                                        "{item.quote}"
+                                    <div className="text-6xl text-primary/20 font-serif absolute top-4 right-6 leading-none">"</div>
+
+                                    <p className="text-base leading-relaxed text-foreground/80 relative z-10 italic">
+                                        {item.quote}
                                     </p>
-                                    <div className="pt-4 border-t border-foreground/10 flex items-center gap-4">
+
+                                    <div className="pt-6 mt-auto border-t border-border/50 flex items-center gap-4">
                                         {item.image ? (
-                                            <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden border border-foreground/20">
+                                            <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors">
                                                 <Image
                                                     src={item.image}
                                                     alt={item.author}
@@ -953,16 +1082,14 @@ export default function Frontend() {
                                                 />
                                             </div>
                                         ) : (
-                                            <div className="h-12 w-12 flex-shrink-0 border border-foreground/20 flex items-center justify-center bg-foreground/5">
-                                                <span className="text-sm font-semibold text-foreground/60">
-                                                    {item.author.charAt(0).toUpperCase()}
-                                                </span>
+                                            <div className="h-12 w-12 flex-shrink-0 rounded-full border-2 border-primary/20 flex items-center justify-center bg-primary/5 text-primary font-bold">
+                                                {item.author.charAt(0).toUpperCase()}
                                             </div>
                                         )}
                                         <div>
-                                            <p className="font-semibold text-foreground/90">{item.author}</p>
+                                            <p className="font-bold text-foreground">{item.author}</p>
                                             {item.role && (
-                                                <p className="text-sm text-foreground/60 mt-1">{item.role}</p>
+                                                <p className="text-xs font-medium text-foreground/60 mt-0.5">{item.role}</p>
                                             )}
                                         </div>
                                     </div>
@@ -972,31 +1099,47 @@ export default function Frontend() {
                 </div>
             </section>
 
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <div className="border border-foreground/10 py-16 px-4 lg:p-24">
-                        <div className="max-w-3xl mx-auto text-center space-y-8">
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
-                                Ready to Innovate?
-                            </h2>
-                            <p className="text-md leading-relaxed text-foreground/70">
-                                Join the Innovation Lab and transform your ideas into reality. Whether you're a student, researcher, or entrepreneur, we provide the tools and community you need to succeed.
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                                <Button size="lg" className="px-8 text-sm uppercase tracking-wider w-full md:w-auto">
-                                    Get Started
-                                    <ArrowRight className="ml-2 h-4 w-4" />
-                                </Button>
-                                <Button
-                                    size="lg"
-                                    variant="outline"
-                                    className="px-8 w-full md:w-auto text-sm uppercase tracking-wider"
-                                    asChild
-                                >
-                                    <Link href="/about">Learn More About Us</Link>
-                                </Button>
-                            </div>
+            <section className="relative py-24 overflow-hidden">
+                <div className="absolute inset-0 bg-primary/95 text-primary-foreground z-10"></div>
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-20"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary via-violet-600 to-indigo-700 z-10 opacity-90"></div>
+
+                {/* Animated blobs */}
+                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-white/10 rounded-full blur-3xl animate-blob z-10"></div>
+                <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent/20 rounded-full blur-3xl animate-blob animation-delay-4000 z-10"></div>
+
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-30">
+                    <div className="max-w-3xl mx-auto text-center space-y-8">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/90 text-xs font-semibold tracking-wide uppercase border border-white/20 backdrop-blur-sm">
+                            <Rocket className="w-3 h-3" />
+                            Launch Your Ideas
                         </div>
+
+                        <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white leading-tight">
+                            Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Innovate?</span>
+                        </h2>
+
+                        <p className="text-lg leading-relaxed text-white/80 max-w-2xl mx-auto">
+                            Join the Innovation Lab and transform your ideas into reality. Whether you're a student, researcher, or entrepreneur, we provide the tools, community, and mentorship you need to succeed.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                            <Button size="lg" variant="secondary" className="px-10 h-14 text-base font-bold rounded-full shadow-xl shadow-black/20 hover:scale-105 transition-transform">
+                                Get Started Now
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Button>
+                            <Button
+                                size="lg"
+                                className="px-10 h-14 text-base font-medium rounded-full border border-white/30 bg-transparent text-white hover:bg-white/10 backdrop-blur-sm transition-all"
+                                asChild
+                            >
+                                <Link href="/about">Learn More About Us</Link>
+                            </Button>
+                        </div>
+
+                        <p className="text-sm text-white/50 pt-8">
+                            Join 50+ other students building the future today.
+                        </p>
                     </div>
                 </div>
             </section>

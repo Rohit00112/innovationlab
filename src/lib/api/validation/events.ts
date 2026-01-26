@@ -18,6 +18,7 @@ export const createEventSchema = z.object({
   image: z.string().url().max(2048).optional().nullable(),
   isVirtual: z.boolean().optional(),
   hasRegistration: z.boolean().optional(),
+  allowedRegistrationTypes: z.enum(["individual", "team", "both"]).optional(),
   enableProposalSubmission: z.boolean().optional(),
   startsAt: isoDateTime,
   endsAt: isoDateTime.optional().nullable(),
