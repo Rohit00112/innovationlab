@@ -313,3 +313,139 @@ export const passwordResetTokensRelations = relations(passwordResetTokens, ({ on
     references: [users.id]
   })
 }));
+
+// Communities
+export const communityStatusEnum = pgEnum("community_status", [
+  "draft",
+  "published",
+  "archived"
+]);
+
+export const communities = pgTable(
+  "communities",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    description: text("description"),
+    content: text("content"),
+    coverImageUrl: text("cover_image_url"),
+    status: communityStatusEnum("status").notNull().default("draft"),
+    displayOrder: integer("display_order").notNull().default(0),
+    createdAt: timestampWithDefaults("created_at"),
+    updatedAt: timestampWithDefaults("updated_at")
+  },
+  table => ({
+    slugIdx: uniqueIndex("communities_slug_unique").on(table.slug),
+    statusIdx: index("communities_status_idx").on(table.status),
+    displayOrderIdx: index("communities_display_order_idx").on(table.displayOrder)
+  })
+);
+
+// Community Members
+export const communityMemberRoleEnum = pgEnum("community_member_role", [
+  "lead",
+  "member",
+  "advisor"
+]);
+
+export const communityMembers = pgTable(
+  "community_members",
+  {
+    id: serial("id").primaryKey(),
+    communityId: integer("community_id")
+      .notNull()
+      .references(() => communities.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    title: text("title"),
+    email: text("email"),
+    bio: text("bio"),
+    avatarUrl: text("avatar_url"),
+    role: communityMemberRoleEnum("role").notNull().default("member"),
+    linkedinUrl: text("linkedin_url"),
+    githubUrl: text("github_url"),
+    websiteUrl: text("website_url"),
+    displayOrder: integer("display_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    joinedAt: timestamp("joined_at", { withTimezone: true, mode: "date" }),
+    createdAt: timestampWithDefaults("created_at"),
+    updatedAt: timestampWithDefaults("updated_at")
+  },
+  table => ({
+    communityIdx: index("community_members_community_idx").on(table.communityId),
+    roleIdx: index("community_members_role_idx").on(table.role),
+    displayOrderIdx: index("community_members_display_order_idx").on(table.displayOrder),
+    isActiveIdx: index("community_members_is_active_idx").on(table.isActive)
+  })
+);
+
+export const communitiesRelations = relations(communities, ({ many }) => ({
+  members: many(communityMembers)
+}));
+
+export const communityMembersRelations = relations(communityMembers, ({ one }) => ({
+  community: one(communities, {
+    fields: [communityMembers.communityId],
+    references: [communities.id]
+  })
+}));
+
+// Team Members (dedicated team management, separate from users)
+export const teamMemberCategoryEnum = pgEnum("team_member_category", [
+  "head",
+  "core",
+  "mentor"
+]);
+
+export const teamMembers = pgTable(
+  "team_members",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    position: text("position").notNull(),
+    bio: text("bio"),
+    photoUrl: text("photo_url"),
+    email: text("email"),
+    linkedinUrl: text("linkedin_url"),
+    githubUrl: text("github_url"),
+    websiteUrl: text("website_url"),
+    category: teamMemberCategoryEnum("category").notNull().default("core"),
+    displayOrder: integer("display_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    joinedAt: timestamp("joined_at", { withTimezone: true, mode: "date" }),
+    createdAt: timestampWithDefaults("created_at"),
+    updatedAt: timestampWithDefaults("updated_at")
+  },
+  table => ({
+    categoryIdx: index("team_members_category_idx").on(table.category),
+    displayOrderIdx: index("team_members_display_order_idx").on(table.displayOrder),
+    isActiveIdx: index("team_members_is_active_idx").on(table.isActive)
+  })
+);
+
+// FAQs
+export const faqCategoryEnum = pgEnum("faq_category", [
+  "general",
+  "membership",
+  "events",
+  "support"
+]);
+
+export const faqs = pgTable(
+  "faqs",
+  {
+    id: serial("id").primaryKey(),
+    question: text("question").notNull(),
+    answer: text("answer").notNull(),
+    category: faqCategoryEnum("category").notNull().default("general"),
+    displayOrder: integer("display_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestampWithDefaults("created_at"),
+    updatedAt: timestampWithDefaults("updated_at")
+  },
+  table => ({
+    categoryIdx: index("faqs_category_idx").on(table.category),
+    displayOrderIdx: index("faqs_display_order_idx").on(table.displayOrder),
+    isActiveIdx: index("faqs_is_active_idx").on(table.isActive)
+  })
+);

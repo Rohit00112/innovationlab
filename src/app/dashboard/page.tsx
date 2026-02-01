@@ -8,20 +8,15 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
-    Activity,
     ArrowUpRight,
     Calendar,
-    CreditCard,
-    DollarSign,
     FileText,
-    MoreHorizontal,
     Plus,
-    Users,
-    TrendingUp,
-    TrendingDown,
-    Clock,
-    Zap,
-    ArrowRight
+    ArrowRight,
+    Settings,
+    Sparkles,
+    UserCircle,
+    Users2
 } from "lucide-react"
 
 import {
@@ -94,15 +89,48 @@ export default async function Dashboard() {
                         <p className="text-sm text-muted-foreground">Schedule and manage upcoming events.</p>
                     </Link>
 
-                    <Link href="/dashboard/users" className="group relative overflow-hidden rounded-xl border bg-background p-6 hover:shadow-md transition-all">
+                    <Link href="/dashboard/team" className="group relative overflow-hidden rounded-xl border bg-background p-6 hover:shadow-md transition-all">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-2 w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                                <Users className="h-5 w-5" />
+                            <div className="p-2 w-10 h-10 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center">
+                                <UserCircle className="h-5 w-5" />
                             </div>
                             <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                         </div>
-                        <h3 className="font-semibold text-lg mb-1">Users</h3>
-                        <p className="text-sm text-muted-foreground">Manage platform users and roles.</p>
+                        <h3 className="font-semibold text-lg mb-1">Team</h3>
+                        <p className="text-sm text-muted-foreground">Manage team members and roles.</p>
+                    </Link>
+
+                    <Link href="/dashboard/communities" className="group relative overflow-hidden rounded-xl border bg-background p-6 hover:shadow-md transition-all">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="p-2 w-10 h-10 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                                <Users2 className="h-5 w-5" />
+                            </div>
+                            <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                        </div>
+                        <h3 className="font-semibold text-lg mb-1">Communities</h3>
+                        <p className="text-sm text-muted-foreground">Oversee community groups and activities.</p>
+                    </Link>
+
+                    <Link href="/dashboard/testimonials" className="group relative overflow-hidden rounded-xl border bg-background p-6 hover:shadow-md transition-all">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="p-2 w-10 h-10 rounded-full bg-pink-500/10 text-pink-500 flex items-center justify-center">
+                                <Sparkles className="h-5 w-5" />
+                            </div>
+                            <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                        </div>
+                        <h3 className="font-semibold text-lg mb-1">Testimonials</h3>
+                        <p className="text-sm text-muted-foreground">Curate user success stories.</p>
+                    </Link>
+
+                    <Link href="/dashboard/settings" className="group relative overflow-hidden rounded-xl border bg-background p-6 hover:shadow-md transition-all">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="p-2 w-10 h-10 rounded-full bg-slate-500/10 text-slate-500 flex items-center justify-center">
+                                <Settings className="h-5 w-5" />
+                            </div>
+                            <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                        </div>
+                        <h3 className="font-semibold text-lg mb-1">Configuration</h3>
+                        <p className="text-sm text-muted-foreground">Platform settings and preferences.</p>
                     </Link>
                 </CardContent>
             </Card>

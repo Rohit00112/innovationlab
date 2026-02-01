@@ -33,19 +33,25 @@ import { Separator } from "@/components/ui/separator";
 
 import {
     Calendar,
-    Home,
-    Inbox,
     Settings,
-    UsersIcon,
     LayoutDashboard,
     FileText,
     Sparkles,
-    Bell
+    Bell,
+    Users2,
+    HelpCircle,
+    UserCircle
 } from "lucide-react";
 
 import "../globals.css";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "IVLABS Admin",
+};
 
 export default async function DashboardLayout({
     children,
@@ -58,53 +64,39 @@ export default async function DashboardLayout({
     }
 
     return (
-        <html suppressHydrationWarning>
-            <head>
-                <title>IVLABS Admin</title>
-            </head>
-            <body className="bg-muted/40 font-sans antialiased">
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <SidebarProvider>
-                        <AppSidebar user={session.user} />
-                        <main className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out w-full">
-                            <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                                <div className="flex items-center gap-2 px-4 w-full">
-                                    <SidebarTrigger className="-ml-1" />
-                                    <Separator orientation="vertical" className="mr-2 h-4" />
-                                    <Breadcrumb className="hidden md:flex">
-                                        <BreadcrumbList>
-                                            <BreadcrumbItem>
-                                                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-                                            </BreadcrumbItem>
-                                            <BreadcrumbSeparator />
-                                            <BreadcrumbItem>
-                                                <BreadcrumbPage>Overview</BreadcrumbPage>
-                                            </BreadcrumbItem>
-                                        </BreadcrumbList>
-                                    </Breadcrumb>
+        <SidebarProvider className="bg-muted/40 min-h-screen font-sans">
+            <AppSidebar user={session.user} />
+            <main className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out w-full">
+                <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                    <div className="flex items-center gap-2 px-4 w-full">
+                        <SidebarTrigger className="-ml-1" />
+                        <Separator orientation="vertical" className="mr-2 h-4" />
+                        <Breadcrumb className="hidden md:flex">
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage>Overview</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
 
-                                    <div className="ml-auto flex items-center gap-2">
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                                            <Bell className="h-4 w-4" />
-                                            <span className="sr-only">Notifications</span>
-                                        </Button>
-                                        <ModeToggle />
-                                    </div>
-                                </div>
-                            </header>
-                            <div className="flex-1 p-6 md:p-8 pt-6 max-w-[1600px] w-full mx-auto">
-                                {children}
-                            </div>
-                        </main>
-                    </SidebarProvider>
-                </ThemeProvider>
-            </body>
-        </html>
+                        <div className="ml-auto flex items-center gap-2">
+                            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                                <Bell className="h-4 w-4" />
+                                <span className="sr-only">Notifications</span>
+                            </Button>
+                            <ModeToggle />
+                        </div>
+                    </div>
+                </header>
+                <div className="flex-1 p-6 md:p-8 pt-6 max-w-[1600px] w-full mx-auto">
+                    {children}
+                </div>
+            </main>
+        </SidebarProvider>
     );
 }
 
@@ -113,8 +105,10 @@ export function AppSidebar({ user }: { user: any }) {
         { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
         { title: "News & Articles", url: "/dashboard/news", icon: FileText },
         { title: "Events", url: "/dashboard/events", icon: Calendar },
+        { title: "Team", url: "/dashboard/team", icon: UserCircle },
+        { title: "Communities", url: "/dashboard/communities", icon: Users2 },
         { title: "Testimonials", url: "/dashboard/testimonials", icon: Sparkles },
-        { title: "User Management", url: "/dashboard/users", icon: UsersIcon },
+        { title: "FAQs", url: "/dashboard/faqs", icon: HelpCircle },
         { title: "Configuration", url: "/dashboard/settings", icon: Settings },
     ];
 

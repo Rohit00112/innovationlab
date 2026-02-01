@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Globe,
   Heart,
@@ -12,13 +10,56 @@ import {
   Zap,
   ArrowRight,
   Sparkles,
-  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 
-export default function AboutPage() {
+export const revalidate = 60;
+
+interface TeamMember {
+  id: number;
+  name: string;
+  position: string;
+  bio: string | null;
+  photoUrl: string | null;
+  category: "head" | "core" | "mentor";
+}
+
+interface TeamResponse {
+  data: TeamMember[];
+}
+
+const categoryLabels: Record<TeamMember["category"], string> = {
+  head: "Innovation Lab Head",
+  core: "Core Member",
+  mentor: "Mentor"
+};
+
+async function fetchTeamMembers(): Promise<TeamMember[]> {
+  const baseUrl = resolveApiBaseUrl();
+
+  try {
+    const response = await fetch(`${baseUrl}/api/team`, {
+      next: { revalidate: 0 },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data: TeamResponse = await response.json();
+    return data.data;
+  } catch {
+    return [];
+  }
+}
+
+export default async function AboutPage() {
+  const teamMembers = await fetchTeamMembers();
+
   const missionPanels = [
     {
       title: "Mission",
@@ -109,57 +150,6 @@ export default function AboutPage() {
     { value: "12+", label: "Years of momentum", icon: Trophy },
     { value: "50+", label: "Collaborators", icon: Users },
     { value: "25", label: "Awards & honours", icon: Globe },
-  ];
-
-  const teamMembers = [
-    {
-      name: "Manjeyy Gautam",
-      role: "Program Director",
-      bio: "Guides the lab's long-term strategy and keeps our partnerships aligned with student impact.",
-      focusAreas: ["Partnerships", "Program Design"],
-      image:
-        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      name: "Rohan Sharma",
-      role: "Lead Technologist",
-      bio: "Oversees technical residencies and mentors builders on systems architecture and emerging tech.",
-      focusAreas: ["AI & ML", "Systems Architecture"],
-      image:
-        "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      name: "Samita Rai",
-      role: "Community Catalyst",
-      bio: "Designs inclusive programs and ensures every voice in the lab has a platform to thrive.",
-      focusAreas: ["Community", "Inclusion"],
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      name: "Bikash Adhikari",
-      role: "Prototype Mentor",
-      bio: "Helps teams move from concept to build with lean experimentation and rapid validation loops.",
-      focusAreas: ["Prototyping", "Product Coaching"],
-      image:
-        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      name: "Shreya Lama",
-      role: "Design Research Lead",
-      bio: "Bridges human insights with product decisions so solutions stay grounded in real needs.",
-      focusAreas: ["UX Research", "Civic Tech"],
-      image:
-        "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      name: "Prabin Gurung",
-      role: "Operations & Lab Steward",
-      bio: "Keeps the maker floor running, from hardware inventories to late-night hackathon logistics.",
-      focusAreas: ["Lab Operations", "Mentor Networks"],
-      image:
-        "https://images.unsplash.com/photo-1544723795-3fbec0f5b39b?auto=format&fit=crop&w=400&q=80",
-    },
   ];
 
   return (
@@ -410,59 +400,62 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-            {teamMembers.map((member) => (
-              <div
-                key={member.name}
-                className="group relative bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px]"
-              >
-                <div className="p-8 pb-0 flex items-center gap-4">
-                  <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors flex-shrink-0">
-                    {member.image ? (
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    ) : (
-                      <span className="flex h-full w-full items-center justify-center text-lg font-bold bg-secondary text-secondary-foreground">
-                        {member.name.charAt(0)}
-                      </span>
+          {teamMembers.length > 0 ? (
+            <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              {teamMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className="group relative bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px]"
+                >
+                  <div className="p-8 pb-0 flex items-center gap-4">
+                    <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors flex-shrink-0">
+                      {member.photoUrl ? (
+                        <Image
+                          src={member.photoUrl}
+                          alt={member.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      ) : (
+                        <span className="flex h-full w-full items-center justify-center text-lg font-bold bg-secondary text-secondary-foreground">
+                          {member.name.charAt(0)}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
+                      <p className="text-xs font-bold uppercase tracking-widest text-primary/80">
+                        {member.position}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-8 pt-6 space-y-6">
+                    {member.bio && (
+                      <p className="text-sm leading-relaxed text-foreground/70">{member.bio}</p>
                     )}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary/80">
-                      {member.role}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-8 pt-6 space-y-6">
-                  <p className="text-sm leading-relaxed text-foreground/70">{member.bio}</p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {member.focusAreas.map((area) => (
-                      <span
-                        key={`${member.name}-${area}`}
-                        className="inline-flex items-center gap-2 border border-border bg-muted/50 px-3 py-1 text-xs font-medium rounded-full text-foreground/70"
-                      >
-                        {area}
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-flex items-center gap-2 border border-border bg-muted/50 px-3 py-1 text-xs font-medium rounded-full text-foreground/70">
+                        {categoryLabels[member.category]}
                       </span>
-                    ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Decorative bottom gradient */}
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-              </div>
-            ))}
-          </div>
+                  {/* Decorative bottom gradient */}
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-card rounded-3xl border border-dashed border-border/50">
+              <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
+              <p className="text-lg text-muted-foreground font-medium">Team members will appear here.</p>
+              <p className="text-sm text-muted-foreground/70 mt-2">Add team members through the admin dashboard.</p>
+            </div>
+          )}
         </div>
       </section>
     </main>
   );
 }
-

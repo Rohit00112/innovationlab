@@ -114,48 +114,53 @@
 }
 
 .dark {
-  /* Deeper, warmer dark mode */
-  --background: oklch(0.12 0.02 270.00);
-  --foreground: oklch(0.98 0.005 260.00);
+  /* Rich, sophisticated dark mode with subtle purple undertones */
+  --background: oklch(0.13 0.015 275.00);
+  --foreground: oklch(0.95 0.005 270.00);
 
-  --card: oklch(0.15 0.02 270.00);
-  --card-foreground: oklch(0.98 0.005 260.00);
+  --card: oklch(0.16 0.02 275.00);
+  --card-foreground: oklch(0.95 0.005 270.00);
 
-  --popover: oklch(0.15 0.02 270.00);
-  --popover-foreground: oklch(0.98 0.005 260.00);
+  --popover: oklch(0.16 0.02 275.00);
+  --popover-foreground: oklch(0.95 0.005 270.00);
 
-  --primary: oklch(0.65 0.20 280.00);
-  --primary-foreground: oklch(0.12 0.02 270.00);
+  /* Vibrant purple primary that pops in dark mode */
+  --primary: oklch(0.70 0.22 285.00);
+  --primary-foreground: oklch(0.12 0.02 275.00);
 
-  --secondary: oklch(0.20 0.03 270.00);
-  --secondary-foreground: oklch(0.90 0.01 260.00);
+  /* Elevated secondary with subtle color */
+  --secondary: oklch(0.22 0.025 280.00);
+  --secondary-foreground: oklch(0.88 0.01 270.00);
 
-  --muted: oklch(0.20 0.03 270.00);
-  --muted-foreground: oklch(0.70 0.02 260.00);
+  /* Better muted tones */
+  --muted: oklch(0.20 0.02 275.00);
+  --muted-foreground: oklch(0.65 0.015 270.00);
 
-  --accent: oklch(0.25 0.05 280.00);
-  --accent-foreground: oklch(0.98 0.005 260.00);
+  /* Accent with more pop */
+  --accent: oklch(0.28 0.06 285.00);
+  --accent-foreground: oklch(0.95 0.005 270.00);
 
-  --destructive: oklch(0.60 0.20 25.00);
+  --destructive: oklch(0.60 0.22 25.00);
 
-  --border: oklch(0.25 0.02 270.00);
-  --input: oklch(0.25 0.02 270.00);
-  --ring: oklch(0.60 0.15 280.00);
+  /* Slightly more visible borders */
+  --border: oklch(0.28 0.02 280.00);
+  --input: oklch(0.22 0.02 280.00);
+  --ring: oklch(0.65 0.18 285.00);
 
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-1: oklch(0.65 0.24 285.00);
+  --chart-2: oklch(0.70 0.17 162.00);
+  --chart-3: oklch(0.75 0.19 70.00);
+  --chart-4: oklch(0.65 0.26 305.00);
+  --chart-5: oklch(0.65 0.25 20.00);
 
-  --sidebar: oklch(0.15 0.02 270.00);
-  --sidebar-foreground: oklch(0.98 0.005 260.00);
-  --sidebar-primary: oklch(0.65 0.20 280.00);
-  --sidebar-primary-foreground: oklch(0.12 0.02 270.00);
-  --sidebar-accent: oklch(0.25 0.05 280.00);
-  --sidebar-accent-foreground: oklch(0.98 0.005 260.00);
-  --sidebar-border: oklch(0.25 0.02 270.00);
-  --sidebar-ring: oklch(0.60 0.15 280.00);
+  --sidebar: oklch(0.14 0.015 275.00);
+  --sidebar-foreground: oklch(0.95 0.005 270.00);
+  --sidebar-primary: oklch(0.70 0.22 285.00);
+  --sidebar-primary-foreground: oklch(0.12 0.02 275.00);
+  --sidebar-accent: oklch(0.25 0.05 285.00);
+  --sidebar-accent-foreground: oklch(0.95 0.005 270.00);
+  --sidebar-border: oklch(0.26 0.02 280.00);
+  --sidebar-ring: oklch(0.65 0.18 285.00);
 }
 
 @layer base {
@@ -171,15 +176,15 @@
 /* Custom Utilities for Glassmorphism & Effects */
 @layer utilities {
   .glass {
-    @apply bg-background/60 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-sm;
+    @apply bg-background/60 backdrop-blur-md border border-white/10 shadow-lg;
   }
 
   .glass-card {
-    @apply bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm transition-all duration-300;
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm transition-all duration-300;
   }
 
   .glass-card:hover {
-    @apply bg-card/80 border-primary/20 shadow-md translate-y-[-2px];
+    @apply bg-card border-primary/30 shadow-xl translate-y-[-2px];
   }
 
   .text-glow {
@@ -192,5 +197,19 @@
 
   .animation-delay-4000 {
     animation-delay: 4s;
+  }
+
+  /* Dark mode specific gradient backgrounds */
+  .dark-gradient-bg {
+    @apply bg-gradient-to-br from-background via-background to-accent/5;
+  }
+
+  /* Glow effects for dark mode */
+  .glow-primary {
+    box-shadow: 0 0 40px -10px oklch(0.70 0.22 285.00 / 0.4);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 60px -20px oklch(0.65 0.26 305.00 / 0.3);
   }
 }

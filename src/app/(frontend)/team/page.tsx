@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Users, Sparkles, ArrowRight } from "lucide-react";
+import { Users, Sparkles, ArrowRight, Linkedin, Github, Globe, Crown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
@@ -9,26 +9,25 @@ export const revalidate = 60;
 interface TeamMember {
     id: number;
     name: string;
-    avatarUrl: string | null;
-    role: "admin" | "editor" | "author";
+    position: string;
+    bio: string | null;
+    photoUrl: string | null;
+    linkedinUrl: string | null;
+    githubUrl: string | null;
+    websiteUrl: string | null;
+    category: "head" | "core" | "mentor";
 }
 
 interface TeamResponse {
     data: TeamMember[];
 }
 
-const roleLabels: Record<TeamMember["role"], string> = {
-    admin: "Administrator",
-    editor: "Editor",
-    author: "Article Author",
-};
-
 async function fetchTeamMembers(): Promise<TeamMember[]> {
     const baseUrl = resolveApiBaseUrl();
 
     const response = await fetch(`${baseUrl}/api/team`, {
-        next: { revalidate },
-        cache: "force-cache",
+        next: { revalidate: 0 },
+        cache: "no-store",
     });
 
     if (!response.ok) {
@@ -42,9 +41,9 @@ async function fetchTeamMembers(): Promise<TeamMember[]> {
 export default async function TeamPage() {
     const members = await fetchTeamMembers();
 
-    const admins = members.filter((m) => m.role === "admin");
-    const editors = members.filter((m) => m.role === "editor");
-    const authors = members.filter((m) => m.role === "author");
+    const heads = members.filter((m) => m.category === "head");
+    const coreMembers = members.filter((m) => m.category === "core");
+    const mentors = members.filter((m) => m.category === "mentor");
 
     return (
         <main className="w-full bg-background text-foreground">
@@ -74,16 +73,35 @@ export default async function TeamPage() {
             {/* Team Members */}
             <section className="py-24 bg-muted/30">
                 <div className="mx-auto max-w-5xl px-6 lg:px-8 space-y-24">
-                    {admins.length > 0 && (
-                        <TeamSection title="Leadership" members={admins} />
+                    {/* Innovation Lab Head - Highlighted Section */}
+                    {heads.length > 0 && (
+                        <div>
+                            <div className="flex items-center gap-4 mb-12">
+                                <div className="flex items-center gap-2">
+                                    <Crown className="w-6 h-6 text-primary" />
+                                    <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                                        Innovation Lab Head
+                                    </h2>
+                                </div>
+                                <div className="h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent"></div>
+                            </div>
+
+                            <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-center">
+                                {heads.map((member) => (
+                                    <HeadMemberCard key={member.id} member={member} />
+                                ))}
+                            </div>
+                        </div>
                     )}
 
-                    {editors.length > 0 && (
-                        <TeamSection title="Editorial Team" members={editors} />
+                    {/* Core Members */}
+                    {coreMembers.length > 0 && (
+                        <TeamSection title="Core Members" members={coreMembers} />
                     )}
 
-                    {authors.length > 0 && (
-                        <TeamSection title="Contributors" members={authors} />
+                    {/* Mentors */}
+                    {mentors.length > 0 && (
+                        <TeamSection title="Mentors" members={mentors} />
                     )}
 
                     {members.length === 0 && (
@@ -101,7 +119,7 @@ export default async function TeamPage() {
                 <div className="mx-auto max-w-4xl px-6 lg:px-8 text-center relative z-10">
                     <h2 className="text-3xl font-bold tracking-tight mb-4">Join the Lab</h2>
                     <p className="text-lg text-foreground/70 mb-8 max-w-xl mx-auto">
-                        Are you passionate about innovation and mentorship? We're always looking for new collaborators.
+                        Are you passionate about innovation and mentorship? We&apos;re always looking for new collaborators.
                     </p>
                     <Button className="rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform" asChild>
                         <Link href="/contact">
@@ -139,14 +157,85 @@ function TeamSection({
     );
 }
 
+// Special highlighted card for Innovation Lab Head
+function HeadMemberCard({ member }: { member: TeamMember }) {
+    return (
+        <div className="group relative bg-gradient-to-br from-primary/10 via-card to-card rounded-3xl p-8 border-2 border-primary/30 shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:translate-y-[-4px] text-center">
+            {/* Crown badge */}
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg">
+                <Crown className="w-3 h-3 inline-block mr-1" />
+                Lab Head
+            </div>
+
+            <div className="relative mt-4 mb-6 mx-auto w-40 h-40">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
+                {member.photoUrl ? (
+                    <Image
+                        src={member.photoUrl}
+                        alt={member.name}
+                        fill
+                        className="rounded-full object-cover border-4 border-primary/30 shadow-lg relative z-10 group-hover:border-primary transition-colors"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                ) : (
+                    <div className="w-full h-full rounded-full bg-primary/20 flex items-center justify-center text-4xl font-bold text-primary border-4 border-primary/30 shadow-lg relative z-10">
+                        {member.name.charAt(0).toUpperCase()}
+                    </div>
+                )}
+            </div>
+            <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
+            <p className="text-sm text-primary/80 font-medium mt-1">{member.position}</p>
+
+            {member.bio && (
+                <p className="text-sm text-foreground/70 mt-4 leading-relaxed">{member.bio}</p>
+            )}
+
+            {(member.linkedinUrl || member.githubUrl || member.websiteUrl) && (
+                <div className="flex items-center justify-center gap-4 mt-6">
+                    {member.linkedinUrl && (
+                        <a
+                            href={member.linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors p-2 rounded-full hover:bg-primary/10"
+                        >
+                            <Linkedin className="h-5 w-5" />
+                        </a>
+                    )}
+                    {member.githubUrl && (
+                        <a
+                            href={member.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors p-2 rounded-full hover:bg-primary/10"
+                        >
+                            <Github className="h-5 w-5" />
+                        </a>
+                    )}
+                    {member.websiteUrl && (
+                        <a
+                            href={member.websiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors p-2 rounded-full hover:bg-primary/10"
+                        >
+                            <Globe className="h-5 w-5" />
+                        </a>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
 function MemberCard({ member }: { member: TeamMember }) {
     return (
         <div className="group relative bg-card rounded-3xl p-6 border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px] text-center">
             <div className="relative mb-6 mx-auto w-32 h-32">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                {member.avatarUrl ? (
+                {member.photoUrl ? (
                     <Image
-                        src={member.avatarUrl}
+                        src={member.photoUrl}
                         alt={member.name}
                         fill
                         className="rounded-full object-cover border-4 border-background shadow-sm relative z-10"
@@ -159,10 +248,46 @@ function MemberCard({ member }: { member: TeamMember }) {
                 )}
             </div>
             <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
-            <span className="inline-block mt-2 px-3 py-1 rounded-full bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all">
-                {roleLabels[member.role]}
-            </span>
+            <p className="text-sm text-muted-foreground mt-1">{member.position}</p>
+
+            {member.bio && (
+                <p className="text-xs text-foreground/60 mt-3 line-clamp-2">{member.bio}</p>
+            )}
+
+            {(member.linkedinUrl || member.githubUrl || member.websiteUrl) && (
+                <div className="flex items-center justify-center gap-3 mt-4">
+                    {member.linkedinUrl && (
+                        <a
+                            href={member.linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                        >
+                            <Linkedin className="h-4 w-4" />
+                        </a>
+                    )}
+                    {member.githubUrl && (
+                        <a
+                            href={member.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                        >
+                            <Github className="h-4 w-4" />
+                        </a>
+                    )}
+                    {member.websiteUrl && (
+                        <a
+                            href={member.websiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-primary transition-colors"
+                        >
+                            <Globe className="h-4 w-4" />
+                        </a>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
-

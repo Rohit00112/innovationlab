@@ -24,6 +24,7 @@ import {
     MapPin,
 } from "lucide-react";
 
+import { FaqSection } from "@/components/faqs/faq-section";
 import { HttpError } from "@/lib/http/api-client";
 import { listTestimonials } from "@/lib/http/testimonials";
 import { listNews } from "@/lib/http/news";
@@ -1099,50 +1100,52 @@ export default function Frontend() {
                 </div>
             </section>
 
-            <section className="relative py-24 overflow-hidden">
-                <div className="absolute inset-0 bg-primary/95 text-primary-foreground z-10"></div>
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-20"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary via-violet-600 to-indigo-700 z-10 opacity-90"></div>
+            <section className="relative py-24 overflow-hidden bg-card border-t border-border/50">
+                {/* Background gradients that adapt to theme */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5 z-0"></div>
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 z-10"></div>
 
                 {/* Animated blobs */}
-                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-white/10 rounded-full blur-3xl animate-blob z-10"></div>
-                <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent/20 rounded-full blur-3xl animate-blob animation-delay-4000 z-10"></div>
+                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl animate-blob z-0"></div>
+                <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl animate-blob animation-delay-4000 z-0"></div>
 
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-30">
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-20">
                     <div className="max-w-3xl mx-auto text-center space-y-8">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/90 text-xs font-semibold tracking-wide uppercase border border-white/20 backdrop-blur-sm">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase border border-primary/20 backdrop-blur-sm">
                             <Rocket className="w-3 h-3" />
                             Launch Your Ideas
                         </div>
 
-                        <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white leading-tight">
-                            Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Innovate?</span>
+                        <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight">
+                            Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Innovate?</span>
                         </h2>
 
-                        <p className="text-lg leading-relaxed text-white/80 max-w-2xl mx-auto">
-                            Join the Innovation Lab and transform your ideas into reality. Whether you're a student, researcher, or entrepreneur, we provide the tools, community, and mentorship you need to succeed.
+                        <p className="text-lg leading-relaxed text-foreground/70 max-w-2xl mx-auto">
+                            Join the Innovation Lab and transform your ideas into reality. Whether you&apos;re a student, researcher, or entrepreneur, we provide the tools, community, and mentorship you need to succeed.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-                            <Button size="lg" variant="secondary" className="px-10 h-14 text-base font-bold rounded-full shadow-xl shadow-black/20 hover:scale-105 transition-transform">
+                            <Button size="lg" className="px-10 h-14 text-base font-bold rounded-full shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
                                 Get Started Now
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                             <Button
                                 size="lg"
-                                className="px-10 h-14 text-base font-medium rounded-full border border-white/30 bg-transparent text-white hover:bg-white/10 backdrop-blur-sm transition-all"
+                                variant="outline"
+                                className="px-10 h-14 text-base font-medium rounded-full border-primary/30 hover:bg-primary/10 hover:text-primary transition-all"
                                 asChild
                             >
                                 <Link href="/about">Learn More About Us</Link>
                             </Button>
                         </div>
 
-                        <p className="text-sm text-white/50 pt-8">
+                        <p className="text-sm text-muted-foreground pt-8">
                             Join 50+ other students building the future today.
                         </p>
                     </div>
                 </div>
             </section>
+            <FaqSection />
         </main>
     );
 }
