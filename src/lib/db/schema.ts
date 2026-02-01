@@ -449,3 +449,24 @@ export const faqs = pgTable(
     isActiveIdx: index("faqs_is_active_idx").on(table.isActive)
   })
 );
+
+// Feedbacks
+export const feedbackCategoryEnum = pgEnum("feedback_category", [
+  "suggestion",
+  "issue",
+  "other"
+]);
+
+export const feedbacks = pgTable(
+  "feedbacks",
+  {
+    id: serial("id").primaryKey(),
+    message: text("message").notNull(),
+    email: text("email"),
+    category: feedbackCategoryEnum("category").notNull().default("suggestion"),
+    createdAt: timestampWithDefaults("created_at"),
+  },
+  table => ({
+    categoryIdx: index("feedbacks_category_idx").on(table.category)
+  })
+);

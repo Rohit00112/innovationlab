@@ -16,8 +16,15 @@ import {
     Settings,
     Sparkles,
     UserCircle,
-    Users2
+    Users2,
+    MessageSquare,
+    Network,
+    Users
 } from "lucide-react"
+
+import { db } from "@/lib/db";
+import { communities, events, feedbacks, users } from "@/lib/db/schema";
+import { count } from "drizzle-orm";
 
 import {
     DropdownMenu,
@@ -38,6 +45,11 @@ export default async function Dashboard() {
     }
 
     const { user } = session
+
+    const [userCount] = await db.select({ value: count() }).from(users);
+    const [eventCount] = await db.select({ value: count() }).from(events);
+    const [communityCount] = await db.select({ value: count() }).from(communities);
+    const [feedbackCount] = await db.select({ value: count() }).from(feedbacks);
 
     return (
         <div className="space-y-8">

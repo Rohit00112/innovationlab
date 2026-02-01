@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "../ui/mode-toggle";
+import { CommandMenu } from "../ui/command-menu";
+import { FeedbackDialog } from "../feedback/feedback-dialog";
 import { useState } from "react";
 
 const navItems = [
@@ -31,6 +33,9 @@ export function Navbar() {
           </span>
           <span className="group-hover:text-primary transition-colors">INNOVATION LAB</span>
         </Link>
+        <div className="flex-1 px-8 hidden lg:block">
+          <CommandMenu />
+        </div>
 
         <nav className="hidden items-center gap-2 md:flex p-1 rounded-full bg-secondary/50 border border-border/50 backdrop-blur-sm">
           {navItems.map((item) => (
@@ -45,6 +50,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
+          <FeedbackDialog />
           <ModeToggle />
           <Button className="hidden h-10 px-6 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all md:inline-flex">
             Get Started
