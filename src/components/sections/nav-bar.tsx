@@ -7,7 +7,8 @@ import Link from "next/link";
 import { ModeToggle } from "../ui/mode-toggle";
 import { CommandMenu } from "../ui/command-menu";
 import { FeedbackDialog } from "../feedback/feedback-dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -20,45 +21,92 @@ const navItems = [
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <Link
-          href="/"
-          className="flex items-center gap-3 text-sm font-bold tracking-wide text-foreground group"
-        >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-violet-600 text-white shadow-md group-hover:shadow-primary/20 transition-all duration-300">
-            IL
-          </span>
-          <span className="group-hover:text-primary transition-colors">INNOVATION LAB</span>
-        </Link>
-        <div className="flex-1 px-8 hidden lg:block">
-          <CommandMenu />
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b transition-all duration-300",
+        scrolled
+          ? "border-border/40 bg-background/80 backdrop-blur-xl shadow-sm"
+          : "border-transparent bg-transparent"
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
+
+        {/* Left: Logo */}
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 transition-transform hover:scale-[1.02]"
+          >
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/20">
+              <span className="text-sm font-bold tracking-tighter">IL</span>
+            </div>
+            <span className="hidden font-bold tracking-tight text-foreground sm:inline-block">
+              Innovation Lab
+            </span>
+          </Link>
         </div>
 
-        <nav className="hidden items-center gap-2 md:flex p-1 rounded-full bg-secondary/50 border border-border/50 backdrop-blur-sm">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="px-5 py-2 text-sm font-medium rounded-full text-foreground/70 transition-all hover:text-foreground hover:bg-background hover:shadow-sm"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {/* Center: Navigation & Search - integrated better */}
+        <div className="hidden md:flex flex-1 items-center justify-center gap-6 px-8">
+          {/* Navigation Pills */}
+          <nav className="flex items-center rounded-full border border-border/50 bg-background/50 p-1 shadow-sm backdrop-blur-md">
+            <ul className="flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <li key={item.label}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "relative block rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-300",
+                        isActive
+                          ? "text-primary bg-primary/10 font-semibold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
 
-        <div className="flex items-center gap-4">
-          <FeedbackDialog />
+        {/* Right: Actions */}
+        <div className="flex shrink-0 items-center gap-3">
+          {/* Search Trigger (Icon on small screens, full on large) */}
+          <div className="w-auto">
+            <CommandMenu />
+          </div>
+
+          <div className="hidden md:flex items-center gap-2">
+            <FeedbackDialog />
+          </div>
+
           <ModeToggle />
-          <Button className="hidden h-10 px-6 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all md:inline-flex">
+
+          <Button className="hidden h-9 rounded-full bg-indigo-600 px-5 text-sm font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/20 md:inline-flex">
             Get Started
           </Button>
+
+          {/* Mobile Menu Trigger */}
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full md:hidden"
+            className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
@@ -73,20 +121,24 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="border-t border-border/50 bg-background/95 backdrop-blur-xl md:hidden absolute w-full left-0 shadow-xl">
-          <nav className="mx-auto max-w-7xl px-6 py-6 space-y-2">
+        <div className="absolute left-0 top-full w-full border-b border-border/10 bg-background/95 p-6 shadow-2xl backdrop-blur-3xl md:hidden animate-in slide-in-from-top-2">
+          <nav className="flex flex-col gap-2">
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="block px-4 py-3 text-sm font-medium rounded-xl text-foreground/70 hover:text-foreground hover:bg-secondary/50 transition-colors"
+                className="flex items-center rounded-lg px-4 py-3 text-base font-medium text-foreground/80 hover:bg-secondary/50 hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4">
-              <Button className="w-full rounded-xl h-12 text-sm font-bold uppercase tracking-wider">
+            <div className="mt-4 flex flex-col gap-3 border-t border-border/50 pt-4">
+              <div className="flex items-center justify-between px-2">
+                <span className="text-sm text-muted-foreground">Have a suggestion?</span>
+                <FeedbackDialog />
+              </div>
+              <Button className="w-full rounded-xl bg-indigo-600 text-white" size="lg">
                 Get Started
               </Button>
             </div>
