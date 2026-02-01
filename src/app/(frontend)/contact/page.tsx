@@ -38,34 +38,63 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 type SubmissionStatus = "idle" | "submitting" | "success" | "error";
 
-const contactDetails = [
-    {
-        title: "Visit the Lab",
-        description: "Itahari International College, 4th Floor Innovation Wing, Sunsari 56705",
-        icon: MapPin,
-        color: "bg-blue-500/10 text-blue-600",
-    },
-    {
-        title: "Talk With Us",
-        description: "+977-25-525123 (Sun–Fri, 9:00 AM – 5:00 PM)",
-        icon: Phone,
-        color: "bg-green-500/10 text-green-600",
-    },
-    {
-        title: "Write to Us",
-        description: "hello@innovationlab.com",
-        icon: Mail,
-        color: "bg-purple-500/10 text-purple-600",
-    },
-    {
-        title: "Open Hours",
-        description: "Drop-in mentoring every Wednesday & Thursday, 2:00 PM – 4:00 PM.",
-        icon: Clock,
-        color: "bg-orange-500/10 text-orange-600",
-    },
-];
+import { useSiteContent } from "@/lib/hooks/use-site-content";
+
+// ... existing imports ...
+
+// Define types for Contact Page Content
+// Define types for Contact Page Content matching Admin structure
+interface ContactDetail {
+    title: string;
+    description: string;
+}
+
+interface ContactPageContent {
+    heroTitle: string;
+    heroSubtitle: string;
+    heroDescription: string;
+    contactDetails: ContactDetail[];
+    locationTitle: string;
+    locationDescription: string;
+    mapEmbedUrl: string;
+}
+
+const DEFAULT_CONTACT_CONTENT: ContactPageContent = {
+    heroTitle: "Let's Build Something Great",
+    heroSubtitle: "Get in Touch",
+    heroDescription: "Whether you're exploring collaboration, need support on a project, or want a tour of the lab, we're here to help.",
+    contactDetails: [
+        { title: "Visit the Lab", description: "Itahari International College, 4th Floor Innovation Wing, Sunsari 56705" },
+        { title: "Talk With Us", description: "+977-25-525123 (Sun–Fri, 9:00 AM – 5:00 PM)" },
+        { title: "Write to Us", description: "hello@innovationlab.com" },
+        { title: "Open Hours", description: "Drop-in mentoring every Wednesday & Thursday, 2:00 PM – 4:00 PM." },
+    ],
+    locationTitle: "Visit Innovation Labs",
+    locationDescription: "We love welcoming new collaborators into the lab. Reach out at least 48 hours in advance so we can prep the right team and gear for you.",
+    mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13948.090852794756!2d87.3058053!3d26.6498704!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef6ea070e7b18b%3A0x2959e2a3e2bf54e0!2sItahari%20International%20College!5e1!3m2!1sen!2snp!4v1762175844952!5m2!1sen!2snp"
+};
 
 export default function ContactPage() {
+    // Fetch dynamic content
+    const { content } = useSiteContent<ContactPageContent>("contact", "main", DEFAULT_CONTACT_CONTENT);
+    const actualContent = content || DEFAULT_CONTACT_CONTENT;
+
+    // Fixed icons and colors mapped by index to match the Admin's default order
+    const detailStyles = [
+        { icon: MapPin, color: "bg-blue-500/10 text-blue-600" },
+        { icon: Phone, color: "bg-green-500/10 text-green-600" },
+        { icon: Mail, color: "bg-purple-500/10 text-purple-600" },
+        { icon: Clock, color: "bg-orange-500/10 text-orange-600" },
+    ];
+
+    const contactDetails = (actualContent.contactDetails || DEFAULT_CONTACT_CONTENT.contactDetails).map((detail, index) => {
+        const style = detailStyles[index] || detailStyles[0];
+        return {
+            ...detail,
+            ...style
+        };
+    });
+
     const form = useForm<ContactFormValues>({
         resolver: zodResolver(contactFormSchema),
         defaultValues: {
@@ -132,14 +161,16 @@ export default function ContactPage() {
                             <div className="space-y-6">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
                                     <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                                    Get in Touch
+                                    {actualContent.heroSubtitle || "Get in Touch"}
                                 </div>
                                 <h1 className="text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1]">
-                                    Let&apos;s Build <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Something Great</span>
+                                    {actualContent.heroTitle?.split(" ").slice(0, 2).join(" ") || "Let's Build"} <br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+                                        {actualContent.heroTitle?.split(" ").slice(2).join(" ") || "Something Great"}
+                                    </span>
                                 </h1>
                                 <p className="text-lg leading-relaxed text-foreground/70 max-w-xl">
-                                    Whether you&apos;re exploring collaboration, need support on a project, or want a tour of the lab, we&apos;re here to help.
+                                    {actualContent.heroDescription}
                                 </p>
                             </div>
 
@@ -310,10 +341,10 @@ export default function ContactPage() {
                                     Location
                                 </span>
                                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                                    Visit Innovation Labs
+                                    {actualContent.locationTitle || "Visit Innovation Labs"}
                                 </h2>
                                 <p className="text-lg leading-relaxed text-foreground/70">
-                                    We love welcoming new collaborators into the lab. Reach out at least 48 hours in advance so we can prep the right team and gear for you.
+                                    {actualContent.locationDescription || "We love welcoming new collaborators into the lab. Reach out at least 48 hours in advance so we can prep the right team and gear for you."}
                                 </p>
                                 <Button variant="outline" className="rounded-full mt-4 border-primary/20 hover:bg-primary/5 hover:text-primary">
                                     Get Directions <MapPin className="ml-2 h-4 w-4" />
@@ -321,7 +352,7 @@ export default function ContactPage() {
                             </div>
                             <div className="aspect-[4/3] lg:aspect-auto lg:h-full w-full bg-muted/40 relative min-h-[400px]">
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13948.090852794756!2d87.3058053!3d26.6498704!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef6ea070e7b18b%3A0x2959e2a3e2bf54e0!2sItahari%20International%20College!5e1!3m2!1sen!2snp!4v1762175844952!5m2!1sen!2snp"
+                                    src={actualContent.mapEmbedUrl}
                                     className="absolute inset-0 w-full h-full border-0 filter grayscale hover:grayscale-0 transition-all duration-500"
                                     loading="lazy"
                                     referrerPolicy="no-referrer-when-downgrade"

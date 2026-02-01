@@ -470,3 +470,27 @@ export const feedbacks = pgTable(
     categoryIdx: index("feedbacks_category_idx").on(table.category)
   })
 );
+
+// Site Content - Dynamic CMS for page sections
+export const siteContent = pgTable(
+  "site_content",
+  {
+    id: serial("id").primaryKey(),
+    pageKey: text("page_key").notNull(), // e.g., "home", "about", "contact", "global"
+    sectionKey: text("section_key").notNull(), // e.g., "hero", "stats", "contact_details"
+    content: json("content").notNull(), // JSON blob containing the section's editable fields
+    updatedAt: timestampWithDefaults("updated_at"),
+    updatedById: integer("updated_by_id").references(() => users.id, { onDelete: "set null" })
+  },
+  table => ({
+    uniquePageSection: uniqueIndex("site_content_page_section_unique").on(table.pageKey, table.sectionKey),
+    pageKeyIdx: index("site_content_page_key_idx").on(table.pageKey)
+  })
+);
+
+export const siteContentRelations = relations(siteContent, ({ one }) => ({
+  updatedBy: one(users, {
+    fields: [siteContent.updatedById],
+    references: [users.id]
+  })
+}));

@@ -30,6 +30,7 @@ import { listTestimonials } from "@/lib/http/testimonials";
 import { listNews } from "@/lib/http/news";
 import { listEvents } from "@/lib/http/events";
 import { normalizeLexicalState, estimateReadingTime } from "@/lib/editor/lexical-utils";
+import { useSiteContent } from "@/lib/hooks/use-site-content";
 import { type TestimonialRecord } from "@/lib/types/testimonials";
 import { type NewsRecord } from "@/lib/types/news";
 import { type EventRecord } from "@/lib/types/events";
@@ -200,12 +201,27 @@ const highlightTracks = [
     },
 ];
 
-const achievementStats = [
-    { value: "500+", label: "Projects delivered", icon: Rocket },
-    { value: "12+", label: "Years of momentum", icon: CalendarDays },
-    { value: "50+", label: "Collaborators", icon: Users },
-    { value: "25", label: "Awards & honours", icon: Trophy },
-];
+// Default home page content (used as fallback)
+interface HomePageContent {
+    heroTitle: string;
+    heroSubtitle: string;
+    heroDescription: string;
+    achievementStats: { value: string; label: string }[];
+}
+
+const DEFAULT_HOME_CONTENT: HomePageContent = {
+    heroTitle: "INNOVATION LAB",
+    heroSubtitle: "Where Ideas Come Alive",
+    heroDescription: "Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation.",
+    achievementStats: [
+        { value: "500+", label: "Projects delivered" },
+        { value: "12+", label: "Years of momentum" },
+        { value: "50+", label: "Collaborators" },
+        { value: "25", label: "Awards & honours" },
+    ],
+};
+
+const achievementIcons = [Rocket, CalendarDays, Users, Trophy];
 
 function safeText(value: string | null | undefined) {
     return value?.trim() ?? "";
@@ -443,6 +459,21 @@ export default function Frontend() {
     const [eventsError, setEventsError] = useState<string | null>(null);
     const [eventsFromApi, setEventsFromApi] = useState(false);
 
+    // Fetch dynamic home page content from CMS
+    const { content: homeContent } = useSiteContent<HomePageContent>(
+        "home",
+        "main",
+        DEFAULT_HOME_CONTENT
+    );
+
+    // Merge dynamic stats with icons
+    const achievementStats = (homeContent?.achievementStats || DEFAULT_HOME_CONTENT.achievementStats).map(
+        (stat, index) => ({
+            ...stat,
+            icon: achievementIcons[index] || Rocket,
+        })
+    );
+
     useEffect(() => {
         let cancelled = false;
 
@@ -614,12 +645,12 @@ export default function Frontend() {
 
                             <div className="space-y-6">
                                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-                                    INNOVATION
+                                    {homeContent?.heroTitle?.split(" ")[0] || "INNOVATION"}
                                     <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">LAB</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">{homeContent?.heroTitle?.split(" ").slice(1).join(" ") || "LAB"}</span>
                                 </h1>
                                 <p className="text-xl leading-relaxed text-foreground/80 max-w-xl">
-                                    Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation.
+                                    {homeContent?.heroDescription || DEFAULT_HOME_CONTENT.heroDescription}
                                 </p>
                             </div>
 
@@ -645,15 +676,15 @@ export default function Frontend() {
                                         <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary/10 rounded-xl text-primary">
                                             <Target className="h-6 w-6" />
                                         </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">500+</h3>
-                                        <p className="text-sm font-medium text-foreground/60">Projects Delivered</p>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[0]?.value || "500+"}</h3>
+                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[0]?.label || "Projects Delivered"}</p>
                                     </div>
                                     <div className="glass-card p-8 rounded-2xl bg-primary/5 border-primary/20">
                                         <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary text-primary-foreground rounded-xl shadow-lg shadow-primary/30">
                                             <Users className="h-6 w-6" />
                                         </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">50+</h3>
-                                        <p className="text-sm font-medium text-foreground/60">Active Members</p>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[2]?.value || "50+"}</h3>
+                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[2]?.label || "Collaborators"}</p>
                                     </div>
                                 </div>
                                 <div className="space-y-6">
@@ -661,15 +692,15 @@ export default function Frontend() {
                                         <div className="w-12 h-12 mb-4 flex items-center justify-center bg-secondary rounded-xl text-secondary-foreground">
                                             <Trophy className="h-6 w-6" />
                                         </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">25</h3>
-                                        <p className="text-sm font-medium text-foreground/60">Awards Won</p>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[3]?.value || "25"}</h3>
+                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[3]?.label || "Awards Won"}</p>
                                     </div>
                                     <div className="glass-card p-8 rounded-2xl">
                                         <div className="w-12 h-12 mb-4 flex items-center justify-center bg-accent/20 rounded-xl text-accent-foreground">
                                             <CalendarDays className="h-6 w-6" />
                                         </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">12+</h3>
-                                        <p className="text-sm font-medium text-foreground/60">Years Legacy</p>
+                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[1]?.value || "12+"}</h3>
+                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[1]?.label || "Years Legacy"}</p>
                                     </div>
                                 </div>
                             </div>

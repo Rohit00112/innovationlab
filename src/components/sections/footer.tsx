@@ -8,9 +8,11 @@ interface FooterMenuItem {
 
 interface FooterProps {
   tagline?: string;
+  description?: string;
   menuItems?: FooterMenuItem[];
   bottomLinks?: { text: string; url: string }[];
   copyright?: string;
+  socialLinks?: { platform: string; url: string }[];
 }
 
 const menuDefaults: FooterMenuItem[] = [
@@ -51,9 +53,11 @@ const bottomDefaults = [
 
 export function Footer({
   tagline = "Empowering Innovation",
+  description = "Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation at Itahari International College.",
   menuItems = menuDefaults,
   bottomLinks = bottomDefaults,
   copyright = "© 2025 Innovation Lab, Itahari International College. All rights reserved.",
+  socialLinks,
 }: FooterProps) {
   return (
     <footer className="relative bg-background pt-20 pb-10 overflow-hidden">
@@ -72,25 +76,31 @@ export function Footer({
               <span className="group-hover:text-primary transition-colors">INNOVATION LAB</span>
             </Link>
             <p className="text-sm leading-relaxed text-foreground/60 max-w-sm">
-              Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation at Itahari International College.
+              {description}
             </p>
 
             <div className="flex items-center gap-3 pt-2">
-              {[
-                { icon: Linkedin, label: "LinkedIn" },
-                { icon: Twitter, label: "Twitter" },
-                { icon: Github, label: "GitHub" },
-                { icon: Mail, label: "Email" }
-              ].map((social, index) => (
-                <a
-                  key={index}
-                  href="#"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/50 border border-border/50 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
+              {(socialLinks || [
+                { platform: "LinkedIn", url: "#" },
+                { platform: "Twitter", url: "#" },
+                { platform: "GitHub", url: "#" },
+                { platform: "Email", url: "#" }
+              ]).map((social, index) => {
+                const Icon = social.platform.toLowerCase().includes("linkedin") ? Linkedin :
+                  social.platform.toLowerCase().includes("twitter") ? Twitter :
+                    social.platform.toLowerCase().includes("github") ? Github : Mail;
+
+                return (
+                  <a
+                    key={index}
+                    href={social.url}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/50 border border-border/50 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
+                    aria-label={social.platform}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
             </div>
           </div>
 

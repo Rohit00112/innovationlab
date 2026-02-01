@@ -14,7 +14,122 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { getSiteContent } from "@/lib/site-content";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+
+// ... existing imports ...
+
+// Define types for About Page Content
+interface AboutPageContent {
+  heroTitle: string;
+  heroDescription: string;
+  missionPanels: {
+    title: string;
+    subtitle: string;
+    description: string;
+    iconName: string; // Stored as string name of icon
+  }[];
+  values: {
+    title: string;
+    description: string;
+    iconName: string;
+  }[];
+  milestones: {
+    year: string;
+    title: string;
+    description: string;
+  }[];
+  achievementStats: {
+    value: string;
+    label: string;
+  }[];
+}
+
+const DEFAULT_ABOUT_CONTENT: AboutPageContent = {
+  heroTitle: "SHAPING THE FUTURE",
+  heroDescription: "At Innovation Lab, we transform bold ideas into real-world solutions through technology, creativity, and collaborative innovation.",
+  missionPanels: [
+    {
+      title: "Mission",
+      subtitle: "Empower Innovators",
+      description: "We provide students with the resources, mentorship, and collaborative environment needed to transform bold ideas into impactful solutions that address real-world challenges.",
+      iconName: "Target"
+    },
+    {
+      title: "Vision",
+      subtitle: "Lead Innovation",
+      description: "To become a leading innovation hub that bridges academia and industry, fostering a culture of creativity, experimentation, and technological advancement.",
+      iconName: "Lightbulb"
+    },
+    {
+      title: "Approach",
+      subtitle: "Learning by Building",
+      description: "Hands-on project-based learning combined with industry mentorship, enabling students to gain practical experience while developing innovative solutions.",
+      iconName: "Layers"
+    },
+    {
+      title: "Community",
+      subtitle: "Inclusive by Design",
+      description: "A diverse and welcoming community where every voice is heard, collaboration is celebrated, and innovation thrives through collective effort.",
+      iconName: "Users"
+    }
+  ],
+  values: [
+    {
+      title: "Passion",
+      description: "Driven by curiosity and enthusiasm to explore new technologies and push the boundaries of what's possible.",
+      iconName: "Heart"
+    },
+    {
+      title: "Collaboration",
+      description: "Working together across disciplines to create solutions that are greater than the sum of their parts.",
+      iconName: "Users"
+    },
+    {
+      title: "Innovation",
+      description: "Constantly seeking new approaches, embracing failure as learning, and iterating toward breakthrough solutions.",
+      iconName: "Zap"
+    },
+    {
+      title: "Impact",
+      description: "Creating meaningful change that extends beyond the lab, benefiting communities and society at large.",
+      iconName: "Globe"
+    }
+  ],
+  milestones: [
+    {
+      year: "2015",
+      title: "Foundation",
+      description: "Innovation Lab was established at Itahari International College with a vision to create a collaborative space for student innovation and research."
+    },
+    {
+      year: "2018",
+      title: "First Breakthrough",
+      description: "Successfully launched our first major project, gaining recognition from industry partners and establishing our reputation for excellence."
+    },
+    {
+      year: "2021",
+      title: "Expansion",
+      description: "Expanded our programs and partnerships, reaching international collaborators and broadening our impact across multiple domains."
+    },
+    {
+      year: "2024",
+      title: "Recognition",
+      description: "Received multiple awards for innovation and community impact, solidifying our position as a leading student innovation hub."
+    }
+  ],
+  achievementStats: [
+    { value: "500+", label: "Projects delivered" },
+    { value: "12+", label: "Years of momentum" },
+    { value: "50+", label: "Collaborators" },
+    { value: "25", label: "Awards & honours" }
+  ]
+};
+
+// Map icon names to components
+const iconMap: Record<string, any> = {
+  Target, Lightbulb, Layers, Users, Heart, Zap, Globe, Rocket, Trophy
+};
 
 export const revalidate = 60;
 
@@ -59,98 +174,28 @@ async function fetchTeamMembers(): Promise<TeamMember[]> {
 
 export default async function AboutPage() {
   const teamMembers = await fetchTeamMembers();
+  const baseUrl = resolveApiBaseUrl(); // Ensure absolute URL for server-side fetch
+  const content = await getSiteContent<AboutPageContent>("about", "main", baseUrl) || DEFAULT_ABOUT_CONTENT;
 
-  const missionPanels = [
-    {
-      title: "Mission",
-      subtitle: "Empower Innovators",
-      description:
-        "We provide students with the resources, mentorship, and collaborative environment needed to transform bold ideas into impactful solutions that address real-world challenges.",
-      icon: Target,
-      color: "bg-orange-500/10 text-orange-600",
-    },
-    {
-      title: "Vision",
-      subtitle: "Lead Innovation",
-      description:
-        "To become a leading innovation hub that bridges academia and industry, fostering a culture of creativity, experimentation, and technological advancement.",
-      icon: Lightbulb,
-      color: "bg-blue-500/10 text-blue-600",
-    },
-    {
-      title: "Approach",
-      subtitle: "Learning by Building",
-      description:
-        "Hands-on project-based learning combined with industry mentorship, enabling students to gain practical experience while developing innovative solutions.",
-      icon: Layers,
-      color: "bg-green-500/10 text-green-600",
-    },
-    {
-      title: "Community",
-      subtitle: "Inclusive by Design",
-      description:
-        "A diverse and welcoming community where every voice is heard, collaboration is celebrated, and innovation thrives through collective effort.",
-      icon: Users,
-      color: "bg-purple-500/10 text-purple-600",
-    },
-  ];
+  const missionPanels = (content.missionPanels || DEFAULT_ABOUT_CONTENT.missionPanels).map((panel, index) => ({
+    ...panel,
+    icon: iconMap[panel.iconName] || Target,
+    color: ["bg-orange-500/10 text-orange-600", "bg-blue-500/10 text-blue-600", "bg-green-500/10 text-green-600", "bg-purple-500/10 text-purple-600"][index % 4]
+  }));
 
-  const values = [
-    {
-      title: "Passion",
-      description: "Driven by curiosity and enthusiasm to explore new technologies and push the boundaries of what's possible.",
-      icon: Heart,
-    },
-    {
-      title: "Collaboration",
-      description: "Working together across disciplines to create solutions that are greater than the sum of their parts.",
-      icon: Users,
-    },
-    {
-      title: "Innovation",
-      description: "Constantly seeking new approaches, embracing failure as learning, and iterating toward breakthrough solutions.",
-      icon: Zap,
-    },
-    {
-      title: "Impact",
-      description: "Creating meaningful change that extends beyond the lab, benefiting communities and society at large.",
-      icon: Globe,
-    },
-  ];
+  const values = (content.values || DEFAULT_ABOUT_CONTENT.values).map(value => ({
+    ...value,
+    icon: iconMap[value.iconName] || Heart
+  }));
 
-  const milestones = [
-    {
-      year: "2015",
-      title: "Foundation",
-      description:
-        "Innovation Lab was established at Itahari International College with a vision to create a collaborative space for student innovation and research.",
-    },
-    {
-      year: "2018",
-      title: "First Breakthrough",
-      description:
-        "Successfully launched our first major project, gaining recognition from industry partners and establishing our reputation for excellence.",
-    },
-    {
-      year: "2021",
-      title: "Expansion",
-      description:
-        "Expanded our programs and partnerships, reaching international collaborators and broadening our impact across multiple domains.",
-    },
-    {
-      year: "2024",
-      title: "Recognition",
-      description:
-        "Received multiple awards for innovation and community impact, solidifying our position as a leading student innovation hub.",
-    },
-  ];
+  const milestones = content.milestones || DEFAULT_ABOUT_CONTENT.milestones;
 
-  const achievements = [
-    { value: "500+", label: "Projects delivered", icon: Rocket },
-    { value: "12+", label: "Years of momentum", icon: Trophy },
-    { value: "50+", label: "Collaborators", icon: Users },
-    { value: "25", label: "Awards & honours", icon: Globe },
-  ];
+  const achievements = (content.achievementStats || DEFAULT_ABOUT_CONTENT.achievementStats).map((stat, index) => ({
+    ...stat,
+    icon: [Rocket, Trophy, Users, Globe][index % 4]
+  }));
+
+
 
   return (
     <main className="w-full bg-background text-foreground">
@@ -172,12 +217,12 @@ export default async function AboutPage() {
 
               <div className="space-y-6">
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-                  SHAPING THE
+                  {content.heroTitle.split(" ").slice(0, -1).join(" ")}
                   <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">FUTURE</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{content.heroTitle.split(" ").slice(-1)[0]}</span>
                 </h1>
                 <p className="text-xl leading-relaxed text-foreground/80 max-w-xl">
-                  At Innovation Lab, we transform bold ideas into real-world solutions through technology, creativity, and collaborative innovation.
+                  {content.heroDescription}
                 </p>
               </div>
 
