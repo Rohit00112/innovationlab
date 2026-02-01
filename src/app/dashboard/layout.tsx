@@ -40,7 +40,8 @@ import {
     Bell,
     Users2,
     HelpCircle,
-    UserCircle
+    UserCircle,
+    MessageSquare
 } from "lucide-react";
 
 import "../globals.css";
@@ -109,6 +110,7 @@ export function AppSidebar({ user }: { user: any }) {
         { title: "Communities", url: "/dashboard/communities", icon: Users2 },
         { title: "Testimonials", url: "/dashboard/testimonials", icon: Sparkles },
         { title: "FAQs", url: "/dashboard/faqs", icon: HelpCircle },
+        { title: "Suggestions", url: "/dashboard/feedbacks", icon: MessageSquare },
         { title: "Configuration", url: "/dashboard/settings", icon: Settings },
     ];
 
