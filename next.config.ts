@@ -7,7 +7,7 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://img.freepik.com https://*.smushcdn.com https://*.s3.amazonaws.com https://*.supabase.co https://gravatar.com https://www.gravatar.com https://avatars.githubusercontent.com https://lh3.googleusercontent.com https://*.imgix.net https://*.public.blob.vercel-storage.com https://utfs.io https://www.google.com https://maps.googleapis.com https://maps.gstatic.com https://images.stockcake.com;
+  img-src 'self' blob: data: https:;
   font-src 'self' https://fonts.gstatic.com;
   frame-src 'self' https://www.google.com https://maps.google.com;
   connect-src 'self' https://res.cloudinary.com https://api.cloudinary.com https://www.google-analytics.com https://vitals.vercel-insights.com;
@@ -159,6 +159,26 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.stockcake.com",
+      },
+      // Pexels - stock photos
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
+      // Pixabay - stock photos
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
+      },
+      // Picsum - placeholder images
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      // Allow any HTTPS image (fallback for user-uploaded URLs)
+      {
+        protocol: "https",
+        hostname: "**",
       },
       // Allow localhost for development
       ...(isDev
