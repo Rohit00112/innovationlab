@@ -22,7 +22,6 @@ import {
     Mail,
     Phone,
     Send,
-    Users,
 } from "lucide-react";
 
 const contactFormSchema = z.object({

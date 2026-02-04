@@ -84,7 +84,7 @@ export interface CreateEventPayload {
   documents?: EventDocument[] | null
 }
 
-export interface UpdateEventPayload extends Partial<CreateEventPayload> { }
+export type UpdateEventPayload = Partial<CreateEventPayload>;
 
 export interface PaginatedEventsResponse {
   data: EventRecord[]

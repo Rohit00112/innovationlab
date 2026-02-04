@@ -44,7 +44,7 @@ export default async function Dashboard() {
     // Parallel queries for performance
     const [
         [userCount],
-        [eventCount],
+        , // eventCount intentionally unused
         [communityCount],
         [feedbackCount],
         [newsCount],
@@ -141,7 +141,7 @@ export default async function Dashboard() {
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
                     <p className="text-muted-foreground mt-1">
-                        Welcome back, {user.name?.split(' ')[0]}! Here's what's happening today.
+                        Welcome back, {user.name?.split(' ')[0]}! Here&apos;s what&apos;s happening today.
                     </p>
                 </div>
                 <div className="flex items-center gap-2">

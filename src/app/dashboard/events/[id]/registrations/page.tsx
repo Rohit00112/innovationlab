@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Download, Mail, Phone, Users as UsersIcon, User, FileText, CheckCircle, XCircle, Clock } from "lucide-react"
@@ -21,7 +21,7 @@ import { Separator } from "@/components/ui/separator"
 import type { EventRegistrationRecord, RegistrationStatus, SubmissionValue } from "@/lib/types/registrations"
 import { getEventRegistrations } from "@/lib/http/registrations"
 
-const statusConfig: Record<RegistrationStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: any }> = {
+const statusConfig: Record<RegistrationStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: React.ComponentType<{ className?: string }> }> = {
     confirmed: { label: "Confirmed", variant: "default", icon: CheckCircle },
     pending: { label: "Pending", variant: "secondary", icon: Clock },
     cancelled: { label: "Cancelled", variant: "destructive", icon: XCircle },

@@ -26,7 +26,6 @@ import {
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
 import { getSessionUser } from "@/lib/auth/service";
-import { ThemeProvider } from "@/providers/theme-provider";
 import { DashboardLogout } from "@/components/dashboard-logout";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Separator } from "@/components/ui/separator";
@@ -103,7 +102,7 @@ export default async function DashboardLayout({
     );
 }
 
-export function AppSidebar({ user }: { user: any }) {
+export function AppSidebar({ user }: { user: { name?: string | null; email?: string | null; image?: string | null } }) {
     const items = [
         { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
         { title: "News & Articles", url: "/dashboard/news", icon: FileText },
@@ -174,7 +173,7 @@ export function AppSidebar({ user }: { user: any }) {
                     <SidebarMenuItem>
                         <div className="flex items-center gap-3 px-2 py-2 mb-2 rounded-lg bg-muted/40 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
                             <Avatar className="h-8 w-8 rounded-lg border border-border">
-                                <AvatarImage src={user.image} alt={user.name} />
+                                <AvatarImage src={user.image ?? undefined} alt={user.name ?? undefined} />
                                 <AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold">
                                     {user.name?.charAt(0).toUpperCase() || "A"}
                                 </AvatarFallback>

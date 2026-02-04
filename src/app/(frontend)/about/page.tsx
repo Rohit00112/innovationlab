@@ -18,11 +18,6 @@ import { getSiteContent } from "@/lib/site-content";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 import { type AboutPageContent, DEFAULT_ABOUT_CONTENT } from "@/lib/types/site-content";
 
-// Map icon names to components
-const iconMap: Record<string, any> = {
-  Target, Lightbulb, Layers, Users, Heart, Zap, Globe, Rocket, Trophy
-};
-
 export const revalidate = 60;
 
 interface TeamMember {
@@ -71,18 +66,18 @@ export default async function AboutPage() {
 
   const missionPanels = (content.missionPanels || DEFAULT_ABOUT_CONTENT.missionPanels).map((panel, index) => ({
     ...panel,
-    icon: iconMap[panel.iconName] || Target,
+    icon: [Target, Lightbulb, Layers, Users][index % 4],
     color: ["bg-orange-500/10 text-orange-600", "bg-blue-500/10 text-blue-600", "bg-green-500/10 text-green-600", "bg-purple-500/10 text-purple-600"][index % 4]
   }));
 
-  const values = (content.values || DEFAULT_ABOUT_CONTENT.values).map(value => ({
+  const values = (content.values || DEFAULT_ABOUT_CONTENT.values).map((value, index) => ({
     ...value,
-    icon: iconMap[value.iconName] || Heart
+    icon: [Heart, Users, Zap, Globe, Rocket, Trophy][index % 6]
   }));
 
   const milestones = content.milestones || DEFAULT_ABOUT_CONTENT.milestones;
 
-  const achievements = (content.achievementStats || DEFAULT_ABOUT_CONTENT.achievementStats).map((stat, index) => ({
+  const achievements = (content.achievements || DEFAULT_ABOUT_CONTENT.achievements).map((stat, index) => ({
     ...stat,
     icon: [Rocket, Trophy, Users, Globe][index % 4]
   }));

@@ -37,8 +37,8 @@ export default function HomeContentPage() {
             if (data.success && data.data?.content) {
                 setContent(data.data.content as HomePageContent);
             }
-        } catch (error) {
-            console.error("Failed to fetch content:", error);
+        } catch {
+            // Failed to fetch content
         } finally {
             setLoading(false);
         }
@@ -63,7 +63,7 @@ export default function HomeContentPage() {
             } else {
                 setMessage({ type: "error", text: data.message || "Failed to save content" });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: "error", text: "Failed to save content" });
         } finally {
             setSaving(false);
@@ -212,7 +212,7 @@ export default function HomeContentPage() {
                 <CardContent className="space-y-4">
                     {content.capabilityTiles.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No capability tiles yet. Click "Add Tile" to create one.
+                            No capability tiles yet. Click &quot;Add Tile&quot; to create one.
                         </p>
                     ) : (
                         content.capabilityTiles.map((tile, index) => (
@@ -236,7 +236,7 @@ export default function HomeContentPage() {
                                         <Input
                                             value={tile.title}
                                             onChange={(e) => updateCapability(index, "title", e.target.value)}
-                                            placeholder="e.g., Machine Translation"
+                                            placeholder={"e.g., Machine Translation"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -244,7 +244,7 @@ export default function HomeContentPage() {
                                         <Input
                                             value={tile.description}
                                             onChange={(e) => updateCapability(index, "description", e.target.value)}
-                                            placeholder="Brief description..."
+                                            placeholder={"Brief description..."}
                                         />
                                     </div>
                                 </div>
@@ -271,7 +271,7 @@ export default function HomeContentPage() {
                 <CardContent>
                     {content.achievementStats.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No achievement stats yet. Click "Add Stat" to create one.
+                            No achievement stats yet. Click &quot;Add Stat&quot; to create one.
                         </p>
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -293,7 +293,7 @@ export default function HomeContentPage() {
                                         <Input
                                             value={stat.value}
                                             onChange={(e) => updateStat(index, "value", e.target.value)}
-                                            placeholder="e.g., 500+"
+                                            placeholder={"e.g., 500+"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -301,7 +301,7 @@ export default function HomeContentPage() {
                                         <Input
                                             value={stat.label}
                                             onChange={(e) => updateStat(index, "label", e.target.value)}
-                                            placeholder="e.g., Projects delivered"
+                                            placeholder={"e.g., Projects delivered"}
                                         />
                                     </div>
                                 </div>

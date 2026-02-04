@@ -121,7 +121,7 @@ export default async function TestimonialsPage() {
                 <div className="mx-auto max-w-4xl px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold tracking-tight mb-4">Have a story to share?</h2>
                     <p className="text-lg text-foreground/70 mb-8 max-w-xl mx-auto">
-                        We'd love to hear about your experience with Innovation Lab. Shoot us a message!
+                        We&apos;d love to hear about your experience with Innovation Lab. Shoot us a message!
                     </p>
                     <Button className="rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform" asChild>
                         <Link href="/contact">

@@ -7,7 +7,7 @@ export const getFaqs = async (isActiveOnly = true) => {
     let query = db.select().from(faqs);
 
     if (isActiveOnly) {
-        // @ts-ignore - simple where condition
+        // @ts-expect-error - simple where condition
         query = query.where(eq(faqs.isActive, true));
     }
 
@@ -43,7 +43,7 @@ export const getFaqsByCategory = async (category: string) => {
     return await db
         .select()
         .from(faqs)
-        // @ts-ignore - interacting with enum column
+        // @ts-expect-error - interacting with enum column
         .where(eq(faqs.category, category))
         .orderBy(asc(faqs.displayOrder));
 };

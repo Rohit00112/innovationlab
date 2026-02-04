@@ -42,7 +42,7 @@ export interface CreateNewsPayload {
   publishedAt?: string | null
 }
 
-export interface UpdateNewsPayload extends Partial<CreateNewsPayload> {}
+export type UpdateNewsPayload = Partial<CreateNewsPayload>;
 
 export interface PaginatedNewsResponse {
   data: NewsRecord[]

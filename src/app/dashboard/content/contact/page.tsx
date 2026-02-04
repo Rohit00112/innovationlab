@@ -41,8 +41,8 @@ export default function ContactContentPage() {
             if (data.success && data.data?.content) {
                 setContent(data.data.content as ContactPageContent);
             }
-        } catch (error) {
-            console.error("Failed to fetch content:", error);
+        } catch {
+            // Failed to fetch content
         } finally {
             setLoading(false);
         }
@@ -67,7 +67,7 @@ export default function ContactContentPage() {
             } else {
                 setMessage({ type: "error", text: data.message || "Failed to save content" });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: "error", text: "Failed to save content" });
         } finally {
             setSaving(false);
@@ -192,7 +192,7 @@ export default function ContactContentPage() {
                 <CardContent className="space-y-4">
                     {content.contactDetails.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No contact details yet. Click "Add Detail" to create one.
+                            No contact details yet. Click &quot;Add Detail&quot; to create one.
                         </p>
                     ) : (
                         content.contactDetails.map((detail, index) => (
@@ -216,7 +216,7 @@ export default function ContactContentPage() {
                                         <Input
                                             value={detail.title}
                                             onChange={(e) => updateContactDetail(index, "title", e.target.value)}
-                                            placeholder="e.g., Visit the Lab"
+                                            placeholder={"e.g., Visit the Lab"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -224,7 +224,7 @@ export default function ContactContentPage() {
                                         <Input
                                             value={detail.description}
                                             onChange={(e) => updateContactDetail(index, "description", e.target.value)}
-                                            placeholder="e.g., Address or info..."
+                                            placeholder={"e.g., Address or info..."}
                                         />
                                     </div>
                                 </div>
@@ -312,7 +312,7 @@ function MapEmbedControl({ value, onChange }: { value: string; onChange: (url: s
                         id="mapEmbedUrl"
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
-                        placeholder="https://www.google.com/maps/embed?pb=..."
+                        placeholder={"https://www.google.com/maps/embed?pb=..."}
                         className={`pr-10 ${value && !isValidMapUrl ? "border-amber-500 focus-visible:ring-amber-500" : ""}`}
                     />
                     {value && (
@@ -344,12 +344,12 @@ function MapEmbedControl({ value, onChange }: { value: string; onChange: (url: s
                             <li>Go to <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-1">Google Maps <ExternalLink className="h-3 w-3" /></a></li>
                             <li>Search for your location</li>
                             <li>Click the <strong>Share</strong> button (or menu)</li>
-                            <li>Select <strong>"Embed a map"</strong> tab</li>
+                            <li>Select <strong>&quot;Embed a map&quot;</strong> tab</li>
                             <li>Copy the <strong>src URL</strong> from the iframe code (starts with https://www.google.com/maps/embed...)</li>
                         </ol>
                         <div className="pt-2 border-t">
                             <p className="text-xs text-muted-foreground">
-                                <strong>Tip:</strong> Only copy the URL inside <code className="bg-muted px-1 rounded">src="..."</code>, not the entire iframe code.
+                                <strong>Tip:</strong> Only copy the URL inside <code className="bg-muted px-1 rounded">src=&quot;...&quot;</code>, not the entire iframe code.
                             </p>
                         </div>
                     </div>
@@ -376,7 +376,7 @@ function MapEmbedControl({ value, onChange }: { value: string; onChange: (url: s
                             <div className="flex flex-col items-center justify-center h-[300px] text-muted-foreground gap-2">
                                 <MapPin className="h-10 w-10 opacity-30" />
                                 <p className="text-sm">Invalid map URL. Please check the format.</p>
-                                <p className="text-xs">URL should contain "google.com/maps/embed"</p>
+                                <p className="text-xs">URL should contain &quot;google.com/maps/embed&quot;</p>
                             </div>
                         )}
                     </div>

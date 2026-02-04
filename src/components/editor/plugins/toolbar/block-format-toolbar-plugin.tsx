@@ -29,9 +29,9 @@ export function BlockFormatDropDown({
         anchorNode.getKey() === "root"
           ? anchorNode
           : $findMatchingParent(anchorNode, (e) => {
-              const parent = e.getParent()
-              return parent !== null && $isRootOrShadowRoot(parent)
-            })
+            const parent = e.getParent()
+            return parent !== null && $isRootOrShadowRoot(parent)
+          })
 
       if (element === null) {
         element = anchorNode.getTopLevelElementOrThrow()
@@ -65,6 +65,8 @@ export function BlockFormatDropDown({
 
   useUpdateToolbarHandler($updateToolbar)
 
+  const currentBlock = blockTypeToBlockName[blockType as keyof typeof blockTypeToBlockName] ?? blockTypeToBlockName.paragraph
+
   return (
     <Select
       value={blockType}
@@ -73,8 +75,8 @@ export function BlockFormatDropDown({
       }}
     >
       <SelectTrigger className="!h-8 w-min gap-1">
-        {blockTypeToBlockName[blockType].icon}
-        <span>{blockTypeToBlockName[blockType].label}</span>
+        {currentBlock.icon}
+        <span>{currentBlock.label}</span>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>{children}</SelectGroup>

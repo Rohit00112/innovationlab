@@ -52,6 +52,7 @@ const bottomDefaults = [
 ];
 
 export function Footer({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   tagline = "Empowering Innovation",
   description = "Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation at Itahari International College.",
   menuItems = menuDefaults,

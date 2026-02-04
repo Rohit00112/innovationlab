@@ -6,9 +6,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   CalendarDays,
-  Clock,
   MapPin,
-  Users,
   FileText,
   User,
 } from "lucide-react";
@@ -128,7 +126,7 @@ function resolveDescriptionContent(description: string | null): DescriptionConte
       return { lexicalState: null, paragraphs: [trimmed] };
     }
 
-    const gather = (node: any): string => {
+    const gather = (node: { text?: string; children?: unknown[] } | null | undefined): string => {
       if (!node) {
         return "";
       }
@@ -138,7 +136,7 @@ function resolveDescriptionContent(description: string | null): DescriptionConte
       }
 
       if (Array.isArray(node.children)) {
-        return node.children.map(gather).join("");
+        return node.children.map((child) => gather(child as { text?: string; children?: unknown[] })).join("");
       }
 
       return "";
@@ -149,7 +147,7 @@ function resolveDescriptionContent(description: string | null): DescriptionConte
       : [];
 
     return { lexicalState: trimmed, paragraphs };
-  } catch (e) {
+  } catch {
     return { lexicalState: null, paragraphs: [trimmed] };
   }
 }
@@ -191,17 +189,18 @@ export async function generateStaticParams() {
 
     const payload = (await response.json()) as EventsApiResponse;
     return payload.data.map(event => ({ slug: event.slug }));
-  } catch (_error) {
+  } catch {
     return [];
   }
 }
 
 interface EventDetailPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: EventDetailPageProps): Promise<Metadata> {
-  const event = await fetchEventBySlug(params.slug.toLowerCase());
+  const { slug } = await params;
+  const event = await fetchEventBySlug(slug.toLowerCase());
 
   if (!event) {
     return {
@@ -222,7 +221,8 @@ export async function generateMetadata({ params }: EventDetailPageProps): Promis
 }
 
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
-  const normalizedSlug = params.slug.toLowerCase();
+  const { slug } = await params;
+  const normalizedSlug = slug.toLowerCase();
   const event = await fetchEventBySlug(normalizedSlug);
 
   if (!event) {

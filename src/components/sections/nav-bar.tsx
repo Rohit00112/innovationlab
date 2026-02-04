@@ -11,7 +11,6 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
   NavigationContent,
-  NavItem,
   DEFAULT_NAVIGATION_CONTENT,
   PAGE_KEYS,
   SECTION_KEYS,

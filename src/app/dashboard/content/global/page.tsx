@@ -153,7 +153,7 @@ export default function GlobalContentPage() {
                                 <Input
                                     value={link.platform}
                                     onChange={(e) => updateSocialLink(index, "platform", e.target.value)}
-                                    placeholder="e.g., Facebook, Twitter"
+                                    placeholder={"e.g., Facebook, Twitter"}
                                 />
                             </div>
                             <div className="flex-[2] space-y-2">
@@ -176,7 +176,7 @@ export default function GlobalContentPage() {
                     ))}
                     {content.socialLinks.length === 0 && (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No social links added yet. Click "Add Link" to add one.
+                            No social links added yet. Click &quot;Add Link&quot; to add one.
                         </p>
                     )}
                 </CardContent>

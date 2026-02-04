@@ -36,8 +36,8 @@ export default function NavigationContentPage() {
             if (data.success && data.data?.content) {
                 setContent(data.data.content as NavigationContent);
             }
-        } catch (error) {
-            console.error("Failed to fetch content:", error);
+        } catch {
+            // Failed to fetch content
         } finally {
             setLoading(false);
         }
@@ -62,7 +62,7 @@ export default function NavigationContentPage() {
             } else {
                 setMessage({ type: "error", text: data.message || "Failed to save navigation" });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: "error", text: "Failed to save navigation" });
         } finally {
             setSaving(false);
@@ -158,8 +158,8 @@ export default function NavigationContentPage() {
             {message && (
                 <div
                     className={`p-4 rounded-lg border ${message.type === "success"
-                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
-                            : "bg-destructive/10 border-destructive/30 text-destructive"
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
+                        : "bg-destructive/10 border-destructive/30 text-destructive"
                         }`}
                 >
                     {message.text}
@@ -185,7 +185,7 @@ export default function NavigationContentPage() {
                 <CardContent className="space-y-4">
                     {content.navItems.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No navigation items. Click "Add Item" to create one.
+                            No navigation items. Click &quot;Add Item&quot; to create one.
                         </p>
                     ) : (
                         content.navItems.map((item, index) => (
@@ -256,7 +256,7 @@ export default function NavigationContentPage() {
                                         <Input
                                             value={item.label}
                                             onChange={(e) => updateNavItem(index, "label", e.target.value)}
-                                            placeholder="e.g., About Us"
+                                            placeholder={"e.g., About Us"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -264,7 +264,7 @@ export default function NavigationContentPage() {
                                         <Input
                                             value={item.href}
                                             onChange={(e) => updateNavItem(index, "href", e.target.value)}
-                                            placeholder="e.g., /about"
+                                            placeholder={"e.g., /about"}
                                         />
                                     </div>
                                 </div>
@@ -279,7 +279,7 @@ export default function NavigationContentPage() {
                 <CardHeader>
                     <CardTitle>Call-to-Action Button</CardTitle>
                     <CardDescription>
-                        Configure the "Get Started" button in the navbar.
+                        Configure the &quot;Get Started&quot; button in the navbar.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -310,7 +310,7 @@ export default function NavigationContentPage() {
                                             getStartedButtonText: e.target.value,
                                         }))
                                     }
-                                    placeholder="e.g., Get Started"
+                                    placeholder={"e.g., Get Started"}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -324,7 +324,7 @@ export default function NavigationContentPage() {
                                             getStartedButtonLink: e.target.value,
                                         }))
                                     }
-                                    placeholder="e.g., /events"
+                                    placeholder={"e.g., /events"}
                                 />
                             </div>
                         </div>

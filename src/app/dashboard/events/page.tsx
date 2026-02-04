@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarDays, Edit, MapPin, Plus, Trash2, Video, FileText, Link as LinkIcon, X, Search, Filter, MoreHorizontal, Calendar, Users, User } from "lucide-react"
+import { CalendarDays, Edit, MapPin, Plus, Trash2, Video, X, Search, Filter, MoreHorizontal, Users, User } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 import { SerializedEditorState } from "lexical"
@@ -11,18 +11,11 @@ import { Editor } from "@/components/blocks/editor-x/editor"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -36,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Spinner } from "@/components/ui/spinner"
 import {
@@ -55,7 +48,6 @@ import { createEvent, deleteEvent, listEvents, updateEvent, bulkDeleteEvents, bu
 import {
   EVENT_STATUSES,
   ALLOWED_REGISTRATION_TYPES,
-  type AllowedRegistrationType,
   type EventRecord,
   type EventStatus,
 } from "@/lib/types/events"
@@ -183,7 +175,7 @@ function formatTimestamp(value: string | null | undefined) {
       dateStyle: "medium",
       timeStyle: "short",
     })
-  } catch (error) {
+  } catch {
     return "-"
   }
 }
@@ -246,7 +238,7 @@ function parseEditorContent(value: string | null | undefined) {
     if (parsed && typeof parsed === "object" && "root" in parsed) {
       return parsed
     }
-  } catch (error) {
+  } catch {
     return EMPTY_EDITOR_STATE
   }
 
@@ -297,6 +289,7 @@ export default function EventsDashboard() {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
   const [isBulkProcessing, setIsBulkProcessing] = useState(false)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const form = useForm<any>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: defaultFormValues,
@@ -701,14 +694,14 @@ export default function EventsDashboard() {
             </DialogHeader>
             <div className="flex items-center gap-2">
               <Button variant="ghost" onClick={() => handleDialogOpenChange(false)}>Cancel</Button>
-              <Button onClick={form.handleSubmit((onSubmit as any))} disabled={isSubmitting}>
+              <Button onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
                 {isSubmitting ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </div>
           <div className="flex-1 flex overflow-hidden">
             <Form {...form}>
-              <form className="flex-1 flex overflow-hidden" onSubmit={form.handleSubmit((onSubmit as any))}>
+              <form className="flex-1 flex overflow-hidden" onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex flex-1 overflow-hidden">
                   {/* Left Panel - Form Fields */}
                   <div className="w-[500px] flex-shrink-0 overflow-y-auto p-6 border-r border-border/50 space-y-6">

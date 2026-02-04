@@ -7,9 +7,10 @@ import { eq } from "drizzle-orm"
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params
         const cookieStore = await cookies()
         const session = await getSessionUser(cookieStore)
 
@@ -17,7 +18,7 @@ export async function GET(
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        const eventId = parseInt(params.id)
+        const eventId = parseInt(id)
         if (isNaN(eventId)) {
             return NextResponse.json({ error: "Invalid event ID" }, { status: 400 })
         }

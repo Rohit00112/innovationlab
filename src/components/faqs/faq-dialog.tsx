@@ -45,12 +45,12 @@ interface FaqDialogProps {
 export function FaqDialog({ open, onOpenChange, faq, onSuccess }: FaqDialogProps) {
     const isEditing = !!faq;
 
-    const form = useForm<any>({
+    const form = useForm({
         resolver: zodResolver(createFaqSchema),
         defaultValues: {
             question: "",
             answer: "",
-            category: "general",
+            category: "general" as const,
             displayOrder: 0,
             isActive: true,
         },
@@ -61,7 +61,7 @@ export function FaqDialog({ open, onOpenChange, faq, onSuccess }: FaqDialogProps
             form.reset({
                 question: faq.question,
                 answer: faq.answer,
-                category: faq.category as any,
+                category: faq.category as CreateFaqInput["category"],
                 displayOrder: faq.displayOrder,
                 isActive: faq.isActive,
             });
@@ -87,8 +87,9 @@ export function FaqDialog({ open, onOpenChange, faq, onSuccess }: FaqDialogProps
             }
             onSuccess();
             onOpenChange(false);
-        } catch (error: any) {
-            toast.error(error.message || "Something went wrong");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Something went wrong";
+            toast.error(message);
         }
     };
 
@@ -168,6 +169,7 @@ export function FaqDialog({ open, onOpenChange, faq, onSuccess }: FaqDialogProps
                                             <Input
                                                 type="number"
                                                 {...field}
+                                                value={field.value as number}
                                                 onChange={(e) =>
                                                     field.onChange(Number(e.target.value))
                                                 }

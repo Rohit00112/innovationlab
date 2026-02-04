@@ -58,7 +58,7 @@ export function FaqSection() {
                     </div>
                 ) : (
                     <div className="grid md:grid-cols-2 gap-6 w-full">
-                        {faqs.map((faq, index) => (
+                        {faqs.map((faq) => (
                             <div
                                 key={faq.id}
                                 className="group relative"

@@ -51,7 +51,7 @@ export function normalizeLexicalState(value: string | null | undefined): Normali
       paragraphs,
       plainText,
     };
-  } catch (_error) {
+  } catch {
     return { serialized: null, paragraphs: [trimmed], plainText: trimmed };
   }
 }

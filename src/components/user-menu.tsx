@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import { User, ChevronDown } from "lucide-react"
+import { User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {

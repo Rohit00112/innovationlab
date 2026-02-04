@@ -47,7 +47,7 @@ export function FeedbackDialog() {
             toast.success("Feedback submitted!");
             setMessage("");
             setOpen(false);
-        } catch (err) {
+        } catch {
             toast.error("Something went wrong. Please try again.");
         } finally {
             setLoading(false);

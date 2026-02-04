@@ -20,7 +20,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Trash2, Archive, Send, X, CheckCircle2 } from "lucide-react";
+import { X, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface BulkAction<TStatus extends string = string> {
@@ -33,6 +33,7 @@ export interface BulkAction<TStatus extends string = string> {
     status?: TStatus; // For status update actions
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface BulkActionsBarProps<T, TStatus extends string = string> {
     selectedIds: number[];
     totalCount: number;
@@ -45,6 +46,7 @@ interface BulkActionsBarProps<T, TStatus extends string = string> {
     className?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function BulkActionsBar<T, TStatus extends string = string>({
     selectedIds,
     totalCount,

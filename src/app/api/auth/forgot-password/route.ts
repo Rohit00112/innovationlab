@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { eq, and, gt } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import crypto from "crypto";
 
 import { db } from "@/lib/db";
 import { users, passwordResetTokens } from "@/lib/db/schema";
-import { hashPassword } from "@/lib/auth/password";
 import { z } from "zod";
 
 const forgotPasswordSchema = z.object({

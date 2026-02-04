@@ -92,7 +92,7 @@ export async function generateStaticParams() {
 
     const payload = (await response.json()) as NewsApiResponse;
     return payload.data.map((article) => ({ slug: article.slug }));
-  } catch (_error) {
+  } catch {
     return [];
   }
 }
@@ -153,7 +153,7 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
               <ArrowLeft className="h-4 w-4" />
               Back to News
             </Link>
-            
+
             <div className="space-y-6">
               <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-wider text-foreground/50">
                 <span>{author}</span>
@@ -162,16 +162,16 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
                 <span>•</span>
                 <span>{readingTime}</span>
               </div>
-              
+
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
                 {article.title}
               </h1>
-              
+
               {chips.length > 0 && (
                 <div className="flex flex-wrap gap-3">
                   {chips.map((chip) => (
-                    <span 
-                      key={chip} 
+                    <span
+                      key={chip}
                       className="inline-flex items-center gap-2 px-4 py-2 border border-foreground/20 text-xs uppercase tracking-wider text-foreground/60"
                     >
                       <Tag className="h-3 w-3" />

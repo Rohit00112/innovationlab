@@ -26,7 +26,8 @@ export type UserRecord = typeof users.$inferSelect;
 export type PublicUser = Omit<UserRecord, "hashedPassword">;
 
 function sanitizeUser(user: UserRecord): PublicUser {
-  const { hashedPassword, ...rest } = user;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { hashedPassword: _, ...rest } = user;
   return rest;
 }
 

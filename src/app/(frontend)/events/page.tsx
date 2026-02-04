@@ -132,7 +132,7 @@ export default async function EventsPage() {
 
   try {
     records = await fetchPublishedEvents()
-  } catch (e) {
+  } catch {
     return (
       <main className="w-full bg-background text-foreground">
         <section className="py-24 relative overflow-hidden">

@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -43,7 +42,7 @@ export default function FaqsPage() {
             setIsLoading(true);
             const data = await fetchFaqs(undefined, true);
             setFaqs(data);
-        } catch (error) {
+        } catch {
             toast.error("Failed to load FAQs");
         } finally {
             setIsLoading(false);
@@ -75,7 +74,7 @@ export default function FaqsPage() {
             await deleteFaq(id);
             toast.success("FAQ deleted successfully");
             loadFaqs();
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete FAQ");
         }
     };

@@ -8,11 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
+  Card
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -30,7 +26,6 @@ import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -111,7 +106,7 @@ function formatTimestamp(value: string) {
         dateStyle: "medium",
         timeStyle: "short"
       });
-  } catch (error) {
+  } catch {
     return "—";
   }
 }

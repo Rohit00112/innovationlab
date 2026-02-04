@@ -79,7 +79,7 @@ export function useContentEditor<T>(
                     text: data.message || "Failed to save content",
                 });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: "error", text: "Failed to save content" });
         } finally {
             setSaving(false);

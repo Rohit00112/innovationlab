@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowUpRight,
   ArrowRight,
   CalendarDays,
   Clock,
@@ -109,7 +108,7 @@ export default async function NewsPage() {
 
   try {
     records = await fetchPublishedNews();
-  } catch (_error) {
+  } catch {
     return (
       <main className="w-full bg-background text-foreground">
         <section className="py-24 relative overflow-hidden">
@@ -136,7 +135,7 @@ export default async function NewsPage() {
             </span>
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">Fresh Stories Brewing</h1>
             <p className="text-lg text-foreground/70 max-w-xl mx-auto">
-              We're currently working on some exciting updates. Check back soon for the latest news from Innovation Lab.
+              We&apos;re currently working on some exciting updates. Check back soon for the latest news from Innovation Lab.
             </p>
             <Button variant="outline" className="mt-8 rounded-full border-primary/20 hover:bg-primary/5 hover:text-primary" asChild>
               <Link href="/">Back to Home</Link>

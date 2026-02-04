@@ -39,8 +39,8 @@ export default function AboutContentPage() {
             if (data.success && data.data?.content) {
                 setContent(data.data.content as AboutPageContent);
             }
-        } catch (error) {
-            console.error("Failed to fetch content:", error);
+        } catch {
+            // Failed to fetch content
         } finally {
             setLoading(false);
         }
@@ -65,7 +65,7 @@ export default function AboutContentPage() {
             } else {
                 setMessage({ type: "error", text: data.message || "Failed to save content" });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: "error", text: "Failed to save content" });
         } finally {
             setSaving(false);
@@ -256,7 +256,7 @@ export default function AboutContentPage() {
                 <CardContent className="space-y-4">
                     {content.missionPanels.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No mission panels yet. Click "Add Panel" to create one.
+                            No mission panels yet. Click &quot;Add Panel&quot; to create one.
                         </p>
                     ) : (
                         content.missionPanels.map((panel, index) => (
@@ -288,7 +288,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={panel.subtitle}
                                             onChange={(e) => updateMissionPanel(index, "subtitle", e.target.value)}
-                                            placeholder="e.g., Empower Innovators"
+                                            placeholder={"e.g., Empower Innovators"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -297,7 +297,7 @@ export default function AboutContentPage() {
                                             value={panel.description}
                                             onChange={(e) => updateMissionPanel(index, "description", e.target.value)}
                                             rows={2}
-                                            placeholder="Panel description..."
+                                            placeholder={"Panel description..."}
                                         />
                                     </div>
                                 </div>
@@ -324,7 +324,7 @@ export default function AboutContentPage() {
                 <CardContent className="space-y-4">
                     {content.values.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No core values yet. Click "Add Value" to create one.
+                            No core values yet. Click &quot;Add Value&quot; to create one.
                         </p>
                     ) : (
                         content.values.map((value, index) => (
@@ -348,7 +348,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={value.title}
                                             onChange={(e) => updateValue(index, "title", e.target.value)}
-                                            placeholder="e.g., Innovation"
+                                            placeholder={"e.g., Innovation"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -356,7 +356,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={value.description}
                                             onChange={(e) => updateValue(index, "description", e.target.value)}
-                                            placeholder="Value description..."
+                                            placeholder={"Value description..."}
                                         />
                                     </div>
                                 </div>
@@ -383,7 +383,7 @@ export default function AboutContentPage() {
                 <CardContent className="space-y-4">
                     {content.milestones.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No milestones yet. Click "Add Milestone" to create one.
+                            No milestones yet. Click &quot;Add Milestone&quot; to create one.
                         </p>
                     ) : (
                         content.milestones.map((milestone, index) => (
@@ -407,7 +407,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={milestone.year}
                                             onChange={(e) => updateMilestone(index, "year", e.target.value)}
-                                            placeholder="e.g., 2024"
+                                            placeholder={"e.g., 2024"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -415,7 +415,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={milestone.title}
                                             onChange={(e) => updateMilestone(index, "title", e.target.value)}
-                                            placeholder="e.g., Foundation"
+                                            placeholder={"e.g., Foundation"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -424,7 +424,7 @@ export default function AboutContentPage() {
                                             value={milestone.description}
                                             onChange={(e) => updateMilestone(index, "description", e.target.value)}
                                             rows={2}
-                                            placeholder="Milestone details..."
+                                            placeholder={"Milestone details..."}
                                         />
                                     </div>
                                 </div>
@@ -451,7 +451,7 @@ export default function AboutContentPage() {
                 <CardContent>
                     {content.achievements.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                            No achievement stats yet. Click "Add Stat" to create one.
+                            No achievement stats yet. Click &quot;Add Stat&quot; to create one.
                         </p>
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -473,7 +473,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={stat.value}
                                             onChange={(e) => updateAchievement(index, "value", e.target.value)}
-                                            placeholder="e.g., 500+"
+                                            placeholder={"e.g., 500+"}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -481,7 +481,7 @@ export default function AboutContentPage() {
                                         <Input
                                             value={stat.label}
                                             onChange={(e) => updateAchievement(index, "label", e.target.value)}
-                                            placeholder="e.g., Projects"
+                                            placeholder={"e.g., Projects"}
                                         />
                                     </div>
                                 </div>

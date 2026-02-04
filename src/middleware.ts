@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
 
   // Rate limiting for API routes
   if (pathname.startsWith("/api/")) {
-    let rateLimitConfig = RATE_LIMITS.api;
+    let rateLimitConfig: { limit: number; windowSeconds: number } = RATE_LIMITS.api;
     let rateLimitKey = `api:${ip}`;
 
     // Apply stricter limits for specific routes

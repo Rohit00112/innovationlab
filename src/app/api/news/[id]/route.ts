@@ -19,9 +19,10 @@ function parseId(param: string) {
   return value;
 }
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = parseId(params.id);
+    const { id: idParam } = await params;
+    const id = parseId(idParam);
     const record = await getNewsById(id);
 
     if (!record) {
@@ -34,9 +35,10 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = parseId(params.id);
+    const { id: idParam } = await params;
+    const id = parseId(idParam);
     const session = await requireUser({ roles: ["admin", "editor", "author"] });
     const existing = await getNewsById(id);
 
@@ -118,9 +120,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = parseId(params.id);
+    const { id: idParam } = await params;
+    const id = parseId(idParam);
     const session = await requireUser({ roles: ["admin", "editor", "author"] });
     const existing = await getNewsById(id);
 

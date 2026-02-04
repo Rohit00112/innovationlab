@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Plus, Edit, Trash2, Search, Filter, MoreHorizontal, Calendar, ArrowRight } from "lucide-react"
+import { Plus, Edit, Trash2, Search, Filter, MoreHorizontal } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { SerializedEditorState } from "lexical"
@@ -11,25 +11,16 @@ import { Editor } from "@/components/blocks/editor-x/editor"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-    CardFooter,
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Select,
     SelectContent,
@@ -91,7 +82,7 @@ const newsFormSchema = z.object({
     publishedAt: z.union([z.string(), z.literal(""), z.null()]).optional(),
 })
 
-const EMPTY_EDITOR_STATE: any = {
+const EMPTY_EDITOR_STATE = {
     root: {
         children: [
             {
@@ -119,7 +110,7 @@ const EMPTY_EDITOR_STATE: any = {
         type: "root",
         version: 1,
     },
-}
+} as unknown as SerializedEditorState
 
 type NewsFormValues = z.infer<typeof newsFormSchema>
 
@@ -155,7 +146,7 @@ function formatTimestamp(value: string | null | undefined) {
             dateStyle: "medium",
             timeStyle: "short",
         })
-    } catch (error) {
+    } catch {
         return "-"
     }
 }
@@ -207,7 +198,7 @@ function parseEditorContent(value: string | null | undefined) {
         if (parsed && typeof parsed === "object" && "root" in parsed) {
             return parsed
         }
-    } catch (error) {
+    } catch {
         return EMPTY_EDITOR_STATE
     }
 
