@@ -10,6 +10,7 @@ const connectionString =
 const enableSSL =
   process.env.POSTGRES_SSL === "true" ||
   /supabase\.co/.test(connectionString) ||
+  /neon\.tech/.test(connectionString) ||
   process.env.NODE_ENV === "production";
 
 const globalForDb = globalThis as unknown as {
