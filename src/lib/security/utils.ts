@@ -60,10 +60,10 @@ export const BLOCKED_PATTERNS = [
     /<script/i,       // XSS attempts
     /javascript:/i,   // JavaScript protocol
     /vbscript:/i,     // VBScript protocol
-    /data:/i,         // Data protocol (in URLs)
-    /on\w+=/i,        // Event handlers
+    /data:text\/html/i,         // Data protocol with HTML (potential XSS)
+    /\bon\w+\s*=/i,        // Event handlers (must be at word boundary)
 
-    // SQL injection patterns
+    // SQL injection patterns (only in values, not column names)
     /union\s+select/i,
     /insert\s+into/i,
     /drop\s+table/i,

@@ -781,18 +781,29 @@ export default async function Frontend() {
                                     className="group relative bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-2px]"
                                 >
                                     <div className="flex flex-col md:flex-row h-full">
-                                        {event.image && (
-                                            <div className="relative h-48 md:h-auto md:w-1/3 overflow-hidden">
-                                                <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
-                                                <Image
-                                                    src={event.image}
-                                                    alt={event.title}
-                                                    fill
-                                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                                    sizes="(max-width: 768px) 100vw, 33vw"
-                                                />
+                                        <div className="relative h-48 md:h-auto md:w-1/3 overflow-hidden">
+                                            {event.image ? (
+                                                <>
+                                                    <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
+                                                    <Image
+                                                        src={event.image}
+                                                        alt={event.title}
+                                                        fill
+                                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                        sizes="(max-width: 768px) 100vw, 33vw"
+                                                    />
+                                                </>
+                                            ) : (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-muted to-secondary/10 flex items-center justify-center">
+                                                    <CalendarDays className="w-16 h-16 text-primary/20" />
+                                                </div>
+                                            )}
+                                            {/* Date Badge - positioned on image */}
+                                            <div className="absolute top-4 left-4 z-20 bg-background/95 backdrop-blur shadow-lg rounded-2xl p-3 flex flex-col items-center justify-center min-w-[70px] border border-border/50 text-center">
+                                                <span className="text-xs font-bold uppercase text-primary tracking-wider">{month || "UP"}</span>
+                                                <span className="text-2xl font-bold text-foreground leading-none mt-1">{day || "NY"}</span>
                                             </div>
-                                        )}
+                                        </div>
                                         <div className="flex-1 p-8 flex flex-col justify-between relative">
                                             <div className="space-y-4">
                                                 <div className="flex items-start justify-between">
@@ -831,12 +842,6 @@ export default async function Frontend() {
                                                     </Button>
                                                 )}
                                             </div>
-                                        </div>
-
-                                        {/* Stylized Date Badge */}
-                                        <div className="absolute top-4 right-4 md:left-8 md:top-8 md:right-auto z-20 bg-background/95 backdrop-blur shadow-lg rounded-2xl p-3 flex flex-col items-center justify-center min-w-[70px] border border-border/50 text-center">
-                                            <span className="text-xs font-bold uppercase text-primary tracking-wider">{month || "UP"}</span>
-                                            <span className="text-2xl font-bold text-foreground leading-none mt-1">{day || "NY"}</span>
                                         </div>
                                     </div>
                                 </article>
@@ -954,7 +959,7 @@ export default async function Frontend() {
                                         <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors">
                                             <Image
                                                 src={item.image}
-                                                alt={item.author}
+                                                alt={item.author || "Author"}
                                                 fill
                                                 className="object-cover"
                                                 sizes="48px"
@@ -962,11 +967,11 @@ export default async function Frontend() {
                                         </div>
                                     ) : (
                                         <div className="h-12 w-12 flex-shrink-0 rounded-full border-2 border-primary/20 flex items-center justify-center bg-primary/5 text-primary font-bold">
-                                            {item.author.charAt(0).toUpperCase()}
+                                            {(item.author || "A").charAt(0).toUpperCase()}
                                         </div>
                                     )}
                                     <div>
-                                        <p className="font-bold text-foreground">{item.author}</p>
+                                        <p className="font-bold text-foreground">{item.author || "Anonymous"}</p>
                                         {item.role && (
                                             <p className="text-xs font-medium text-foreground/60 mt-0.5">{item.role}</p>
                                         )}

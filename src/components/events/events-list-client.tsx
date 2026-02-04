@@ -135,29 +135,32 @@ export function EventsListClient({ events }: EventsListClientProps) {
                                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                                                 sizes="(max-width: 768px) 100vw, 33vw"
                                             />
-                                            <div className="absolute top-4 left-4 z-20">
-                                                <div className="bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex flex-col items-center shadow-sm">
-                                                    <span className="text-xs font-bold uppercase text-primary">
-                                                        {schedule.date.split(" ")[0]}
-                                                    </span>
-                                                    <span className="text-lg font-bold leading-none text-foreground">
-                                                        {schedule.date.split(" ")[1].replace(",", "")}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            {event.isVirtual && (
-                                                <div className="absolute top-4 right-4 z-20">
-                                                    <span className="bg-blue-500/90 text-white text-xs font-bold uppercase px-2 py-1 rounded-full">
-                                                        Virtual
-                                                    </span>
-                                                </div>
-                                            )}
                                         </>
                                     ) : (
-                                        <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                                            <CalendarDays className="w-12 h-12 text-muted-foreground/20" />
+                                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-muted to-secondary/10 flex items-center justify-center">
+                                            <CalendarDays className="w-16 h-16 text-primary/20" />
                                         </div>
                                     )}
+                                    {/* Date Badge - always visible */}
+                                    <div className="absolute top-4 left-4 z-20">
+                                        <div className="bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex flex-col items-center shadow-sm border border-border/50">
+                                            <span className="text-xs font-bold uppercase text-primary">
+                                                {schedule.date.split(" ")[0]}
+                                            </span>
+                                            <span className="text-lg font-bold leading-none text-foreground">
+                                                {schedule.date.split(" ")[1]?.replace(",", "") || ""}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {/* Virtual/In-person Badge */}
+                                    <div className="absolute top-4 right-4 z-20">
+                                        <span className={`text-xs font-bold uppercase px-2 py-1 rounded-full ${event.isVirtual
+                                                ? "bg-blue-500/90 text-white"
+                                                : "bg-emerald-500/90 text-white"
+                                            }`}>
+                                            {event.isVirtual ? "Virtual" : "In-person"}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div className="flex-1 p-6 flex flex-col space-y-4 border-t border-border/50">
