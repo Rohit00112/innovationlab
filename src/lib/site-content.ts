@@ -14,8 +14,10 @@ export async function getSiteContent<T>(
             : `/api/site-content?pageKey=${encodeURIComponent(pageKey)}&sectionKey=${encodeURIComponent(sectionKey)}`;
 
         const res = await fetch(url, {
-            cache: "no-store", // Always get fresh content
-            next: { tags: [`site-content-${pageKey}-${sectionKey}`] }
+            next: {
+                revalidate: 60, // Revalidate every 60 seconds
+                tags: [`site-content-${pageKey}-${sectionKey}`]
+            }
         });
 
         if (!res.ok) {

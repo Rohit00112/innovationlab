@@ -28,6 +28,7 @@ import { type NewsRecord } from "@/lib/types/news";
 import { type EventRecord } from "@/lib/types/events";
 import { type HomePageContent, DEFAULT_HOME_CONTENT } from "@/lib/types/site-content";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60; // Revalidate every 60 seconds
 
 interface NewsItem {

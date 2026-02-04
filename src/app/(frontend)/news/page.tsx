@@ -12,6 +12,7 @@ import type { NewsRecord } from "@/lib/types/news";
 import { estimateReadingTime, normalizeLexicalState } from "@/lib/editor/lexical-utils";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 interface NewsApiResponse {

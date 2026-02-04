@@ -23,7 +23,7 @@ async function fetchNewsBySlug(slug: string): Promise<NewsRecord | null> {
 
     try {
         const response = await fetch(url.toString(), {
-            cache: "no-store",
+            next: { revalidate: 60 },
         })
 
         if (!response.ok) {

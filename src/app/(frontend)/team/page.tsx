@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 interface TeamMember {
@@ -26,8 +27,7 @@ async function fetchTeamMembers(): Promise<TeamMember[]> {
     const baseUrl = resolveApiBaseUrl();
 
     const response = await fetch(`${baseUrl}/api/team`, {
-        next: { revalidate: 0 },
-        cache: "no-store",
+        next: { revalidate: 60 },
     });
 
     if (!response.ok) {

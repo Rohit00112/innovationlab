@@ -13,7 +13,8 @@ import type { EventRecord } from "@/lib/types/events"
 import { Button } from "@/components/ui/button"
 import { EventsListClient } from "@/components/events/events-list-client"
 
-export const revalidate = 0
+export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 interface EventsApiResponse {
   data: EventRecord[]
@@ -28,7 +29,6 @@ async function fetchPublishedEvents(): Promise<EventRecord[]> {
 
   const response = await fetch(url.toString(), {
     next: { revalidate },
-    cache: "no-store",
   })
 
   if (!response.ok) {

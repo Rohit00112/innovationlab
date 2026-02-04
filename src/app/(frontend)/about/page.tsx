@@ -18,6 +18,7 @@ import { getSiteContent } from "@/lib/site-content";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 import { type AboutPageContent, DEFAULT_ABOUT_CONTENT } from "@/lib/types/site-content";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 interface TeamMember {
@@ -44,8 +45,7 @@ async function fetchTeamMembers(): Promise<TeamMember[]> {
 
   try {
     const response = await fetch(`${baseUrl}/api/team`, {
-      next: { revalidate: 0 },
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!response.ok) {

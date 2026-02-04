@@ -19,6 +19,7 @@ import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 import type { EventRecord } from "@/lib/types/events";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
 interface EventsApiResponse {
