@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Users, Sparkles, ArrowRight, Linkedin, Github, Globe, Crown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getActiveTeamMembers } from "@/lib/data/team";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -19,27 +19,8 @@ interface TeamMember {
     category: "head" | "core" | "mentor";
 }
 
-interface TeamResponse {
-    data: TeamMember[];
-}
-
-async function fetchTeamMembers(): Promise<TeamMember[]> {
-    const baseUrl = resolveApiBaseUrl();
-
-    const response = await fetch(`${baseUrl}/api/team`, {
-        next: { revalidate: 60 },
-    });
-
-    if (!response.ok) {
-        return [];
-    }
-
-    const data: TeamResponse = await response.json();
-    return data.data;
-}
-
 export default async function TeamPage() {
-    const members = await fetchTeamMembers();
+    const members = await getActiveTeamMembers() as TeamMember[];
 
     const heads = members.filter((m) => m.category === "head");
     const coreMembers = members.filter((m) => m.category === "core");

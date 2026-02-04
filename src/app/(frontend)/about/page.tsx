@@ -14,8 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { getSiteContent } from "@/lib/site-content";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getSiteContent } from "@/lib/data/site-content";
+import { getActiveTeamMembers } from "@/lib/data/team";
 import { type AboutPageContent, DEFAULT_ABOUT_CONTENT } from "@/lib/types/site-content";
 
 export const dynamic = "force-dynamic";
@@ -30,39 +30,21 @@ interface TeamMember {
   category: "head" | "core" | "mentor";
 }
 
-interface TeamResponse {
-  data: TeamMember[];
-}
-
 const categoryLabels: Record<TeamMember["category"], string> = {
   head: "Innovation Lab Head",
   core: "Core Member",
   mentor: "Mentor"
 };
 
-async function fetchTeamMembers(): Promise<TeamMember[]> {
-  const baseUrl = resolveApiBaseUrl();
-
-  try {
-    const response = await fetch(`${baseUrl}/api/team`, {
-      next: { revalidate: 60 },
-    });
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const data: TeamResponse = await response.json();
-    return data.data;
-  } catch {
-    return [];
-  }
-}
-
 export default async function AboutPage() {
-  const teamMembers = await fetchTeamMembers();
-  const baseUrl = resolveApiBaseUrl(); // Ensure absolute URL for server-side fetch
-  const content = await getSiteContent<AboutPageContent>("about", "main", baseUrl) || DEFAULT_ABOUT_CONTENT;
+  let teamMembers: TeamMember[] = [];
+  try {
+    teamMembers = await getActiveTeamMembers() as TeamMember[];
+  } catch {
+    teamMembers = [];
+  }
+
+  const content = await getSiteContent<AboutPageContent>("about", "main") || DEFAULT_ABOUT_CONTENT;
 
   const missionPanels = (content.missionPanels || DEFAULT_ABOUT_CONTENT.missionPanels).map((panel, index) => ({
     ...panel,

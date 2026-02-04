@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Quote, MessageSquare, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getPublishedTestimonials } from "@/lib/data/testimonials";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -18,31 +18,8 @@ interface Testimonial {
     isFeatured: boolean;
 }
 
-interface TestimonialsResponse {
-    data: Testimonial[];
-}
-
-async function fetchTestimonials(): Promise<Testimonial[]> {
-    const baseUrl = resolveApiBaseUrl();
-    const url = new URL("/api/testimonials", baseUrl);
-    url.searchParams.set("status", "published");
-    url.searchParams.set("limit", "50");
-
-    const response = await fetch(url.toString(), {
-        next: { revalidate },
-        cache: "force-cache",
-    });
-
-    if (!response.ok) {
-        return [];
-    }
-
-    const data: TestimonialsResponse = await response.json();
-    return data.data;
-}
-
 export default async function TestimonialsPage() {
-    const testimonials = await fetchTestimonials();
+    const testimonials = await getPublishedTestimonials(50) as Testimonial[];
     const featured = testimonials.filter((t) => t.isFeatured);
     const regular = testimonials.filter((t) => !t.isFeatured);
 

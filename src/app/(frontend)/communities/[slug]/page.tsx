@@ -3,19 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Users, ArrowLeft, Github, Linkedin, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getCommunityBySlug } from "@/lib/data/communities";
 
 export const revalidate = 60;
-
-interface Community {
-    id: number;
-    name: string;
-    slug: string;
-    description: string | null;
-    content: string | null;
-    coverImageUrl: string | null;
-    status: string;
-}
 
 interface CommunityMember {
     id: number;
@@ -29,69 +19,11 @@ interface CommunityMember {
     websiteUrl: string | null;
 }
 
-interface CommunityResponse {
-    data: Community;
-}
-
-interface MembersResponse {
-    data: CommunityMember[];
-}
-
 const roleLabels: Record<CommunityMember["role"], string> = {
     lead: "Lead",
     member: "Member",
     advisor: "Advisor",
 };
-
-async function fetchCommunityBySlug(slug: string): Promise<Community | null> {
-    const baseUrl = resolveApiBaseUrl();
-
-    // First fetch all published communities and find by slug
-    const response = await fetch(`${baseUrl}/api/communities?status=published`, {
-        next: { revalidate },
-        cache: "force-cache",
-    });
-
-    if (!response.ok) {
-        return null;
-    }
-
-    const data = await response.json();
-    const community = data.data.find((c: Community) => c.slug === slug);
-
-    if (!community) {
-        return null;
-    }
-
-    // Fetch full community details
-    const detailResponse = await fetch(`${baseUrl}/api/communities/${community.id}`, {
-        next: { revalidate },
-        cache: "force-cache",
-    });
-
-    if (!detailResponse.ok) {
-        return null;
-    }
-
-    const detailData: CommunityResponse = await detailResponse.json();
-    return detailData.data;
-}
-
-async function fetchCommunityMembers(communityId: number): Promise<CommunityMember[]> {
-    const baseUrl = resolveApiBaseUrl();
-
-    const response = await fetch(`${baseUrl}/api/communities/${communityId}/members`, {
-        next: { revalidate },
-        cache: "force-cache",
-    });
-
-    if (!response.ok) {
-        return [];
-    }
-
-    const data: MembersResponse = await response.json();
-    return data.data;
-}
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -99,13 +31,13 @@ interface PageProps {
 
 export default async function CommunityDetailPage({ params }: PageProps) {
     const { slug } = await params;
-    const community = await fetchCommunityBySlug(slug);
+    const community = await getCommunityBySlug(slug);
 
     if (!community) {
         notFound();
     }
 
-    const members = await fetchCommunityMembers(community.id);
+    const members = community.members;
 
     const leads = members.filter((m) => m.role === "lead");
     const regularMembers = members.filter((m) => m.role === "member");

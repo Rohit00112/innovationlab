@@ -185,6 +185,14 @@ export function AppSidebar({ user }: { user: { name?: string | null; email?: str
                         </div>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
+                        <SidebarMenuButton asChild tooltip="Settings" className="hover:bg-primary/10 hover:text-primary transition-colors rounded-lg my-0.5 font-medium">
+                            <Link href="/dashboard/settings">
+                                <Settings className="size-4" />
+                                <span>Settings</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
                         <DashboardLogout />
                     </SidebarMenuItem>
                 </SidebarMenu>

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Users, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getPublishedCommunities } from "@/lib/data/communities";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -16,28 +16,8 @@ interface Community {
     memberCount: number;
 }
 
-interface CommunitiesResponse {
-    data: Community[];
-}
-
-async function fetchCommunities(): Promise<Community[]> {
-    const baseUrl = resolveApiBaseUrl();
-
-    const response = await fetch(`${baseUrl}/api/communities?status=published&includeCount=true`, {
-        next: { revalidate },
-        cache: "force-cache",
-    });
-
-    if (!response.ok) {
-        return [];
-    }
-
-    const data: CommunitiesResponse = await response.json();
-    return data.data;
-}
-
 export default async function CommunitiesPage() {
-    const communities = await fetchCommunities();
+    const communities = await getPublishedCommunities() as Community[];
 
     return (
         <main className="w-full bg-background text-foreground">

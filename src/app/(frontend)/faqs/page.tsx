@@ -1,4 +1,4 @@
-import { fetchFaqs } from "@/lib/http/faqs";
+import { getActiveFaqs } from "@/lib/data/faqs";
 import {
     Accordion,
     AccordionContent,
@@ -7,15 +7,21 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 
-import { Faq } from "@/lib/types/faqs";
-
 export const dynamic = "force-dynamic";
+
+interface Faq {
+    id: number;
+    question: string;
+    answer: string;
+    category: string;
+    displayOrder: number;
+    isActive: boolean;
+}
 
 export default async function FaqPage() {
     let faqs: Faq[] = [];
     try {
-        // Fetch active FAQs only (default behavior)
-        faqs = await fetchFaqs();
+        faqs = await getActiveFaqs() as Faq[];
     } catch (error) {
         console.error("Failed to fetch FAQs:", error);
     }

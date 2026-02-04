@@ -22,7 +22,10 @@ import {
 
 import { FaqSection } from "@/components/faqs/faq-section";
 import { normalizeLexicalState, estimateReadingTime } from "@/lib/editor/lexical-utils";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getPublishedTestimonials } from "@/lib/data/testimonials";
+import { getLatestNews } from "@/lib/data/news";
+import { getPublishedEvents } from "@/lib/data/events";
+import { getSiteContent } from "@/lib/data/site-content";
 import { type TestimonialRecord } from "@/lib/types/testimonials";
 import { type NewsRecord } from "@/lib/types/news";
 import { type EventRecord } from "@/lib/types/events";
@@ -398,45 +401,11 @@ function mapEventRecord(event: EventRecord): EventItem {
     };
 }
 
-// Server-side data fetching functions
+// Server-side data fetching functions using direct database access
 async function fetchTestimonialsServer(): Promise<TestimonialRecord[]> {
     try {
-        const baseUrl = resolveApiBaseUrl();
-
-        // First try featured testimonials
-        let url = new URL("/api/testimonials", baseUrl);
-        url.searchParams.set("status", "published");
-        url.searchParams.set("isFeatured", "true");
-        url.searchParams.set("limit", "6");
-
-        let response = await fetch(url.toString(), {
-            next: { revalidate },
-            cache: "force-cache",
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.data && data.data.length > 0) {
-                return data.data;
-            }
-        }
-
-        // Fallback to any published testimonials
-        url = new URL("/api/testimonials", baseUrl);
-        url.searchParams.set("status", "published");
-        url.searchParams.set("limit", "6");
-
-        response = await fetch(url.toString(), {
-            next: { revalidate },
-            cache: "force-cache",
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            return data.data ?? [];
-        }
-
-        return [];
+        const testimonials = await getPublishedTestimonials(6);
+        return testimonials as unknown as TestimonialRecord[];
     } catch (error) {
         console.error("Failed to fetch testimonials:", error);
         return [];
@@ -445,22 +414,8 @@ async function fetchTestimonialsServer(): Promise<TestimonialRecord[]> {
 
 async function fetchNewsServer(): Promise<NewsRecord[]> {
     try {
-        const baseUrl = resolveApiBaseUrl();
-        const url = new URL("/api/news", baseUrl);
-        url.searchParams.set("status", "published");
-        url.searchParams.set("limit", "6");
-
-        const response = await fetch(url.toString(), {
-            next: { revalidate },
-            cache: "force-cache",
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            return data.data ?? [];
-        }
-
-        return [];
+        const news = await getLatestNews(6);
+        return news as unknown as NewsRecord[];
     } catch (error) {
         console.error("Failed to fetch news:", error);
         return [];
@@ -469,22 +424,8 @@ async function fetchNewsServer(): Promise<NewsRecord[]> {
 
 async function fetchEventsServer(): Promise<EventRecord[]> {
     try {
-        const baseUrl = resolveApiBaseUrl();
-        const url = new URL("/api/events", baseUrl);
-        url.searchParams.set("status", "published");
-        url.searchParams.set("limit", "12");
-
-        const response = await fetch(url.toString(), {
-            next: { revalidate },
-            cache: "force-cache",
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            return data.data ?? [];
-        }
-
-        return [];
+        const events = await getPublishedEvents({ limit: 12 });
+        return events as unknown as EventRecord[];
     } catch (error) {
         console.error("Failed to fetch events:", error);
         return [];
@@ -493,24 +434,8 @@ async function fetchEventsServer(): Promise<EventRecord[]> {
 
 async function fetchHomeContentServer(): Promise<HomePageContent> {
     try {
-        const baseUrl = resolveApiBaseUrl();
-        const url = new URL("/api/site-content", baseUrl);
-        url.searchParams.set("pageKey", "home");
-        url.searchParams.set("sectionKey", "main");
-
-        const response = await fetch(url.toString(), {
-            next: { revalidate },
-            cache: "force-cache",
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.success && data.data?.content) {
-                return data.data.content as HomePageContent;
-            }
-        }
-
-        return DEFAULT_HOME_CONTENT;
+        const content = await getSiteContent<HomePageContent>("home", "main");
+        return content ?? DEFAULT_HOME_CONTENT;
     } catch (error) {
         console.error("Failed to fetch home content:", error);
         return DEFAULT_HOME_CONTENT;

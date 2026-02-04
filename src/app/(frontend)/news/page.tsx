@@ -7,17 +7,12 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
-import type { NewsRecord } from "@/lib/types/news";
+import { getPublishedNews, type NewsRecord } from "@/lib/data/news";
 import { estimateReadingTime, normalizeLexicalState } from "@/lib/editor/lexical-utils";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
-
-interface NewsApiResponse {
-  data: NewsRecord[];
-}
 
 interface NewsPresentation {
   slug: string;
@@ -28,25 +23,6 @@ interface NewsPresentation {
   author: string;
   readTime: string;
   chips: string[];
-}
-
-async function fetchPublishedNews(): Promise<NewsRecord[]> {
-  const baseUrl = resolveApiBaseUrl();
-  const url = new URL("/api/news", baseUrl);
-  url.searchParams.set("status", "published");
-  url.searchParams.set("limit", "12");
-
-  const response = await fetch(url.toString(), {
-    next: { revalidate },
-    cache: "force-cache",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to load news: ${response.status} ${response.statusText}`);
-  }
-
-  const payload = (await response.json()) as NewsApiResponse;
-  return payload.data;
 }
 
 function formatPublishedDate(record: NewsRecord) {
@@ -108,7 +84,7 @@ export default async function NewsPage() {
   let records: NewsRecord[] = [];
 
   try {
-    records = await fetchPublishedNews();
+    records = await getPublishedNews(12);
   } catch {
     return (
       <main className="w-full bg-background text-foreground">

@@ -15,16 +15,11 @@ import { LexicalRenderer } from "@/components/blocks/editor-x/viewer";
 import { EventRegisterButton } from "@/components/event-register-button";
 import { SubEventsList } from "@/components/sub-events-list";
 import { ShareButton } from "@/components/share-button";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
-import type { EventRecord } from "@/lib/types/events";
+import { getEventBySlug, getPublishedEvents, type EventRecord } from "@/lib/data/events";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
-
-interface EventsApiResponse {
-  data: EventRecord[];
-}
 
 interface DescriptionContent {
   lexicalState: string | null;
@@ -153,43 +148,10 @@ function resolveDescriptionContent(description: string | null): DescriptionConte
   }
 }
 
-async function fetchEventBySlug(slug: string): Promise<EventRecord | null> {
-  const baseUrl = resolveApiBaseUrl();
-  const url = new URL("/api/events", baseUrl);
-  url.searchParams.set("slug", slug);
-  url.searchParams.set("limit", "1");
-
-  const response = await fetch(url.toString(), {
-    next: { revalidate },
-    cache: "force-cache",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to load event: ${response.status} ${response.statusText}`);
-  }
-
-  const payload = (await response.json()) as EventsApiResponse;
-  return payload.data[0] ?? null;
-}
-
 export async function generateStaticParams() {
   try {
-    const baseUrl = resolveApiBaseUrl();
-    const url = new URL("/api/events", baseUrl);
-    url.searchParams.set("status", "published");
-    url.searchParams.set("limit", "50");
-
-    const response = await fetch(url.toString(), {
-      next: { revalidate },
-      cache: "force-cache",
-    });
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const payload = (await response.json()) as EventsApiResponse;
-    return payload.data.map(event => ({ slug: event.slug }));
+    const events = await getPublishedEvents({ limit: 50 });
+    return events.map(event => ({ slug: event.slug }));
   } catch {
     return [];
   }
@@ -201,7 +163,7 @@ interface EventDetailPageProps {
 
 export async function generateMetadata({ params }: EventDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = await fetchEventBySlug(slug.toLowerCase());
+  const event = await getEventBySlug(slug.toLowerCase());
 
   if (!event) {
     return {
@@ -224,7 +186,7 @@ export async function generateMetadata({ params }: EventDetailPageProps): Promis
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
   const { slug } = await params;
   const normalizedSlug = slug.toLowerCase();
-  const event = await fetchEventBySlug(normalizedSlug);
+  const event = await getEventBySlug(normalizedSlug);
 
   if (!event) {
     notFound();

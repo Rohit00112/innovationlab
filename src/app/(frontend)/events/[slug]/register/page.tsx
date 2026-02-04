@@ -2,39 +2,16 @@ import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
 import { getSessionUser } from "@/lib/auth/service";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getEventBySlug } from "@/lib/data/events";
 import { EventRegistrationForm } from "@/components/event-registration-form";
-import type { EventRecord } from "@/lib/types/events";
-
-interface EventsApiResponse {
-    data: EventRecord[];
-}
 
 interface PageProps {
     params: Promise<{ slug: string }>;
 }
 
-async function fetchEvent(slug: string): Promise<EventRecord | null> {
-    const baseUrl = resolveApiBaseUrl();
-    const url = new URL("/api/events", baseUrl);
-    url.searchParams.set("slug", slug);
-    url.searchParams.set("limit", "1");
-
-    const response = await fetch(url.toString(), {
-        cache: "no-store",
-    });
-
-    if (!response.ok) {
-        return null;
-    }
-
-    const data: EventsApiResponse = await response.json();
-    return data.data[0] ?? null;
-}
-
 export default async function EventRegisterPage({ params }: PageProps) {
     const resolvedParams = await params;
-    const event = await fetchEvent(resolvedParams.slug);
+    const event = await getEventBySlug(resolvedParams.slug);
 
     if (!event) {
         notFound();

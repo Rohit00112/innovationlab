@@ -8,36 +8,12 @@ import {
   ArrowRight,
 } from "lucide-react"
 
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url"
-import type { EventRecord } from "@/lib/types/events"
+import { getPublishedEvents, type EventRecord } from "@/lib/data/events"
 import { Button } from "@/components/ui/button"
 import { EventsListClient } from "@/components/events/events-list-client"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 60
-
-interface EventsApiResponse {
-  data: EventRecord[]
-}
-
-async function fetchPublishedEvents(): Promise<EventRecord[]> {
-  const baseUrl = resolveApiBaseUrl()
-  const url = new URL("/api/events", baseUrl)
-  url.searchParams.set("status", "published")
-  url.searchParams.set("limit", "50")
-  // Sub-events are excluded by default and shown on their parent event's detail page
-
-  const response = await fetch(url.toString(), {
-    next: { revalidate },
-  })
-
-  if (!response.ok) {
-    throw new Error(`Failed to load events: ${response.status} ${response.statusText}`)
-  }
-
-  const payload = (await response.json()) as EventsApiResponse
-  return payload.data
-}
 
 function getStartTimestamp(event: EventRecord) {
   const value = Date.parse(event.startsAt)
@@ -131,7 +107,7 @@ export default async function EventsPage() {
   let records: EventRecord[] = []
 
   try {
-    records = await fetchPublishedEvents()
+    records = await getPublishedEvents({ limit: 50 })
   } catch {
     return (
       <main className="w-full bg-background text-foreground">

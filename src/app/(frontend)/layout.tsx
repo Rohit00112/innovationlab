@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/sections/nav-bar";
 import { Footer } from "@/components/sections/footer";
-import { getSiteContent } from "@/lib/site-content";
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
+import { getSiteContent } from "@/lib/data/site-content";
 import {
     GlobalContent,
     DEFAULT_GLOBAL_CONTENT,
@@ -10,11 +9,9 @@ import {
 } from "@/lib/types/site-content";
 
 export default async function FrontendLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-    const baseUrl = resolveApiBaseUrl();
     const globalContent = await getSiteContent<GlobalContent>(
         PAGE_KEYS.GLOBAL,
-        SECTION_KEYS.GLOBAL_SETTINGS,
-        baseUrl
+        SECTION_KEYS.GLOBAL_SETTINGS
     ) || DEFAULT_GLOBAL_CONTENT;
 
     return (

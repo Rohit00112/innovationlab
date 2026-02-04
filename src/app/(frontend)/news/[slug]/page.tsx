@@ -4,41 +4,12 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, CalendarDays, Clock, User } from "lucide-react"
 
 import { normalizeLexicalState, estimateReadingTime } from "@/lib/editor/lexical-utils"
-import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url"
-import type { NewsRecord } from "@/lib/types/news"
+import { getNewsBySlug, type NewsRecord } from "@/lib/data/news"
 import { Button } from "@/components/ui/button"
 import { ShareButtonsInline } from "@/components/share-button"
 
 // Force dynamic rendering since we don't have generateStaticParams implemented yet
 export const dynamic = "force-dynamic"
-
-interface NewsApiResponse {
-    data: NewsRecord[]
-}
-
-async function fetchNewsBySlug(slug: string): Promise<NewsRecord | null> {
-    const baseUrl = resolveApiBaseUrl()
-    const url = new URL("/api/news", baseUrl)
-    url.searchParams.set("slug", slug)
-
-    try {
-        const response = await fetch(url.toString(), {
-            next: { revalidate: 60 },
-        })
-
-        if (!response.ok) {
-            // If the API returns 404 or other errors, return null to trigger notFound()
-            return null
-        }
-
-        const payload = (await response.json()) as NewsApiResponse
-        // The API returns an array, so we take the first item
-        return payload.data[0] || null
-    } catch (error) {
-        console.error("Error fetching news by slug:", error)
-        return null
-    }
-}
 
 function formatPublishedDate(record: NewsRecord) {
     const source = record.publishedAt ?? record.createdAt
@@ -68,7 +39,7 @@ interface PageProps {
 
 export default async function NewsArticlePage({ params }: PageProps) {
     const { slug } = await params
-    const article = await fetchNewsBySlug(slug)
+    const article = await getNewsBySlug(slug)
 
     if (!article) {
         notFound()
