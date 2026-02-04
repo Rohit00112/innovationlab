@@ -7,43 +7,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { Save, RefreshCw } from "lucide-react";
+import { Save, RefreshCw, Plus, Trash2 } from "lucide-react";
+import {
+    HomePageContent,
+    CapabilityTile,
+    AchievementStat,
+    DEFAULT_HOME_CONTENT,
+    PAGE_KEYS,
+    SECTION_KEYS,
+} from "@/lib/types/site-content";
 
-interface CapabilityTile {
-    title: string;
-    description: string;
-}
-
-interface AchievementStat {
-    value: string;
-    label: string;
-}
-
-interface HomePageContent {
-    heroTitle: string;
-    heroSubtitle: string;
-    heroDescription: string;
-    capabilityTiles: CapabilityTile[];
-    achievementStats: AchievementStat[];
-}
-
-const defaultContent: HomePageContent = {
-    heroTitle: "INNOVATION LABS",
-    heroSubtitle: "Where Ideas Come Alive",
-    heroDescription: "A collaborative space for students to explore, create, and innovate.",
-    capabilityTiles: [
-        { title: "Recognize chiya cups", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-        { title: "Machine Translation", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-        { title: "Context-aware Search", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-        { title: "Responsible AI", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-    ],
-    achievementStats: [
-        { value: "500+", label: "Projects delivered" },
-        { value: "12+", label: "Years of momentum" },
-        { value: "50+", label: "Collaborators" },
-        { value: "25", label: "Awards & honours" },
-    ],
-};
+const defaultContent: HomePageContent = DEFAULT_HOME_CONTENT;
 
 export default function HomeContentPage() {
     const [content, setContent] = useState<HomePageContent>(defaultContent);
@@ -58,7 +32,7 @@ export default function HomeContentPage() {
     const fetchContent = async () => {
         setLoading(true);
         try {
-            const res = await fetch("/api/site-content?pageKey=home&sectionKey=main");
+            const res = await fetch(`/api/site-content?pageKey=${PAGE_KEYS.HOME}&sectionKey=${SECTION_KEYS.MAIN}`);
             const data = await res.json();
             if (data.success && data.data?.content) {
                 setContent(data.data.content as HomePageContent);
@@ -78,8 +52,8 @@ export default function HomeContentPage() {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    pageKey: "home",
-                    sectionKey: "main",
+                    pageKey: PAGE_KEYS.HOME,
+                    sectionKey: SECTION_KEYS.MAIN,
                     content,
                 }),
             });
@@ -111,6 +85,36 @@ export default function HomeContentPage() {
             achievementStats: prev.achievementStats.map((stat, i) =>
                 i === index ? { ...stat, [field]: value } : stat
             ),
+        }));
+    };
+
+    // Add/Remove functions for capability tiles
+    const addCapability = () => {
+        setContent((prev) => ({
+            ...prev,
+            capabilityTiles: [...prev.capabilityTiles, { title: "", description: "" }],
+        }));
+    };
+
+    const removeCapability = (index: number) => {
+        setContent((prev) => ({
+            ...prev,
+            capabilityTiles: prev.capabilityTiles.filter((_, i) => i !== index),
+        }));
+    };
+
+    // Add/Remove functions for achievement stats
+    const addStat = () => {
+        setContent((prev) => ({
+            ...prev,
+            achievementStats: [...prev.achievementStats, { value: "", label: "" }],
+        }));
+    };
+
+    const removeStat = (index: number) => {
+        setContent((prev) => ({
+            ...prev,
+            achievementStats: prev.achievementStats.filter((_, i) => i !== index),
         }));
     };
 
@@ -146,8 +150,8 @@ export default function HomeContentPage() {
             {message && (
                 <div
                     className={`p-4 rounded-lg border ${message.type === "success"
-                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
-                            : "bg-destructive/10 border-destructive/30 text-destructive"
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
+                        : "bg-destructive/10 border-destructive/30 text-destructive"
                         }`}
                 >
                     {message.text}
@@ -194,65 +198,116 @@ export default function HomeContentPage() {
             {/* Capability Tiles */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Capability Tiles</CardTitle>
-                    <CardDescription>Features and capabilities showcased on the homepage.</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Capability Tiles</CardTitle>
+                            <CardDescription>Features and capabilities showcased on the homepage.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addCapability}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Tile
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {content.capabilityTiles.map((tile, index) => (
-                        <div key={index} className="p-4 border rounded-lg space-y-3">
-                            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                                Tile {index + 1}
-                            </div>
-                            <div className="grid gap-3 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label>Title</Label>
-                                    <Input
-                                        value={tile.title}
-                                        onChange={(e) => updateCapability(index, "title", e.target.value)}
-                                    />
+                    {content.capabilityTiles.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                            No capability tiles yet. Click "Add Tile" to create one.
+                        </p>
+                    ) : (
+                        content.capabilityTiles.map((tile, index) => (
+                            <div key={index} className="p-4 border rounded-lg space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        Tile {index + 1}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive hover:text-destructive"
+                                        onClick={() => removeCapability(index)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Description</Label>
-                                    <Input
-                                        value={tile.description}
-                                        onChange={(e) => updateCapability(index, "description", e.target.value)}
-                                    />
+                                <div className="grid gap-3 md:grid-cols-2">
+                                    <div className="space-y-2">
+                                        <Label>Title</Label>
+                                        <Input
+                                            value={tile.title}
+                                            onChange={(e) => updateCapability(index, "title", e.target.value)}
+                                            placeholder="e.g., Machine Translation"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Description</Label>
+                                        <Input
+                                            value={tile.description}
+                                            onChange={(e) => updateCapability(index, "description", e.target.value)}
+                                            placeholder="Brief description..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </CardContent>
             </Card>
 
             {/* Achievement Stats */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Achievement Stats</CardTitle>
-                    <CardDescription>Key statistics displayed in the achievements section.</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Achievement Stats</CardTitle>
+                            <CardDescription>Key statistics displayed in the achievements section.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addStat}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Stat
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        {content.achievementStats.map((stat, index) => (
-                            <div key={index} className="p-4 border rounded-lg space-y-3">
-                                <div className="space-y-2">
-                                    <Label>Value</Label>
-                                    <Input
-                                        value={stat.value}
-                                        onChange={(e) => updateStat(index, "value", e.target.value)}
-                                        placeholder="e.g., 500+"
-                                    />
+                    {content.achievementStats.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                            No achievement stats yet. Click "Add Stat" to create one.
+                        </p>
+                    ) : (
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                            {content.achievementStats.map((stat, index) => (
+                                <div key={index} className="p-4 border rounded-lg space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs text-muted-foreground">Stat {index + 1}</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                                            onClick={() => removeStat(index)}
+                                        >
+                                            <Trash2 className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Value</Label>
+                                        <Input
+                                            value={stat.value}
+                                            onChange={(e) => updateStat(index, "value", e.target.value)}
+                                            placeholder="e.g., 500+"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Label</Label>
+                                        <Input
+                                            value={stat.label}
+                                            onChange={(e) => updateStat(index, "label", e.target.value)}
+                                            placeholder="e.g., Projects delivered"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Label</Label>
-                                    <Input
-                                        value={stat.label}
-                                        onChange={(e) => updateStat(index, "label", e.target.value)}
-                                        placeholder="e.g., Projects delivered"
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>

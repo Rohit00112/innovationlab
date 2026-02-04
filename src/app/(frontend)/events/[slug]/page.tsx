@@ -16,6 +16,7 @@ import {
 import { LexicalRenderer } from "@/components/blocks/editor-x/viewer";
 import { EventRegisterButton } from "@/components/event-register-button";
 import { SubEventsList } from "@/components/sub-events-list";
+import { ShareButton } from "@/components/share-button";
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 import type { EventRecord } from "@/lib/types/events";
 import { Button } from "@/components/ui/button";
@@ -372,6 +373,15 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                     </Link>
                   </Button>
                 )}
+
+                <div className="pt-4 border-t border-border/50">
+                  <ShareButton
+                    title={event.title}
+                    description={event.summary ?? undefined}
+                    variant="outline"
+                    className="w-full rounded-xl"
+                  />
+                </div>
               </div>
 
               {/* Resources Card */}

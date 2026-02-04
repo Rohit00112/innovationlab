@@ -210,6 +210,7 @@ export async function POST(request: Request) {
         hasRegistration: payload.hasRegistration ?? true,
         allowedRegistrationTypes: payload.allowedRegistrationTypes ?? "both",
         enableProposalSubmission: payload.enableProposalSubmission ?? false,
+        submissionFields: payload.submissionFields ?? null,
         startsAt,
         endsAt,
         status,

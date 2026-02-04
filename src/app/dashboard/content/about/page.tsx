@@ -7,69 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { Save, RefreshCw } from "lucide-react";
+import { Save, RefreshCw, Plus, Trash2 } from "lucide-react";
+import {
+    AboutPageContent,
+    MissionPanel,
+    AboutValue,
+    Milestone,
+    AchievementStat,
+    DEFAULT_ABOUT_CONTENT,
+    PAGE_KEYS,
+    SECTION_KEYS,
+} from "@/lib/types/site-content";
 
-interface MissionPanel {
-    title: string;
-    subtitle: string;
-    description: string;
-}
-
-interface Value {
-    title: string;
-    description: string;
-}
-
-interface Milestone {
-    year: string;
-    title: string;
-    description: string;
-}
-
-interface AchievementStat {
-    value: string;
-    label: string;
-}
-
-interface AboutPageContent {
-    heroTitle: string;
-    heroSubtitle: string;
-    heroDescription: string;
-    missionPanels: MissionPanel[];
-    values: Value[];
-    milestones: Milestone[];
-    achievements: AchievementStat[];
-}
-
-const defaultContent: AboutPageContent = {
-    heroTitle: "SHAPING THE FUTURE",
-    heroSubtitle: "About Us",
-    heroDescription: "At Innovation Lab, we transform bold ideas into real-world solutions through technology, creativity, and collaborative innovation.",
-    missionPanels: [
-        { title: "Mission", subtitle: "Empower Innovators", description: "We provide students with the resources, mentorship, and collaborative environment needed to transform bold ideas into impactful solutions." },
-        { title: "Vision", subtitle: "Lead Innovation", description: "To become a leading innovation hub that bridges academia and industry, fostering a culture of creativity, experimentation, and technological advancement." },
-        { title: "Approach", subtitle: "Learning by Building", description: "Hands-on project-based learning combined with industry mentorship, enabling students to gain practical experience while developing innovative solutions." },
-        { title: "Community", subtitle: "Inclusive by Design", description: "A diverse and welcoming community where every voice is heard, collaboration is celebrated, and innovation thrives through collective effort." },
-    ],
-    values: [
-        { title: "Passion", description: "Driven by curiosity and enthusiasm to explore new technologies and push the boundaries of what's possible." },
-        { title: "Collaboration", description: "Working together across disciplines to create solutions that are greater than the sum of their parts." },
-        { title: "Innovation", description: "Constantly seeking new approaches, embracing failure as learning, and iterating toward breakthrough solutions." },
-        { title: "Impact", description: "Creating meaningful change that extends beyond the lab, benefiting communities and society at large." },
-    ],
-    milestones: [
-        { year: "2015", title: "Foundation", description: "Innovation Lab was established at Itahari International College with a vision to create a collaborative space for student innovation." },
-        { year: "2018", title: "First Breakthrough", description: "Successfully launched our first major project, gaining recognition from industry partners." },
-        { year: "2021", title: "Expansion", description: "Expanded our programs and partnerships, reaching international collaborators and broadening our impact." },
-        { year: "2024", title: "Recognition", description: "Received multiple awards for innovation and community impact, solidifying our position as a leading student innovation hub." },
-    ],
-    achievements: [
-        { value: "500+", label: "Projects delivered" },
-        { value: "12+", label: "Years of momentum" },
-        { value: "50+", label: "Collaborators" },
-        { value: "25", label: "Awards & honours" },
-    ],
-};
+const defaultContent: AboutPageContent = DEFAULT_ABOUT_CONTENT;
 
 export default function AboutContentPage() {
     const [content, setContent] = useState<AboutPageContent>(defaultContent);
@@ -84,7 +34,7 @@ export default function AboutContentPage() {
     const fetchContent = async () => {
         setLoading(true);
         try {
-            const res = await fetch("/api/site-content?pageKey=about&sectionKey=main");
+            const res = await fetch(`/api/site-content?pageKey=${PAGE_KEYS.ABOUT}&sectionKey=${SECTION_KEYS.MAIN}`);
             const data = await res.json();
             if (data.success && data.data?.content) {
                 setContent(data.data.content as AboutPageContent);
@@ -104,8 +54,8 @@ export default function AboutContentPage() {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    pageKey: "about",
-                    sectionKey: "main",
+                    pageKey: PAGE_KEYS.ABOUT,
+                    sectionKey: SECTION_KEYS.MAIN,
                     content,
                 }),
             });
@@ -131,7 +81,7 @@ export default function AboutContentPage() {
         }));
     };
 
-    const updateValue = (index: number, field: keyof Value, value: string) => {
+    const updateValue = (index: number, field: keyof AboutValue, value: string) => {
         setContent((prev) => ({
             ...prev,
             values: prev.values.map((v, i) => (i === index ? { ...v, [field]: value } : v)),
@@ -149,6 +99,66 @@ export default function AboutContentPage() {
         setContent((prev) => ({
             ...prev,
             achievements: prev.achievements.map((a, i) => (i === index ? { ...a, [field]: value } : a)),
+        }));
+    };
+
+    // Add/Remove functions for mission panels
+    const addMissionPanel = () => {
+        setContent((prev) => ({
+            ...prev,
+            missionPanels: [...prev.missionPanels, { title: "", subtitle: "", description: "" }],
+        }));
+    };
+
+    const removeMissionPanel = (index: number) => {
+        setContent((prev) => ({
+            ...prev,
+            missionPanels: prev.missionPanels.filter((_, i) => i !== index),
+        }));
+    };
+
+    // Add/Remove functions for values
+    const addValue = () => {
+        setContent((prev) => ({
+            ...prev,
+            values: [...prev.values, { title: "", description: "" }],
+        }));
+    };
+
+    const removeValue = (index: number) => {
+        setContent((prev) => ({
+            ...prev,
+            values: prev.values.filter((_, i) => i !== index),
+        }));
+    };
+
+    // Add/Remove functions for milestones
+    const addMilestone = () => {
+        setContent((prev) => ({
+            ...prev,
+            milestones: [...prev.milestones, { year: "", title: "", description: "" }],
+        }));
+    };
+
+    const removeMilestone = (index: number) => {
+        setContent((prev) => ({
+            ...prev,
+            milestones: prev.milestones.filter((_, i) => i !== index),
+        }));
+    };
+
+    // Add/Remove functions for achievements
+    const addAchievement = () => {
+        setContent((prev) => ({
+            ...prev,
+            achievements: [...prev.achievements, { value: "", label: "" }],
+        }));
+    };
+
+    const removeAchievement = (index: number) => {
+        setContent((prev) => ({
+            ...prev,
+            achievements: prev.achievements.filter((_, i) => i !== index),
         }));
     };
 
@@ -184,8 +194,8 @@ export default function AboutContentPage() {
             {message && (
                 <div
                     className={`p-4 rounded-lg border ${message.type === "success"
-                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
-                            : "bg-destructive/10 border-destructive/30 text-destructive"
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
+                        : "bg-destructive/10 border-destructive/30 text-destructive"
                         }`}
                 >
                     {message.text}
@@ -232,130 +242,252 @@ export default function AboutContentPage() {
             {/* Mission Panels */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Mission, Vision & Approach</CardTitle>
-                    <CardDescription>The four foundational panels displayed on the About page.</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Mission, Vision & Approach</CardTitle>
+                            <CardDescription>Foundational panels displayed on the About page.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addMissionPanel}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Panel
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {content.missionPanels.map((panel, index) => (
-                        <div key={index} className="p-4 border rounded-lg space-y-3">
-                            <div className="text-sm font-medium text-muted-foreground">{panel.title}</div>
-                            <div className="grid gap-3 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label>Subtitle</Label>
-                                    <Input
-                                        value={panel.subtitle}
-                                        onChange={(e) => updateMissionPanel(index, "subtitle", e.target.value)}
-                                    />
+                    {content.missionPanels.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                            No mission panels yet. Click "Add Panel" to create one.
+                        </p>
+                    ) : (
+                        content.missionPanels.map((panel, index) => (
+                            <div key={index} className="p-4 border rounded-lg space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        Panel {index + 1}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive hover:text-destructive"
+                                        onClick={() => removeMissionPanel(index)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Description</Label>
-                                    <Textarea
-                                        value={panel.description}
-                                        onChange={(e) => updateMissionPanel(index, "description", e.target.value)}
-                                        rows={2}
-                                    />
+                                <div className="grid gap-3 md:grid-cols-3">
+                                    <div className="space-y-2">
+                                        <Label>Title</Label>
+                                        <Input
+                                            value={panel.title}
+                                            onChange={(e) => updateMissionPanel(index, "title", e.target.value)}
+                                            placeholder="e.g., Mission"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Subtitle</Label>
+                                        <Input
+                                            value={panel.subtitle}
+                                            onChange={(e) => updateMissionPanel(index, "subtitle", e.target.value)}
+                                            placeholder="e.g., Empower Innovators"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Description</Label>
+                                        <Textarea
+                                            value={panel.description}
+                                            onChange={(e) => updateMissionPanel(index, "description", e.target.value)}
+                                            rows={2}
+                                            placeholder="Panel description..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </CardContent>
             </Card>
 
             {/* Values */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Core Values</CardTitle>
-                    <CardDescription>Values that drive the Innovation Lab.</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Core Values</CardTitle>
+                            <CardDescription>Values that drive the Innovation Lab.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addValue}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Value
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {content.values.map((value, index) => (
-                        <div key={index} className="p-4 border rounded-lg space-y-3">
-                            <div className="grid gap-3 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label>Title</Label>
-                                    <Input
-                                        value={value.title}
-                                        onChange={(e) => updateValue(index, "title", e.target.value)}
-                                    />
+                    {content.values.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                            No core values yet. Click "Add Value" to create one.
+                        </p>
+                    ) : (
+                        content.values.map((value, index) => (
+                            <div key={index} className="p-4 border rounded-lg space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        Value {index + 1}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive hover:text-destructive"
+                                        onClick={() => removeValue(index)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Description</Label>
-                                    <Input
-                                        value={value.description}
-                                        onChange={(e) => updateValue(index, "description", e.target.value)}
-                                    />
+                                <div className="grid gap-3 md:grid-cols-2">
+                                    <div className="space-y-2">
+                                        <Label>Title</Label>
+                                        <Input
+                                            value={value.title}
+                                            onChange={(e) => updateValue(index, "title", e.target.value)}
+                                            placeholder="e.g., Innovation"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Description</Label>
+                                        <Input
+                                            value={value.description}
+                                            onChange={(e) => updateValue(index, "description", e.target.value)}
+                                            placeholder="Value description..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </CardContent>
             </Card>
 
             {/* Milestones */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Milestones</CardTitle>
-                    <CardDescription>Key moments in the Innovation Lab journey.</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Milestones</CardTitle>
+                            <CardDescription>Key moments in the Innovation Lab journey.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addMilestone}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Milestone
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {content.milestones.map((milestone, index) => (
-                        <div key={index} className="p-4 border rounded-lg space-y-3">
-                            <div className="grid gap-3 md:grid-cols-3">
-                                <div className="space-y-2">
-                                    <Label>Year</Label>
-                                    <Input
-                                        value={milestone.year}
-                                        onChange={(e) => updateMilestone(index, "year", e.target.value)}
-                                    />
+                    {content.milestones.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                            No milestones yet. Click "Add Milestone" to create one.
+                        </p>
+                    ) : (
+                        content.milestones.map((milestone, index) => (
+                            <div key={index} className="p-4 border rounded-lg space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        Milestone {index + 1}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-destructive hover:text-destructive"
+                                        onClick={() => removeMilestone(index)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Title</Label>
-                                    <Input
-                                        value={milestone.title}
-                                        onChange={(e) => updateMilestone(index, "title", e.target.value)}
-                                    />
-                                </div>
-                                <div className="space-y-2 md:col-span-1">
-                                    <Label>Description</Label>
-                                    <Textarea
-                                        value={milestone.description}
-                                        onChange={(e) => updateMilestone(index, "description", e.target.value)}
-                                        rows={2}
-                                    />
+                                <div className="grid gap-3 md:grid-cols-3">
+                                    <div className="space-y-2">
+                                        <Label>Year</Label>
+                                        <Input
+                                            value={milestone.year}
+                                            onChange={(e) => updateMilestone(index, "year", e.target.value)}
+                                            placeholder="e.g., 2024"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Title</Label>
+                                        <Input
+                                            value={milestone.title}
+                                            onChange={(e) => updateMilestone(index, "title", e.target.value)}
+                                            placeholder="e.g., Foundation"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Description</Label>
+                                        <Textarea
+                                            value={milestone.description}
+                                            onChange={(e) => updateMilestone(index, "description", e.target.value)}
+                                            rows={2}
+                                            placeholder="Milestone details..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </CardContent>
             </Card>
 
             {/* Achievements */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Achievement Stats</CardTitle>
-                    <CardDescription>Key statistics displayed in the impact section.</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Achievement Stats</CardTitle>
+                            <CardDescription>Key statistics displayed in the impact section.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addAchievement}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Stat
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        {content.achievements.map((stat, index) => (
-                            <div key={index} className="p-4 border rounded-lg space-y-3">
-                                <div className="space-y-2">
-                                    <Label>Value</Label>
-                                    <Input
-                                        value={stat.value}
-                                        onChange={(e) => updateAchievement(index, "value", e.target.value)}
-                                    />
+                    {content.achievements.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                            No achievement stats yet. Click "Add Stat" to create one.
+                        </p>
+                    ) : (
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                            {content.achievements.map((stat, index) => (
+                                <div key={index} className="p-4 border rounded-lg space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs text-muted-foreground">Stat {index + 1}</span>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                                            onClick={() => removeAchievement(index)}
+                                        >
+                                            <Trash2 className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Value</Label>
+                                        <Input
+                                            value={stat.value}
+                                            onChange={(e) => updateAchievement(index, "value", e.target.value)}
+                                            placeholder="e.g., 500+"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Label</Label>
+                                        <Input
+                                            value={stat.label}
+                                            onChange={(e) => updateAchievement(index, "label", e.target.value)}
+                                            placeholder="e.g., Projects"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Label</Label>
-                                    <Input
-                                        value={stat.label}
-                                        onChange={(e) => updateAchievement(index, "label", e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>

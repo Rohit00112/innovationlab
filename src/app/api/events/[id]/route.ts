@@ -117,6 +117,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       updates.enableProposalSubmission = payload.enableProposalSubmission;
     }
 
+    if (payload.submissionFields !== undefined) {
+      updates.submissionFields = payload.submissionFields ?? null;
+    }
+
     if (payload.allowedRegistrationTypes !== undefined) {
       updates.allowedRegistrationTypes = payload.allowedRegistrationTypes;
     }

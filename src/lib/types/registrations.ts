@@ -13,6 +13,11 @@ export const REGISTRATION_TYPES = [
 
 export type RegistrationType = (typeof REGISTRATION_TYPES)[number]
 
+export interface SubmissionValue {
+    fieldId: string
+    value: string
+}
+
 export interface EventRegistrationRecord {
     id: number
     userId: number
@@ -24,7 +29,8 @@ export interface EventRegistrationRecord {
     participantPhone: string | null
     notes: string | null
     teamMembers: string | null // JSON string
-    proposalLink: string | null
+    proposalLink: string | null // deprecated, use submissions
+    submissions: SubmissionValue[] | null
     status: RegistrationStatus
     createdAt: string
     user?: {

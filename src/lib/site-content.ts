@@ -1,10 +1,6 @@
-export interface SiteContentRecord<T = unknown> {
-    id: number;
-    pageKey: string;
-    sectionKey: string;
-    content: T;
-    updatedAt: Date;
-}
+import { SiteContentRecord } from "@/lib/types/site-content";
+
+export type { SiteContentRecord };
 
 // Server-side helper for fetching content
 export async function getSiteContent<T>(

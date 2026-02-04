@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
-import { requireUser } from "@/lib/api/auth";
 import { ApiError, toErrorResponse } from "@/lib/api/errors";
 import { db } from "@/lib/db";
 import { events, users } from "@/lib/db/schema";
@@ -31,7 +30,7 @@ export async function GET(request: Request, context: RouteParams) {
             throw new ApiError(404, "Parent event not found");
         }
 
-        // Get sub-events
+        // Get sub-events (only published ones for public view)
         const subEvents = await db
             .select({
                 id: events.id,
@@ -53,7 +52,10 @@ export async function GET(request: Request, context: RouteParams) {
             })
             .from(events)
             .leftJoin(users, eq(events.organizerId, users.id))
-            .where(eq(events.parentEventId, parentId))
+            .where(and(
+                eq(events.parentEventId, parentId),
+                eq(events.status, "published")
+            ))
             .orderBy(desc(events.startsAt));
 
         return NextResponse.json({

@@ -9,20 +9,19 @@ import { CommandMenu } from "../ui/command-menu";
 import { FeedbackDialog } from "../feedback/feedback-dialog";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "News", href: "/news" },
-  { label: "Events", href: "/events" },
-  { label: "Communities", href: "/communities" },
-  { label: "Contact", href: "/contact" },
-];
+import {
+  NavigationContent,
+  NavItem,
+  DEFAULT_NAVIGATION_CONTENT,
+  PAGE_KEYS,
+  SECTION_KEYS,
+} from "@/lib/types/site-content";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [navContent, setNavContent] = useState<NavigationContent>(DEFAULT_NAVIGATION_CONTENT);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +30,29 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Fetch navigation settings
+  useEffect(() => {
+    const fetchNavContent = async () => {
+      try {
+        const res = await fetch(
+          `/api/site-content?pageKey=${PAGE_KEYS.GLOBAL}&sectionKey=${SECTION_KEYS.NAVIGATION}`
+        );
+        const data = await res.json();
+        if (data.success && data.data?.content) {
+          setNavContent(data.data.content as NavigationContent);
+        }
+      } catch (error) {
+        console.error("Failed to fetch navigation:", error);
+      }
+    };
+    void fetchNavContent();
+  }, []);
+
+  // Get visible nav items sorted by order
+  const visibleNavItems = navContent.navItems
+    .filter((item) => item.visible)
+    .sort((a, b) => a.order - b.order);
 
   return (
     <header
@@ -63,10 +85,10 @@ export function Navbar() {
           {/* Navigation Pills */}
           <nav className="flex items-center rounded-full border border-border/50 bg-background/50 p-1 shadow-sm backdrop-blur-md">
             <ul className="flex items-center gap-1">
-              {navItems.map((item) => {
+              {visibleNavItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                  <li key={item.label}>
+                  <li key={item.id}>
                     <Link
                       href={item.href}
                       className={cn(
@@ -98,9 +120,16 @@ export function Navbar() {
 
           <ModeToggle />
 
-          <Button className="hidden h-9 rounded-full bg-indigo-600 px-5 text-sm font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/20 md:inline-flex">
-            Get Started
-          </Button>
+          {navContent.showGetStartedButton && (
+            <Button
+              className="hidden h-9 rounded-full bg-indigo-600 px-5 text-sm font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/20 md:inline-flex"
+              asChild
+            >
+              <Link href={navContent.getStartedButtonLink}>
+                {navContent.getStartedButtonText}
+              </Link>
+            </Button>
+          )}
 
           {/* Mobile Menu Trigger */}
           <Button
@@ -123,9 +152,9 @@ export function Navbar() {
       {mobileMenuOpen && (
         <div className="absolute left-0 top-full w-full border-b border-border/10 bg-background/95 p-6 shadow-2xl backdrop-blur-3xl md:hidden animate-in slide-in-from-top-2">
           <nav className="flex flex-col gap-2">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <Link
-                key={item.label}
+                key={item.id}
                 href={item.href}
                 className="flex items-center rounded-lg px-4 py-3 text-base font-medium text-foreground/80 hover:bg-secondary/50 hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
@@ -138,9 +167,13 @@ export function Navbar() {
                 <span className="text-sm text-muted-foreground">Have a suggestion?</span>
                 <FeedbackDialog />
               </div>
-              <Button className="w-full rounded-xl bg-indigo-600 text-white" size="lg">
-                Get Started
-              </Button>
+              {navContent.showGetStartedButton && (
+                <Button className="w-full rounded-xl bg-indigo-600 text-white" size="lg" asChild>
+                  <Link href={navContent.getStartedButtonLink}>
+                    {navContent.getStartedButtonText}
+                  </Link>
+                </Button>
+              )}
             </div>
           </nav>
         </div>

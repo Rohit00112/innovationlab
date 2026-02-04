@@ -133,6 +133,7 @@ export const events = pgTable(
     hasRegistration: boolean("has_registration").notNull().default(true),
     allowedRegistrationTypes: allowedRegistrationTypesEnum("allowed_registration_types").notNull().default("both"),
     enableProposalSubmission: boolean("enable_proposal_submission").notNull().default(false),
+    submissionFields: json("submission_fields"), // JSON of Array<{ id: string, title: string, required: boolean }>
     startsAt: timestamp("starts_at", { withTimezone: true, mode: "date" }).notNull(),
     endsAt: timestamp("ends_at", { withTimezone: true, mode: "date" }),
     status: eventStatusEnum("status").notNull().default("draft"),
@@ -261,7 +262,8 @@ export const eventRegistrations = pgTable(
     participantPhone: text("participant_phone"),
     notes: text("notes"),
     teamMembers: text("team_members"), // JSON string of team members array
-    proposalLink: text("proposal_link"), // URL to proposal document
+    proposalLink: text("proposal_link"), // deprecated, use submissions
+    submissions: json("submissions"), // JSON of Array<{ fieldId: string, value: string }>
     status: registrationStatusEnum("status").notNull().default("confirmed"),
     createdAt: timestampWithDefaults("created_at")
   },

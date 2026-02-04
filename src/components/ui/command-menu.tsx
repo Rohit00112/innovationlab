@@ -14,13 +14,27 @@ import {
 import { useDebounce } from "use-debounce";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Calendar, Newspaper, Users, HelpCircle, Loader2 } from "lucide-react";
 
 type SearchResult = {
     id: string;
     title: string;
     href: string;
-    type: "Event" | "Community" | "FAQ";
+    type: "Event" | "News" | "Community" | "FAQ";
+};
+
+const typeIcons = {
+    Event: Calendar,
+    News: Newspaper,
+    Community: Users,
+    FAQ: HelpCircle,
+};
+
+const typeColors = {
+    Event: "text-blue-500",
+    News: "text-green-500",
+    Community: "text-purple-500",
+    FAQ: "text-orange-500",
 };
 
 export function CommandMenu() {
@@ -28,6 +42,7 @@ export function CommandMenu() {
     const [query, setQuery] = React.useState("");
     const [debouncedQuery] = useDebounce(query, 300);
     const [results, setResults] = React.useState<SearchResult[]>([]);
+    const [loading, setLoading] = React.useState(false);
     const router = useRouter();
 
     React.useEffect(() => {
@@ -44,9 +59,11 @@ export function CommandMenu() {
     React.useEffect(() => {
         if (debouncedQuery.length === 0) {
             setResults([]);
+            setLoading(false);
             return;
         }
 
+        setLoading(true);
         async function fetchResults() {
             try {
                 const res = await fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
@@ -55,6 +72,8 @@ export function CommandMenu() {
             } catch (error) {
                 console.error("Search failed", error);
                 setResults([]);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -63,8 +82,21 @@ export function CommandMenu() {
 
     const runCommand = React.useCallback((command: () => unknown) => {
         setOpen(false);
+        setQuery("");
         command();
     }, []);
+
+    // Group results by type
+    const groupedResults = React.useMemo(() => {
+        const groups: Record<string, SearchResult[]> = {};
+        for (const result of results) {
+            if (!groups[result.type]) {
+                groups[result.type] = [];
+            }
+            groups[result.type].push(result);
+        }
+        return groups;
+    }, [results]);
 
     return (
         <>
@@ -81,45 +113,64 @@ export function CommandMenu() {
             </Button>
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <CommandInput
-                    placeholder="Type a command or search..."
+                    placeholder="Search events, news, communities..."
                     value={query}
                     onValueChange={setQuery}
                 />
                 <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
+                    {loading && (
+                        <div className="py-6 text-center text-sm text-muted-foreground">
+                            <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />
+                            Searching...
+                        </div>
+                    )}
 
-                    {results.length > 0 ? (
-                        <>
-                            <CommandGroup heading="Search Results">
-                                {results.map((result) => (
+                    {!loading && query.length > 0 && results.length === 0 && (
+                        <CommandEmpty>No results found for &quot;{query}&quot;</CommandEmpty>
+                    )}
+
+                    {!loading && Object.entries(groupedResults).map(([type, items]) => {
+                        const Icon = typeIcons[type as keyof typeof typeIcons];
+                        const color = typeColors[type as keyof typeof typeColors];
+
+                        return (
+                            <CommandGroup key={type} heading={type + "s"}>
+                                {items.map((result) => (
                                     <CommandItem
                                         key={result.id}
                                         value={`${result.title} ${result.type}`}
                                         onSelect={() => {
                                             runCommand(() => router.push(result.href));
                                         }}
+                                        className="flex items-center gap-2"
                                     >
-                                        <span className="mr-2 text-muted-foreground">[{result.type}]</span>
-                                        {result.title}
+                                        <Icon className={`h-4 w-4 ${color}`} />
+                                        <span className="flex-1 truncate">{result.title}</span>
+                                        <span className="text-xs text-muted-foreground">{result.type}</span>
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
-                            <CommandSeparator />
-                        </>
-                    ) : null}
+                        );
+                    })}
 
-                    <CommandGroup heading="Suggestions">
+                    {!loading && results.length > 0 && <CommandSeparator />}
+
+                    <CommandGroup heading="Quick Links">
                         <CommandItem value="events" onSelect={() => runCommand(() => router.push("/events"))}>
-                            Events
-                        </CommandItem>
-                        <CommandItem value="communities" onSelect={() => runCommand(() => router.push("/communities"))}>
-                            Communities
+                            <Calendar className="mr-2 h-4 w-4 text-blue-500" />
+                            Browse Events
                         </CommandItem>
                         <CommandItem value="news" onSelect={() => runCommand(() => router.push("/news"))}>
-                            News
+                            <Newspaper className="mr-2 h-4 w-4 text-green-500" />
+                            Latest News
+                        </CommandItem>
+                        <CommandItem value="communities" onSelect={() => runCommand(() => router.push("/communities"))}>
+                            <Users className="mr-2 h-4 w-4 text-purple-500" />
+                            Communities
                         </CommandItem>
                         <CommandItem value="about" onSelect={() => runCommand(() => router.push("/about"))}>
-                            About
+                            <HelpCircle className="mr-2 h-4 w-4 text-orange-500" />
+                            About Us
                         </CommandItem>
                     </CommandGroup>
                 </CommandList>

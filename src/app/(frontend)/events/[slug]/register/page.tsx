@@ -60,6 +60,7 @@ export default async function EventRegisterPage({ params }: PageProps) {
                 userEmail={session.user.email}
                 userName={session.user.name ?? ""}
                 enableProposalSubmission={event.enableProposalSubmission}
+                submissionFields={event.submissionFields}
                 allowedRegistrationTypes={event.allowedRegistrationTypes}
             />
         </main>

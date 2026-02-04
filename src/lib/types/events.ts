@@ -29,6 +29,12 @@ export interface EventDocument {
   url: string
 }
 
+export interface SubmissionField {
+  id: string
+  title: string
+  required: boolean
+}
+
 export interface EventRecord {
   id: number
   title: string
@@ -42,6 +48,7 @@ export interface EventRecord {
   hasRegistration: boolean
   allowedRegistrationTypes: AllowedRegistrationType
   enableProposalSubmission: boolean
+  submissionFields: SubmissionField[] | null
   startsAt: string
   endsAt: string | null
   status: EventStatus
@@ -64,12 +71,17 @@ export interface CreateEventPayload {
   registrationUrl?: string | null
   image?: string | null
   isVirtual?: boolean
+  hasRegistration?: boolean
+  allowedRegistrationTypes?: AllowedRegistrationType
+  enableProposalSubmission?: boolean
+  submissionFields?: SubmissionField[] | null
   startsAt: string
   endsAt?: string | null
   status?: EventStatus
   publishedAt?: string | null
   organizerId?: number | null
   parentEventId?: number | null
+  documents?: EventDocument[] | null
 }
 
 export interface UpdateEventPayload extends Partial<CreateEventPayload> { }

@@ -7,6 +7,7 @@ import { normalizeLexicalState, estimateReadingTime } from "@/lib/editor/lexical
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url"
 import type { NewsRecord } from "@/lib/types/news"
 import { Button } from "@/components/ui/button"
+import { ShareButtonsInline } from "@/components/share-button"
 
 // Force dynamic rendering since we don't have generateStaticParams implemented yet
 export const dynamic = "force-dynamic"
@@ -158,7 +159,10 @@ export default async function NewsArticlePage({ params }: PageProps) {
                     </div>
 
                     <div className="border-t border-border/50 mt-16 pt-10 flex flex-col items-center text-center space-y-6">
-                        <p className="text-sm text-muted-foreground uppercase tracking-wider font-semibold">Share this story</p>
+                        <ShareButtonsInline
+                            title={article.title}
+                            description={article.excerpt ?? undefined}
+                        />
                         <p className="text-lg font-bold">Innovation Lab</p>
                         <Button variant="outline" className="rounded-full" asChild>
                             <Link href="/news">Read More Stories</Link>

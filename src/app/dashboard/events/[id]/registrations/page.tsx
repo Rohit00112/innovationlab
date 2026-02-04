@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import type { EventRegistrationRecord, RegistrationStatus } from "@/lib/types/registrations"
+import type { EventRegistrationRecord, RegistrationStatus, SubmissionValue } from "@/lib/types/registrations"
 import { getEventRegistrations } from "@/lib/http/registrations"
 
 const statusConfig: Record<RegistrationStatus, { label: string; variant: "default" | "secondary" | "destructive" | "outline"; icon: any }> = {
@@ -266,18 +266,36 @@ export default function EventRegistrationsPage() {
                                                 {formatDate(registration.createdAt)}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                {registration.proposalLink && (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        asChild
-                                                        className="h-8 text-muted-foreground hover:text-primary"
-                                                    >
-                                                        <Link href={registration.proposalLink} target="_blank">
-                                                            <FileText className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                )}
+                                                <div className="flex items-center justify-end gap-1">
+                                                    {/* Legacy proposalLink support */}
+                                                    {registration.proposalLink && !registration.submissions?.length && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            asChild
+                                                            className="h-8 text-muted-foreground hover:text-primary"
+                                                        >
+                                                            <Link href={registration.proposalLink} target="_blank">
+                                                                <FileText className="h-4 w-4" />
+                                                            </Link>
+                                                        </Button>
+                                                    )}
+                                                    {/* New submissions array */}
+                                                    {registration.submissions && (registration.submissions as SubmissionValue[]).map((sub, idx) => (
+                                                        <Button
+                                                            key={idx}
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            asChild
+                                                            className="h-8 text-muted-foreground hover:text-primary"
+                                                            title={sub.fieldId}
+                                                        >
+                                                            <Link href={sub.value} target="_blank">
+                                                                <FileText className="h-4 w-4" />
+                                                            </Link>
+                                                        </Button>
+                                                    ))}
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     )

@@ -4,8 +4,6 @@ import {
   ArrowUpRight,
   CalendarDays,
   Clock,
-  Layers,
-  MapPin,
   Sparkles,
   ArrowRight,
 } from "lucide-react"
@@ -13,8 +11,9 @@ import {
 import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url"
 import type { EventRecord } from "@/lib/types/events"
 import { Button } from "@/components/ui/button"
+import { EventsListClient } from "@/components/events/events-list-client"
 
-export const revalidate = 60
+export const revalidate = 0
 
 interface EventsApiResponse {
   data: EventRecord[]
@@ -24,11 +23,12 @@ async function fetchPublishedEvents(): Promise<EventRecord[]> {
   const baseUrl = resolveApiBaseUrl()
   const url = new URL("/api/events", baseUrl)
   url.searchParams.set("status", "published")
-  url.searchParams.set("limit", "12")
+  url.searchParams.set("limit", "50")
+  // Sub-events are excluded by default and shown on their parent event's detail page
 
   const response = await fetch(url.toString(), {
     next: { revalidate },
-    cache: "force-cache",
+    cache: "no-store",
   })
 
   if (!response.ok) {
@@ -117,18 +117,6 @@ function formatSchedule(event: EventRecord) {
     date,
     time: `${startTime} – ${endTime}`,
   }
-}
-
-function getLocationLabel(event: EventRecord) {
-  if (event.isVirtual) {
-    return "Remote"
-  }
-
-  if (event.location && event.location.trim()) {
-    return event.location.trim()
-  }
-
-  return "Location to be announced"
 }
 
 function getEventSummary(event: EventRecord) {
@@ -294,7 +282,7 @@ export default async function EventsPage() {
 
       <section className="py-24 bg-muted/30 border-t border-border/50">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mb-16 max-w-2xl">
+          <div className="mb-10 max-w-2xl">
             <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
               Upcoming Gatherings
             </span>
@@ -303,91 +291,7 @@ export default async function EventsPage() {
             </h2>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {otherEvents.length === 0 ? (
-              <div className="col-span-full border border-dashed border-border p-12 text-center rounded-3xl bg-card/50">
-                <p className="text-sm uppercase tracking-wider text-muted-foreground font-semibold">
-                  More events coming soon. Meanwhile, explore the featured event above.
-                </p>
-              </div>
-            ) : (
-              otherEvents.map((event) => {
-                const schedule = formatSchedule(event)
-                const eventImage = event.image && event.image.trim() ? event.image.trim() : null
-
-                return (
-                  <article
-                    key={event.slug}
-                    className="group flex flex-col bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px]"
-                  >
-                    <div className="relative h-56 w-full overflow-hidden">
-                      {eventImage ? (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
-                          <Image
-                            src={eventImage}
-                            alt={event.title}
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-110"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                          />
-                          <div className="absolute top-4 left-4 z-20">
-                            <div className="bg-background/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex flex-col items-center shadow-sm">
-                              <span className="text-xs font-bold uppercase text-primary">
-                                {schedule.date.split(" ")[0]}
-                              </span>
-                              <span className="text-lg font-bold leading-none text-foreground">
-                                {schedule.date.split(" ")[1].replace(",", "")}
-                              </span>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                          <CalendarDays className="w-12 h-12 text-muted-foreground/20" />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex-1 p-6 flex flex-col space-y-4 border-t border-border/50">
-                      <div className="flex flex-wrap gap-3 text-xs font-medium text-muted-foreground">
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="h-3.5 w-3.5" />
-                          <span>{schedule.time}</span>
-                        </div>
-                        {(event.subEventCount ?? 0) > 0 && (
-                          <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
-                            <Layers className="h-3.5 w-3.5" />
-                            <span>{event.subEventCount}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <h3 className="text-xl font-bold tracking-tight line-clamp-2 group-hover:text-primary transition-colors">
-                        {event.title}
-                      </h3>
-
-                      <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3 flex-1">
-                        {getEventSummary(event)}
-                      </p>
-
-                      <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-auto">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                          <MapPin className="h-3.5 w-3.5" />
-                          {getLocationLabel(event)}
-                        </span>
-                        <Button variant="ghost" className="p-0 h-auto text-xs font-bold uppercase tracking-wider hover:bg-transparent hover:text-primary" asChild>
-                          <Link href={`/events/${event.slug}`}>
-                            Details <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  </article>
-                )
-              })
-            )}
-          </div>
+          <EventsListClient events={otherEvents} />
         </div>
       </section>
     </main>

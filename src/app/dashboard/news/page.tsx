@@ -54,6 +54,8 @@ import {
     deleteNews,
     listNews,
     updateNews,
+    bulkDeleteNews,
+    bulkUpdateNewsStatus,
 } from "@/lib/http/news"
 import {
     NEWS_STATUSES,
@@ -68,6 +70,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    BulkActionsBar,
+    SelectableCheckbox,
+    SelectAllCheckbox,
+    type BulkAction,
+} from "@/components/dashboard/bulk-actions"
 
 const newsFormSchema = z.object({
     title: z.string().min(3, "Title is required"),
@@ -242,6 +250,10 @@ export default function NewsDashboard() {
     const [editorState, setEditorState] = useState<SerializedEditorState>(EMPTY_EDITOR_STATE)
     const [editorKey, setEditorKey] = useState(0)
 
+    // Bulk selection state
+    const [selectedIds, setSelectedIds] = useState<number[]>([])
+    const [isBulkProcessing, setIsBulkProcessing] = useState(false)
+
     const form = useForm<NewsFormValues>({
         resolver: zodResolver(newsFormSchema),
         defaultValues: defaultFormValues,
@@ -273,6 +285,62 @@ export default function NewsDashboard() {
     useEffect(() => {
         loadNews()
     }, [loadNews])
+
+    // Clear selection when filters change
+    useEffect(() => {
+        setSelectedIds([])
+    }, [statusFilter, searchValue])
+
+    // Bulk action handlers
+    const handleSelectItem = (id: number, checked: boolean) => {
+        setSelectedIds(prev =>
+            checked ? [...prev, id] : prev.filter(i => i !== id)
+        )
+    }
+
+    const handleSelectAll = () => {
+        setSelectedIds(newsItems.map(item => item.id))
+    }
+
+    const handleClearSelection = () => {
+        setSelectedIds([])
+    }
+
+    const handleBulkAction = async (action: string, status?: NewsStatus) => {
+        if (selectedIds.length === 0) return
+
+        setIsBulkProcessing(true)
+        try {
+            if (action === "delete") {
+                await bulkDeleteNews(selectedIds)
+            } else if (action === "updateStatus" && status) {
+                await bulkUpdateNewsStatus(selectedIds, status)
+            }
+            setSelectedIds([])
+            await loadNews()
+        } catch (err) {
+            const message = err instanceof HttpError ? err.message : "Bulk action failed"
+            setError(message)
+        } finally {
+            setIsBulkProcessing(false)
+        }
+    }
+
+    const bulkActions: BulkAction<NewsStatus>[] = [
+        {
+            id: "delete",
+            label: "Delete",
+            icon: <Trash2 className="h-3.5 w-3.5" />,
+            variant: "destructive",
+            confirmTitle: "Delete selected articles?",
+            confirmDescription: `This will permanently delete ${selectedIds.length} article${selectedIds.length > 1 ? "s" : ""}. This action cannot be undone.`,
+        },
+    ]
+
+    const statusOptions = NEWS_STATUSES.map(status => ({
+        value: status,
+        label: statusLabel[status],
+    }))
 
     const watchedTitle = form.watch("title")
     const slugDirty = form.formState.dirtyFields.slug
@@ -421,6 +489,17 @@ export default function NewsDashboard() {
                 </Button>
             </div>
 
+            <BulkActionsBar
+                selectedIds={selectedIds}
+                totalCount={newsItems.length}
+                onSelectAll={handleSelectAll}
+                onClearSelection={handleClearSelection}
+                onBulkAction={handleBulkAction}
+                actions={bulkActions}
+                statusOptions={statusOptions}
+                isProcessing={isBulkProcessing}
+            />
+
             <Card className="rounded-2xl border-border/50 shadow-sm overflow-hidden">
                 <div className="p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between bg-muted/20 border-b border-border/50">
                     <div className="relative flex-1 md:max-w-sm">
@@ -479,6 +558,10 @@ export default function NewsDashboard() {
                         deletingId={deletingId}
                         onEdit={openEditDialog}
                         onDelete={handleDelete}
+                        selectedIds={selectedIds}
+                        onSelectItem={handleSelectItem}
+                        onSelectAll={handleSelectAll}
+                        onClearSelection={handleClearSelection}
                     />
                 </div>
             </Card>
@@ -677,14 +760,27 @@ interface NewsTableProps {
     deletingId: number | null
     onEdit: (record: NewsRecord) => void
     onDelete: (record: NewsRecord) => void
+    selectedIds: number[]
+    onSelectItem: (id: number, checked: boolean) => void
+    onSelectAll: () => void
+    onClearSelection: () => void
 }
 
-function NewsTable({ data, isLoading, deletingId, onEdit, onDelete }: NewsTableProps) {
+function NewsTable({ data, isLoading, deletingId, onEdit, onDelete, selectedIds, onSelectItem, onSelectAll, onClearSelection }: NewsTableProps) {
     return (
         <div className="border-t border-border/50">
             <Table>
                 <TableHeader className="bg-muted/40">
                     <TableRow className="hover:bg-muted/40 border-border/50">
+                        <TableHead className="w-[50px]">
+                            <SelectAllCheckbox
+                                selectedCount={selectedIds.length}
+                                totalCount={data.length}
+                                onSelectAll={onSelectAll}
+                                onClearSelection={onClearSelection}
+                                disabled={isLoading || data.length === 0}
+                            />
+                        </TableHead>
                         <TableHead className="w-[400px]">Article</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Author</TableHead>
@@ -711,6 +807,12 @@ function NewsTable({ data, isLoading, deletingId, onEdit, onDelete }: NewsTableP
                     ) : (
                         data.map((item) => (
                             <TableRow key={item.id} className="group hover:bg-muted/20 border-border/50 transition-colors">
+                                <TableCell>
+                                    <SelectableCheckbox
+                                        checked={selectedIds.includes(item.id)}
+                                        onCheckedChange={(checked) => onSelectItem(item.id, !!checked)}
+                                    />
+                                </TableCell>
                                 <TableCell>
                                     <div className="flex flex-col gap-1 py-1">
                                         <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</span>
@@ -767,6 +869,6 @@ function NewsTable({ data, isLoading, deletingId, onEdit, onDelete }: NewsTableP
                     )}
                 </TableBody>
             </Table>
-        </div>
+        </div >
     )
 }

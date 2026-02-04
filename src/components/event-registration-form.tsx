@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field'
-import type { AllowedRegistrationType } from '@/lib/types/events'
+import { FileOrLinkInput } from '@/components/ui/file-or-link-input'
+import type { AllowedRegistrationType, SubmissionField } from '@/lib/types/events'
 
 interface TeamMember {
     name: string
@@ -25,6 +26,7 @@ interface EventRegistrationFormProps {
     userEmail?: string
     userName?: string
     enableProposalSubmission: boolean
+    submissionFields?: SubmissionField[] | null
     allowedRegistrationTypes: AllowedRegistrationType
 }
 
@@ -35,15 +37,25 @@ export function EventRegistrationForm({
     userEmail = '',
     userName = '',
     enableProposalSubmission,
+    submissionFields: rawSubmissionFields,
     allowedRegistrationTypes = 'both',
 }: EventRegistrationFormProps) {
     const router = useRouter()
     const [isSubmitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [submissions, setSubmissions] = useState<Record<string, string>>({})
     const [registrationType, setRegistrationType] = useState<'individual' | 'team'>(
         allowedRegistrationTypes === 'team' ? 'team' : 'individual'
     )
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([{ name: '', email: '', phone: '' }])
+
+    // Normalize submission fields to always be an array
+    const submissionFields = Array.isArray(rawSubmissionFields) ? rawSubmissionFields : []
+    const hasSubmissionFields = enableProposalSubmission && submissionFields.length > 0
+
+    const updateSubmission = (fieldId: string, value: string) => {
+        setSubmissions(prev => ({ ...prev, [fieldId]: value }))
+    }
 
     const addTeamMember = () => {
         setTeamMembers([...teamMembers, { name: '', email: '', phone: '' }])
@@ -66,7 +78,28 @@ export function EventRegistrationForm({
         setSubmitting(true)
         setError(null)
 
+        // Validate required submissions
+        if (hasSubmissionFields) {
+            for (const field of submissionFields) {
+                if (field.required && !submissions[field.id]?.trim()) {
+                    setError(`${field.title} is required`)
+                    setSubmitting(false)
+                    return
+                }
+            }
+        }
+
         const formData = new FormData(event.currentTarget)
+
+        // Build submissions array from the state
+        const submissionsArray = hasSubmissionFields
+            ? submissionFields
+                .filter(field => submissions[field.id]?.trim())
+                .map(field => ({
+                    fieldId: field.id,
+                    value: submissions[field.id].trim(),
+                }))
+            : null
 
         const payload: Record<string, unknown> = {
             registrationType,
@@ -74,7 +107,7 @@ export function EventRegistrationForm({
             participantEmail: String(formData.get('participantEmail') ?? '').trim(),
             participantPhone: String(formData.get('participantPhone') ?? '').trim() || null,
             notes: String(formData.get('notes') ?? '').trim() || null,
-            proposalLink: String(formData.get('proposalLink') ?? '').trim() || null,
+            submissions: submissionsArray,
         }
 
         if (registrationType === 'team') {
@@ -232,22 +265,29 @@ export function EventRegistrationForm({
                             </FieldGroup>
                         </div>
 
-                        {/* Proposal Submission (if enabled) */}
-                        {enableProposalSubmission && (
-                            <Field>
-                                <FieldLabel htmlFor="proposalLink">Proposal Link (Google Doc, PDF URL) *</FieldLabel>
-                                <Input
-                                    id="proposalLink"
-                                    name="proposalLink"
-                                    type="url"
-                                    placeholder="https://docs.google.com/..."
-                                    required={enableProposalSubmission}
-                                    disabled={isSubmitting}
-                                />
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Please provide a shareable link to your proposal.
-                                </p>
-                            </Field>
+                        {/* Submissions (if enabled) */}
+                        {hasSubmissionFields && (
+                            <div className="space-y-4">
+                                <h3 className="font-medium">Submissions</h3>
+                                {submissionFields.map((field) => (
+                                    <Field key={field.id}>
+                                        <FieldLabel htmlFor={`submission-${field.id}`}>
+                                            {field.title} {field.required && '*'}
+                                        </FieldLabel>
+                                        <FileOrLinkInput
+                                            value={submissions[field.id] || ''}
+                                            onChange={(value) => updateSubmission(field.id, value)}
+                                            type="document"
+                                            folder={`submissions/${eventSlug}`}
+                                            accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip"
+                                            placeholder="https://docs.google.com/..."
+                                        />
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            Upload a file or provide a shareable link.
+                                        </p>
+                                    </Field>
+                                ))}
+                            </div>
                         )}
 
                         {/* Team Members (for team registration) */}

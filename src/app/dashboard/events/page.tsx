@@ -49,8 +49,9 @@ import {
 } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { FileOrLinkInput } from "@/components/ui/file-or-link-input"
 import { HttpError } from "@/lib/http/api-client"
-import { createEvent, deleteEvent, listEvents, updateEvent } from "@/lib/http/events"
+import { createEvent, deleteEvent, listEvents, updateEvent, bulkDeleteEvents, bulkUpdateEventStatus } from "@/lib/http/events"
 import {
   EVENT_STATUSES,
   ALLOWED_REGISTRATION_TYPES,
@@ -66,6 +67,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  BulkActionsBar,
+  SelectableCheckbox,
+  SelectAllCheckbox,
+  type BulkAction,
+} from "@/components/dashboard/bulk-actions"
 
 const eventFormSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -79,6 +86,15 @@ const eventFormSchema = z.object({
   isVirtual: z.boolean().default(false),
   hasRegistration: z.boolean().default(true),
   enableProposalSubmission: z.boolean().default(false),
+  submissionFields: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        title: z.string().min(1, "Title is required").max(200),
+        required: z.boolean(),
+      })
+    )
+    .optional(),
   allowedRegistrationTypes: z.enum(ALLOWED_REGISTRATION_TYPES),
   startsAt: z.string().min(1, "Start date and time is required"),
   endsAt: z.union([z.string(), z.literal(""), z.null()]).optional(),
@@ -247,6 +263,7 @@ const defaultFormValues: EventFormValues = {
   isVirtual: false,
   hasRegistration: true,
   enableProposalSubmission: false,
+  submissionFields: [],
   allowedRegistrationTypes: "both",
   startsAt: "",
   endsAt: "",
@@ -276,6 +293,10 @@ export default function EventsDashboard() {
   const [eventFilters, setEventFilters] = useState<{ isVirtual?: boolean | "all" }>({ isVirtual: "all" })
   const [hasExternalRegistration, setHasExternalRegistration] = useState(false)
 
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false)
+
   const form = useForm<any>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: defaultFormValues,
@@ -286,6 +307,20 @@ export default function EventsDashboard() {
     control: form.control,
     name: "documents",
   })
+
+  // Submission fields array
+  const { fields: submissionFieldsArray, append: appendSubmissionField, remove: removeSubmissionField } = useFieldArray({
+    control: form.control,
+    name: "submissionFields",
+  })
+
+  const addSubmissionField = () => {
+    appendSubmissionField({
+      id: `sf_${Date.now()}`,
+      title: "",
+      required: true,
+    })
+  }
 
   const filters = useMemo(
     () => ({
@@ -317,6 +352,62 @@ export default function EventsDashboard() {
   useEffect(() => {
     loadEvents()
   }, [loadEvents])
+
+  // Clear selection when filters change
+  useEffect(() => {
+    setSelectedIds([])
+  }, [statusFilter, searchValue, eventFilters])
+
+  // Bulk action handlers
+  const handleSelectItem = (id: number, checked: boolean) => {
+    setSelectedIds(prev =>
+      checked ? [...prev, id] : prev.filter(i => i !== id)
+    )
+  }
+
+  const handleSelectAll = () => {
+    setSelectedIds(eventItems.map(item => item.id))
+  }
+
+  const handleClearSelection = () => {
+    setSelectedIds([])
+  }
+
+  const handleBulkAction = async (action: string, status?: EventStatus) => {
+    if (selectedIds.length === 0) return
+
+    setIsBulkProcessing(true)
+    try {
+      if (action === "delete") {
+        await bulkDeleteEvents(selectedIds)
+      } else if (action === "updateStatus" && status) {
+        await bulkUpdateEventStatus(selectedIds, status)
+      }
+      setSelectedIds([])
+      await loadEvents()
+    } catch (err) {
+      const message = err instanceof HttpError ? err.message : "Bulk action failed"
+      setError(message)
+    } finally {
+      setIsBulkProcessing(false)
+    }
+  }
+
+  const bulkActions: BulkAction<EventStatus>[] = [
+    {
+      id: "delete",
+      label: "Delete",
+      icon: <Trash2 className="h-3.5 w-3.5" />,
+      variant: "destructive",
+      confirmTitle: "Delete selected events?",
+      confirmDescription: `This will permanently delete ${selectedIds.length} event${selectedIds.length > 1 ? "s" : ""}. This action cannot be undone.`,
+    },
+  ]
+
+  const statusOptions = EVENT_STATUSES.map(status => ({
+    value: status,
+    label: statusLabel[status],
+  }))
 
   const watchedTitle = form.watch("title")
   const slugDirty = form.formState.dirtyFields.slug
@@ -383,6 +474,7 @@ export default function EventsDashboard() {
       isVirtual: record.isVirtual,
       hasRegistration: record.hasRegistration,
       enableProposalSubmission: record.enableProposalSubmission,
+      submissionFields: record.submissionFields ?? [],
       allowedRegistrationTypes: record.allowedRegistrationTypes,
       startsAt: toDatetimeLocal(record.startsAt),
       endsAt: toDatetimeLocal(record.endsAt),
@@ -456,6 +548,9 @@ export default function EventsDashboard() {
       isVirtual: values.isVirtual,
       hasRegistration: values.hasRegistration,
       enableProposalSubmission: values.enableProposalSubmission,
+      submissionFields: values.enableProposalSubmission && values.submissionFields?.length
+        ? values.submissionFields.filter((f: { title: string }) => f.title.trim())
+        : null,
       allowedRegistrationTypes: values.allowedRegistrationTypes,
       startsAt: startsAtIso,
       endsAt: fromDatetimeLocal(values.endsAt ?? null),
@@ -494,6 +589,17 @@ export default function EventsDashboard() {
           New Event
         </Button>
       </div>
+
+      <BulkActionsBar
+        selectedIds={selectedIds}
+        totalCount={eventItems.length}
+        onSelectAll={handleSelectAll}
+        onClearSelection={handleClearSelection}
+        onBulkAction={handleBulkAction}
+        actions={bulkActions}
+        statusOptions={statusOptions}
+        isProcessing={isBulkProcessing}
+      />
 
 
 
@@ -571,6 +677,10 @@ export default function EventsDashboard() {
             deletingId={deletingId}
             onEdit={openEditDialog}
             onDelete={handleDelete}
+            selectedIds={selectedIds}
+            onSelectItem={handleSelectItem}
+            onSelectAll={handleSelectAll}
+            onClearSelection={handleClearSelection}
           />
         </div>
       </Card>
@@ -706,104 +816,204 @@ export default function EventsDashboard() {
                       <div className="p-4 rounded-xl border bg-muted/20 space-y-4">
                         <h3 className="font-medium text-sm">Registration & Resources</h3>
 
-                        <div className="flex items-center justify-between rounded-lg border bg-background p-3">
-                          <div className="space-y-0.5">
-                            <Label className="text-sm">External Registration</Label>
-                            <p className="text-xs text-muted-foreground">Use Eventbrite, Luma, etc.</p>
-                          </div>
-                          <Switch
-                            checked={hasExternalRegistration}
-                            onCheckedChange={(checked) => {
-                              setHasExternalRegistration(checked)
-                              if (!checked) {
-                                form.setValue("registrationUrl", "")
-                              }
-                            }}
-                          />
-                        </div>
+                        <FormField
+                          control={form.control}
+                          name="hasRegistration"
+                          render={({ field }) => (
+                            <FormItem className="flex items-center justify-between rounded-lg border bg-background p-3">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-sm">Enable Registration</FormLabel>
+                                <p className="text-xs text-muted-foreground">Allow attendees to register for this event</p>
+                              </div>
+                              <FormControl>
+                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
 
-                        {!hasExternalRegistration && (
-                          <FormField
-                            control={form.control}
-                            name="allowedRegistrationTypes"
-                            render={({ field }) => (
-                              <FormItem className="space-y-3 rounded-lg border bg-background p-4 shadow-sm">
-                                <div className="flex items-center justify-between">
-                                  <FormLabel className="text-sm font-semibold">Registration Type</FormLabel>
-                                  <Badge variant="secondary" className="text-[10px] uppercase tracking-wider h-5">Internal Form</Badge>
-                                </div>
-                                <FormControl>
-                                  <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="grid grid-cols-3 gap-3"
-                                  >
-                                    <div className="relative">
-                                      <RadioGroupItem
-                                        value="individual"
-                                        id="individual"
-                                        className="peer sr-only"
-                                      />
-                                      <Label
-                                        htmlFor="individual"
-                                        className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
-                                      >
-                                        <User className="mb-2 h-5 w-5 text-primary" />
-                                        <span className="text-[11px] font-bold">Single</span>
-                                      </Label>
+                        {form.watch("hasRegistration") && (
+                          <>
+                            <div className="flex items-center justify-between rounded-lg border bg-background p-3">
+                              <div className="space-y-0.5">
+                                <Label className="text-sm">External Registration</Label>
+                                <p className="text-xs text-muted-foreground">Use Eventbrite, Luma, etc.</p>
+                              </div>
+                              <Switch
+                                checked={hasExternalRegistration}
+                                onCheckedChange={(checked) => {
+                                  setHasExternalRegistration(checked)
+                                  if (!checked) {
+                                    form.setValue("registrationUrl", "")
+                                  }
+                                }}
+                              />
+                            </div>
+
+                            {!hasExternalRegistration && (
+                              <FormField
+                                control={form.control}
+                                name="allowedRegistrationTypes"
+                                render={({ field }) => (
+                                  <FormItem className="space-y-3 rounded-lg border bg-background p-4 shadow-sm">
+                                    <div className="flex items-center justify-between">
+                                      <FormLabel className="text-sm font-semibold">Registration Type</FormLabel>
+                                      <Badge variant="secondary" className="text-[10px] uppercase tracking-wider h-5">Internal Form</Badge>
                                     </div>
-                                    <div className="relative">
-                                      <RadioGroupItem
-                                        value="team"
-                                        id="team"
-                                        className="peer sr-only"
-                                      />
-                                      <Label
-                                        htmlFor="team"
-                                        className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                    <FormControl>
+                                      <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="grid grid-cols-3 gap-3"
                                       >
-                                        <Users className="mb-2 h-5 w-5 text-primary" />
-                                        <span className="text-[11px] font-bold">Group</span>
-                                      </Label>
-                                    </div>
-                                    <div className="relative">
-                                      <RadioGroupItem
-                                        value="both"
-                                        id="both"
-                                        className="peer sr-only"
-                                      />
-                                      <Label
-                                        htmlFor="both"
-                                        className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
-                                      >
-                                        <div className="flex -space-x-1 mb-2">
-                                          <User className="h-4 w-4 text-primary" />
-                                          <Users className="h-4 w-4 text-primary" />
+                                        <div className="relative">
+                                          <RadioGroupItem
+                                            value="individual"
+                                            id="individual"
+                                            className="peer sr-only"
+                                          />
+                                          <Label
+                                            htmlFor="individual"
+                                            className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                          >
+                                            <User className="mb-2 h-5 w-5 text-primary" />
+                                            <span className="text-[11px] font-bold">Single</span>
+                                          </Label>
                                         </div>
-                                        <span className="text-[11px] font-bold">Both</span>
-                                      </Label>
-                                    </div>
-                                  </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
+                                        <div className="relative">
+                                          <RadioGroupItem
+                                            value="team"
+                                            id="team"
+                                            className="peer sr-only"
+                                          />
+                                          <Label
+                                            htmlFor="team"
+                                            className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                          >
+                                            <Users className="mb-2 h-5 w-5 text-primary" />
+                                            <span className="text-[11px] font-bold">Group</span>
+                                          </Label>
+                                        </div>
+                                        <div className="relative">
+                                          <RadioGroupItem
+                                            value="both"
+                                            id="both"
+                                            className="peer sr-only"
+                                          />
+                                          <Label
+                                            htmlFor="both"
+                                            className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-popover p-3 h-24 cursor-pointer hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 [&:has([data-state=checked])]:border-primary transition-all duration-200"
+                                          >
+                                            <div className="flex -space-x-1 mb-2">
+                                              <User className="h-4 w-4 text-primary" />
+                                              <Users className="h-4 w-4 text-primary" />
+                                            </div>
+                                            <span className="text-[11px] font-bold">Both</span>
+                                          </Label>
+                                        </div>
+                                      </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
                             )}
-                          />
-                        )}
 
-                        {hasExternalRegistration && (
-                          <FormField
-                            name="registrationUrl"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm">Registration URL</FormLabel>
-                                <FormControl>
-                                  <Input {...field} type="url" placeholder="https://..." className="rounded-lg" />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
+                            {hasExternalRegistration && (
+                              <FormField
+                                name="registrationUrl"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm">Registration URL</FormLabel>
+                                    <FormControl>
+                                      <Input {...field} type="url" placeholder="https://..." className="rounded-lg" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
                             )}
-                          />
+
+                            <FormField
+                              control={form.control}
+                              name="enableProposalSubmission"
+                              render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border bg-background p-3">
+                                  <div className="space-y-0.5">
+                                    <FormLabel className="text-sm">Require Submission</FormLabel>
+                                    <p className="text-xs text-muted-foreground">Ask registrants to submit proposals, files, or links</p>
+                                  </div>
+                                  <FormControl>
+                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            {form.watch("enableProposalSubmission") && (
+                              <div className="space-y-3 p-3 rounded-lg border bg-muted/30">
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-sm font-medium">Submission Fields</Label>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={addSubmissionField}
+                                    className="h-7 text-xs"
+                                  >
+                                    <Plus className="mr-1 h-3 w-3" /> Add Field
+                                  </Button>
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                  Define what registrants need to submit (e.g., Proposal Link, Project Abstract, Resume)
+                                </p>
+                                <div className="space-y-2">
+                                  {submissionFieldsArray.map((field, index) => (
+                                    <div key={field.id} className="flex items-center gap-2 p-2 rounded-lg border bg-background">
+                                      <FormField
+                                        name={`submissionFields.${index}.title`}
+                                        render={({ field }) => (
+                                          <Input
+                                            {...field}
+                                            placeholder="Field title (e.g., Project Proposal)"
+                                            className="h-8 text-sm rounded-md flex-1"
+                                          />
+                                        )}
+                                      />
+                                      <FormField
+                                        name={`submissionFields.${index}.required`}
+                                        render={({ field }) => (
+                                          <label className="flex items-center gap-1.5 text-xs text-muted-foreground whitespace-nowrap cursor-pointer">
+                                            <input
+                                              type="checkbox"
+                                              checked={field.value}
+                                              onChange={field.onChange}
+                                              className="rounded border-border"
+                                            />
+                                            Required
+                                          </label>
+                                        )}
+                                      />
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
+                                        onClick={() => removeSubmissionField(index)}
+                                      >
+                                        <X className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  ))}
+                                  {submissionFieldsArray.length === 0 && (
+                                    <p className="text-xs text-muted-foreground text-center py-2">
+                                      No submission fields yet. Click &quot;Add Field&quot; to create one.
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </>
                         )}
 
                         <div className="space-y-2">
@@ -819,30 +1029,39 @@ export default function EventsDashboard() {
                               <Plus className="mr-1 h-3 w-3" /> Add
                             </Button>
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-3">
                             {documentFields.map((field, index) => (
-                              <div key={field.id} className="flex gap-2 items-start">
-                                <FormField
-                                  name={`documents.${index}.title`}
-                                  render={({ field }) => (
-                                    <Input {...field} placeholder="Title" className="h-8 text-sm rounded-md w-32 flex-shrink-0" />
-                                  )}
-                                />
+                              <div key={field.id} className="p-3 rounded-lg border bg-background space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <FormField
+                                    name={`documents.${index}.title`}
+                                    render={({ field }) => (
+                                      <Input {...field} placeholder="Resource title" className="h-8 text-sm rounded-md flex-1" />
+                                    )}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 shrink-0 ml-2 text-muted-foreground hover:text-destructive"
+                                    onClick={() => removeDocument(index)}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
                                 <FormField
                                   name={`documents.${index}.url`}
                                   render={({ field }) => (
-                                    <Input {...field} placeholder="URL" className="h-8 text-sm rounded-md flex-1" />
+                                    <FileOrLinkInput
+                                      value={field.value || ""}
+                                      onChange={field.onChange}
+                                      type="document"
+                                      accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
+                                      folder="events/documents"
+                                      placeholder="https://example.com/document.pdf"
+                                    />
                                   )}
                                 />
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-destructive"
-                                  onClick={() => removeDocument(index)}
-                                >
-                                  <X className="h-4 w-4" />
-                                </Button>
                               </div>
                             ))}
                           </div>
@@ -853,13 +1072,57 @@ export default function EventsDashboard() {
                         name="image"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Cover Image URL</FormLabel>
+                            <FormLabel>Cover Image</FormLabel>
                             <FormControl>
-                              <Input {...field} type="url" placeholder="https://..." className="rounded-lg" />
+                              <FileOrLinkInput
+                                value={field.value || ""}
+                                onChange={field.onChange}
+                                type="image"
+                                accept="image/*"
+                                folder="events/covers"
+                                placeholder="https://example.com/image.jpg"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
+                      />
+
+                      <FormField
+                        name="parentEventId"
+                        render={({ field }) => {
+                          // Get potential parent events (events without a parent, excluding current event)
+                          const potentialParents = eventItems.filter(
+                            (e) => !e.parentEventId && e.id !== activeEvent?.id
+                          )
+                          return (
+                            <FormItem>
+                              <FormLabel>Parent Event (Optional)</FormLabel>
+                              <Select
+                                onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
+                                value={field.value || "none"}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="rounded-lg">
+                                    <SelectValue placeholder="None (standalone event)" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="none">None (standalone event)</SelectItem>
+                                  {potentialParents.map((event) => (
+                                    <SelectItem key={event.id} value={String(event.id)}>
+                                      {event.title}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Select a parent to make this a sub-event
+                              </p>
+                              <FormMessage />
+                            </FormItem>
+                          )
+                        }}
                       />
 
                       <div className="grid grid-cols-2 gap-4">
@@ -952,14 +1215,27 @@ interface EventsTableProps {
   deletingId: number | null
   onEdit: (record: EventRecord) => void
   onDelete: (record: EventRecord) => void
+  selectedIds: number[]
+  onSelectItem: (id: number, checked: boolean) => void
+  onSelectAll: () => void
+  onClearSelection: () => void
 }
 
-function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTableProps) {
+function EventsTable({ data, isLoading, deletingId, onEdit, onDelete, selectedIds, onSelectItem, onSelectAll, onClearSelection }: EventsTableProps) {
   return (
     <div className="border-t border-border/50">
       <Table>
         <TableHeader className="bg-muted/40">
           <TableRow className="hover:bg-muted/40 border-border/50">
+            <TableHead className="w-12">
+              <SelectAllCheckbox
+                selectedCount={selectedIds.length}
+                totalCount={data.length}
+                onSelectAll={onSelectAll}
+                onClearSelection={onClearSelection}
+                disabled={isLoading || data.length === 0}
+              />
+            </TableHead>
             <TableHead className="w-[350px]">Event</TableHead>
             <TableHead>Schedule</TableHead>
             <TableHead>Status</TableHead>
@@ -971,7 +1247,7 @@ function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTa
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+              <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                 <div className="flex items-center justify-center gap-2">
                   <Spinner className="size-5" />
                   Loading events...
@@ -980,7 +1256,7 @@ function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTa
             </TableRow>
           ) : data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+              <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                 No events match the selected filters.
               </TableCell>
             </TableRow>
@@ -988,8 +1264,21 @@ function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTa
             data.map((item) => (
               <TableRow key={item.id} className="group hover:bg-muted/20 border-border/50 transition-colors">
                 <TableCell>
+                  <SelectableCheckbox
+                    checked={selectedIds.includes(item.id)}
+                    onCheckedChange={(checked) => onSelectItem(item.id, !!checked)}
+                  />
+                </TableCell>
+                <TableCell>
                   <div className="flex flex-col gap-1 py-1">
-                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</span>
+                      {item.parentEventId && (
+                        <Badge variant="outline" className="text-[10px] h-5 px-1.5 bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-800">
+                          Sub-event
+                        </Badge>
+                      )}
+                    </div>
                     <span className="text-xs text-muted-foreground line-clamp-1 max-w-[300px]">
                       {item.summary ?? "No summary provided"}
                     </span>
@@ -1054,6 +1343,6 @@ function EventsTable({ data, isLoading, deletingId, onEdit, onDelete }: EventsTa
           )}
         </TableBody>
       </Table>
-    </div>
+    </div >
   )
 }

@@ -90,3 +90,28 @@ export async function updateNews(id: number, payload: UpdateNewsPayload) {
 export async function deleteNews(id: number) {
   await apiRequest(`/api/news/${id}`, { method: "DELETE" })
 }
+
+export interface BulkActionResult {
+  action: string
+  affected: number
+  ids: number[]
+  status?: NewsStatus
+}
+
+export async function bulkDeleteNews(ids: number[]) {
+  const response = await apiRequest<{ data: BulkActionResult }>(`/api/news/bulk`, {
+    method: "POST",
+    body: JSON.stringify({ action: "delete", ids }),
+  })
+
+  return response.data
+}
+
+export async function bulkUpdateNewsStatus(ids: number[], status: NewsStatus) {
+  const response = await apiRequest<{ data: BulkActionResult }>(`/api/news/bulk`, {
+    method: "POST",
+    body: JSON.stringify({ action: "updateStatus", ids, status }),
+  })
+
+  return response.data
+}

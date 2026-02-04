@@ -20,6 +20,16 @@ export const createEventSchema = z.object({
   hasRegistration: z.boolean().optional(),
   allowedRegistrationTypes: z.enum(["individual", "team", "both"]).optional(),
   enableProposalSubmission: z.boolean().optional(),
+  submissionFields: z
+    .array(
+      z.object({
+        id: z.string().min(1).max(50),
+        title: z.string().min(1).max(200),
+        required: z.boolean()
+      })
+    )
+    .optional()
+    .nullable(),
   startsAt: isoDateTime,
   endsAt: isoDateTime.optional().nullable(),
   status: z.enum(eventStatusEnum.enumValues).optional(),

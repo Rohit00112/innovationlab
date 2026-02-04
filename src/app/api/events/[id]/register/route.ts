@@ -17,6 +17,11 @@ const teamMemberSchema = z.object({
     phone: z.string().optional(),
 });
 
+const submissionValueSchema = z.object({
+    fieldId: z.string().min(1),
+    value: z.string().min(1, "Submission value is required"),
+});
+
 const registrationSchema = z.object({
     registrationType: z.enum(["individual", "team"]).default("individual"),
     teamName: z.string().optional(),
@@ -25,7 +30,8 @@ const registrationSchema = z.object({
     participantPhone: z.string().optional().nullable(),
     notes: z.string().optional().nullable(),
     teamMembers: z.array(teamMemberSchema).optional(),
-    proposalLink: z.string().url("Must be a valid URL").optional().nullable().or(z.literal("")),
+    proposalLink: z.string().url("Must be a valid URL").optional().nullable().or(z.literal("")), // deprecated
+    submissions: z.array(submissionValueSchema).optional().nullable(),
 });
 
 // POST: Register current user for the event
@@ -59,7 +65,8 @@ export async function POST(request: Request, context: RouteParams) {
                 id: events.id,
                 status: events.status,
                 startsAt: events.startsAt,
-                enableProposalSubmission: events.enableProposalSubmission
+                enableProposalSubmission: events.enableProposalSubmission,
+                submissionFields: events.submissionFields
             })
             .from(events)
             .where(eq(events.id, eventId))
@@ -73,10 +80,17 @@ export async function POST(request: Request, context: RouteParams) {
             throw new ApiError(400, "Event is not accepting registrations");
         }
 
-        // Validate proposal link if enabled
-        // Note: We make it optional in schema but can enforce it here if needed, 
-        // strictly speaking user requirement didn't say it's mandatory, but usually implied. 
-        // For now let's keep it optional in validation but save it if present.
+        // Validate required submissions
+        if (event.enableProposalSubmission && event.submissionFields) {
+            const submissionFields = event.submissionFields as Array<{ id: string; title: string; required: boolean }>;
+            const submittedFieldIds = new Set((data.submissions ?? []).map(s => s.fieldId));
+
+            for (const field of submissionFields) {
+                if (field.required && !submittedFieldIds.has(field.id)) {
+                    throw new ApiError(400, `${field.title} is required`);
+                }
+            }
+        }
 
         // Check if already registered
         const [existing] = await db
@@ -106,7 +120,10 @@ export async function POST(request: Request, context: RouteParams) {
                 participantEmail: data.participantEmail.trim(),
                 participantPhone: data.participantPhone?.trim() ?? null,
                 notes: data.notes?.trim() ?? null,
-                proposalLink: event.enableProposalSubmission ? data.proposalLink?.trim() || null : null,
+                proposalLink: data.proposalLink?.trim() || null, // deprecated, kept for backward compatibility
+                submissions: event.enableProposalSubmission && data.submissions?.length
+                    ? data.submissions
+                    : null,
                 teamMembers: data.teamMembers && data.teamMembers.length > 0
                     ? JSON.stringify(data.teamMembers.filter(m => m.name.trim() || m.email))
                     : null,

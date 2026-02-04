@@ -105,3 +105,28 @@ export async function updateEvent(id: number, payload: UpdateEventPayload) {
 export async function deleteEvent(id: number) {
   await apiRequest(`/api/events/${id}`, { method: "DELETE" })
 }
+
+export interface BulkActionResult {
+  action: string
+  affected: number
+  ids: number[]
+  status?: EventStatus
+}
+
+export async function bulkDeleteEvents(ids: number[]) {
+  const response = await apiRequest<{ data: BulkActionResult }>(`/api/events/bulk`, {
+    method: "POST",
+    body: JSON.stringify({ action: "delete", ids }),
+  })
+
+  return response.data
+}
+
+export async function bulkUpdateEventStatus(ids: number[], status: EventStatus) {
+  const response = await apiRequest<{ data: BulkActionResult }>(`/api/events/bulk`, {
+    method: "POST",
+    body: JSON.stringify({ action: "updateStatus", ids, status }),
+  })
+
+  return response.data
+}

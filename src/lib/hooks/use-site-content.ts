@@ -1,14 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import type { SiteContentRecord } from "@/lib/types/site-content";
 
-interface SiteContentRecord<T = unknown> {
-    id: number;
-    pageKey: string;
-    sectionKey: string;
-    content: T;
-    updatedAt: Date;
-}
+// Re-export for convenience
+export type { SiteContentRecord };
 
 interface UseSiteContentResult<T> {
     content: T | null;

@@ -39,40 +39,7 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 type SubmissionStatus = "idle" | "submitting" | "success" | "error";
 
 import { useSiteContent } from "@/lib/hooks/use-site-content";
-
-// ... existing imports ...
-
-// Define types for Contact Page Content
-// Define types for Contact Page Content matching Admin structure
-interface ContactDetail {
-    title: string;
-    description: string;
-}
-
-interface ContactPageContent {
-    heroTitle: string;
-    heroSubtitle: string;
-    heroDescription: string;
-    contactDetails: ContactDetail[];
-    locationTitle: string;
-    locationDescription: string;
-    mapEmbedUrl: string;
-}
-
-const DEFAULT_CONTACT_CONTENT: ContactPageContent = {
-    heroTitle: "Let's Build Something Great",
-    heroSubtitle: "Get in Touch",
-    heroDescription: "Whether you're exploring collaboration, need support on a project, or want a tour of the lab, we're here to help.",
-    contactDetails: [
-        { title: "Visit the Lab", description: "Itahari International College, 4th Floor Innovation Wing, Sunsari 56705" },
-        { title: "Talk With Us", description: "+977-25-525123 (Sun–Fri, 9:00 AM – 5:00 PM)" },
-        { title: "Write to Us", description: "hello@innovationlab.com" },
-        { title: "Open Hours", description: "Drop-in mentoring every Wednesday & Thursday, 2:00 PM – 4:00 PM." },
-    ],
-    locationTitle: "Visit Innovation Labs",
-    locationDescription: "We love welcoming new collaborators into the lab. Reach out at least 48 hours in advance so we can prep the right team and gear for you.",
-    mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13948.090852794756!2d87.3058053!3d26.6498704!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef6ea070e7b18b%3A0x2959e2a3e2bf54e0!2sItahari%20International%20College!5e1!3m2!1sen!2snp!4v1762175844952!5m2!1sen!2snp"
-};
+import { type ContactPageContent, DEFAULT_CONTACT_CONTENT } from "@/lib/types/site-content";
 
 export default function ContactPage() {
     // Fetch dynamic content

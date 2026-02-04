@@ -36,6 +36,7 @@ export async function GET(
                 notes: eventRegistrations.notes,
                 teamMembers: eventRegistrations.teamMembers,
                 proposalLink: eventRegistrations.proposalLink,
+                submissions: eventRegistrations.submissions,
                 status: eventRegistrations.status,
                 createdAt: eventRegistrations.createdAt,
                 user: {

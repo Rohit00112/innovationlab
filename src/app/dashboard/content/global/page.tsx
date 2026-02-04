@@ -1,153 +1,81 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
-import { Save, RefreshCw } from "lucide-react";
-
-interface SocialLink {
-    platform: string;
-    url: string;
-}
-
-interface GlobalContent {
-    siteName: string;
-    siteTagline: string;
-    footerText: string;
-    copyrightText: string;
-    socialLinks: SocialLink[];
-}
-
-const defaultContent: GlobalContent = {
-    siteName: "Innovation Labs",
-    siteTagline: "Where Ideas Come Alive",
-    footerText: "Innovation Labs is a collaborative space for students to explore, create, and innovate at Itahari International College.",
-    copyrightText: "© 2024 Innovation Labs. All rights reserved.",
-    socialLinks: [
-        { platform: "Facebook", url: "https://facebook.com/innovationlabs" },
-        { platform: "Twitter", url: "https://twitter.com/innovationlabs" },
-        { platform: "LinkedIn", url: "https://linkedin.com/company/innovationlabs" },
-        { platform: "GitHub", url: "https://github.com/innovationlabs" },
-    ],
-};
+import {
+    GlobalContent,
+    SocialLink,
+    DEFAULT_GLOBAL_CONTENT,
+    PAGE_KEYS,
+    SECTION_KEYS,
+} from "@/lib/types/site-content";
+import {
+    useContentEditor,
+    updateArrayItem,
+    addArrayItem,
+    removeArrayItem,
+} from "@/lib/hooks/use-content-editor";
+import {
+    ContentPageHeader,
+    ContentMessage,
+    ContentLoadingSpinner,
+} from "@/components/dashboard/content-page-components";
 
 export default function GlobalContentPage() {
-    const [content, setContent] = useState<GlobalContent>(defaultContent);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-    useEffect(() => {
-        fetchContent();
-    }, []);
-
-    const fetchContent = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch("/api/site-content?pageKey=global&sectionKey=main");
-            const data = await res.json();
-            if (data.success && data.data?.content) {
-                setContent(data.data.content as GlobalContent);
-            }
-        } catch (error) {
-            console.error("Failed to fetch content:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const saveContent = async () => {
-        setSaving(true);
-        setMessage(null);
-        try {
-            const res = await fetch("/api/site-content", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    pageKey: "global",
-                    sectionKey: "main",
-                    content,
-                }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                setMessage({ type: "success", text: "Global settings saved successfully!" });
-            } else {
-                setMessage({ type: "error", text: data.message || "Failed to save settings" });
-            }
-        } catch (error) {
-            setMessage({ type: "error", text: "Failed to save settings" });
-        } finally {
-            setSaving(false);
-        }
-    };
+    const {
+        content,
+        setContent,
+        loading,
+        saving,
+        message,
+        fetchContent,
+        saveContent,
+    } = useContentEditor<GlobalContent>({
+        pageKey: PAGE_KEYS.GLOBAL,
+        sectionKey: SECTION_KEYS.GLOBAL_SETTINGS,
+        defaultContent: DEFAULT_GLOBAL_CONTENT,
+    });
 
     const updateSocialLink = (index: number, field: keyof SocialLink, value: string) => {
         setContent((prev) => ({
             ...prev,
-            socialLinks: prev.socialLinks.map((link, i) =>
-                i === index ? { ...link, [field]: value } : link
-            ),
+            socialLinks: updateArrayItem(prev.socialLinks, index, field, value),
         }));
     };
 
     const addSocialLink = () => {
         setContent((prev) => ({
             ...prev,
-            socialLinks: [...prev.socialLinks, { platform: "", url: "" }],
+            socialLinks: addArrayItem(prev.socialLinks, { platform: "", url: "" }),
         }));
     };
 
     const removeSocialLink = (index: number) => {
         setContent((prev) => ({
             ...prev,
-            socialLinks: prev.socialLinks.filter((_, i) => i !== index),
+            socialLinks: removeArrayItem(prev.socialLinks, index),
         }));
     };
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <Spinner className="h-8 w-8" />
-            </div>
-        );
+        return <ContentLoadingSpinner />;
     }
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Global Settings</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Manage site-wide settings like branding, footer, and social links.
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={fetchContent} disabled={loading}>
-                        <RefreshCw className="h-4 w-4 mr-2" />
-                        Refresh
-                    </Button>
-                    <Button onClick={saveContent} disabled={saving}>
-                        {saving ? <Spinner className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                        Save Changes
-                    </Button>
-                </div>
-            </div>
+            <ContentPageHeader
+                title="Global Settings"
+                description="Manage site-wide settings like branding, footer, and social links."
+                loading={loading}
+                saving={saving}
+                onRefresh={fetchContent}
+                onSave={saveContent}
+            />
 
-            {message && (
-                <div
-                    className={`p-4 rounded-lg border ${message.type === "success"
-                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
-                            : "bg-destructive/10 border-destructive/30 text-destructive"
-                        }`}
-                >
-                    {message.text}
-                </div>
-            )}
+            <ContentMessage message={message} />
 
             {/* Branding */}
             <Card>

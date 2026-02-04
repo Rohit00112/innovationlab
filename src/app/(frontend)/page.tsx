@@ -1,11 +1,7 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
-    ArrowUpRight,
     ArrowRight,
     CalendarDays,
     CircleDashed,
@@ -15,25 +11,24 @@ import {
     Target,
     Trophy,
     Users,
-    Zap,
     CheckCircle2,
     Lightbulb,
     Code2,
     Briefcase,
     Clock,
     MapPin,
+    ArrowUpRight,
 } from "lucide-react";
 
 import { FaqSection } from "@/components/faqs/faq-section";
-import { HttpError } from "@/lib/http/api-client";
-import { listTestimonials } from "@/lib/http/testimonials";
-import { listNews } from "@/lib/http/news";
-import { listEvents } from "@/lib/http/events";
 import { normalizeLexicalState, estimateReadingTime } from "@/lib/editor/lexical-utils";
-import { useSiteContent } from "@/lib/hooks/use-site-content";
+import { resolveApiBaseUrl } from "@/lib/http/resolve-api-base-url";
 import { type TestimonialRecord } from "@/lib/types/testimonials";
 import { type NewsRecord } from "@/lib/types/news";
 import { type EventRecord } from "@/lib/types/events";
+import { type HomePageContent, DEFAULT_HOME_CONTENT } from "@/lib/types/site-content";
+
+export const revalidate = 60; // Revalidate every 60 seconds
 
 interface NewsItem {
     image: string | null;
@@ -159,30 +154,6 @@ const FALLBACK_TESTIMONIALS: FallbackTestimonial[] = [
     },
 ];
 
-const capabilityTiles = [
-    {
-        title: "Recognize chiya cups",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in eros ut sapien vulputate pretium.",
-        icon: Target,
-    },
-    {
-        title: "Train ideas to Pokhara",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in eros ut sapien vulputate pretium.",
-        icon: Zap,
-    },
-    {
-        title: "Build successful prototypes",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in eros ut sapien vulputate pretium.",
-        icon: Users,
-    },
-];
-
-const statBadges = [
-    { label: "SUCCESS", value: "87%" },
-    { label: "TEAMS", value: "5" },
-    { label: "MEMBERS", value: "18" },
-];
-
 const highlightTracks = [
     {
         title: "Future of Learning",
@@ -200,26 +171,6 @@ const highlightTracks = [
         icon: MessageCircle,
     },
 ];
-
-// Default home page content (used as fallback)
-interface HomePageContent {
-    heroTitle: string;
-    heroSubtitle: string;
-    heroDescription: string;
-    achievementStats: { value: string; label: string }[];
-}
-
-const DEFAULT_HOME_CONTENT: HomePageContent = {
-    heroTitle: "INNOVATION LAB",
-    heroSubtitle: "Where Ideas Come Alive",
-    heroDescription: "Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation.",
-    achievementStats: [
-        { value: "500+", label: "Projects delivered" },
-        { value: "12+", label: "Years of momentum" },
-        { value: "50+", label: "Collaborators" },
-        { value: "25", label: "Awards & honours" },
-    ],
-};
 
 const achievementIcons = [Rocket, CalendarDays, Users, Trophy];
 
@@ -446,25 +397,146 @@ function mapEventRecord(event: EventRecord): EventItem {
     };
 }
 
-export default function Frontend() {
-    const [testimonials, setTestimonials] = useState<TestimonialRecord[]>([]);
-    const [testimonialsLoading, setTestimonialsLoading] = useState(true);
-    const [testimonialsError, setTestimonialsError] = useState<string | null>(null);
-    const [newsCards, setNewsCards] = useState<NewsItem[]>(FALLBACK_NEWS);
-    const [newsLoading, setNewsLoading] = useState(true);
-    const [newsError, setNewsError] = useState<string | null>(null);
-    const [newsFromApi, setNewsFromApi] = useState(false);
-    const [eventCards, setEventCards] = useState<EventItem[]>(FALLBACK_EVENTS);
-    const [eventsLoading, setEventsLoading] = useState(true);
-    const [eventsError, setEventsError] = useState<string | null>(null);
-    const [eventsFromApi, setEventsFromApi] = useState(false);
+// Server-side data fetching functions
+async function fetchTestimonialsServer(): Promise<TestimonialRecord[]> {
+    try {
+        const baseUrl = resolveApiBaseUrl();
 
-    // Fetch dynamic home page content from CMS
-    const { content: homeContent } = useSiteContent<HomePageContent>(
-        "home",
-        "main",
-        DEFAULT_HOME_CONTENT
-    );
+        // First try featured testimonials
+        let url = new URL("/api/testimonials", baseUrl);
+        url.searchParams.set("status", "published");
+        url.searchParams.set("isFeatured", "true");
+        url.searchParams.set("limit", "6");
+
+        let response = await fetch(url.toString(), {
+            next: { revalidate },
+            cache: "force-cache",
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.data && data.data.length > 0) {
+                return data.data;
+            }
+        }
+
+        // Fallback to any published testimonials
+        url = new URL("/api/testimonials", baseUrl);
+        url.searchParams.set("status", "published");
+        url.searchParams.set("limit", "6");
+
+        response = await fetch(url.toString(), {
+            next: { revalidate },
+            cache: "force-cache",
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.data ?? [];
+        }
+
+        return [];
+    } catch (error) {
+        console.error("Failed to fetch testimonials:", error);
+        return [];
+    }
+}
+
+async function fetchNewsServer(): Promise<NewsRecord[]> {
+    try {
+        const baseUrl = resolveApiBaseUrl();
+        const url = new URL("/api/news", baseUrl);
+        url.searchParams.set("status", "published");
+        url.searchParams.set("limit", "6");
+
+        const response = await fetch(url.toString(), {
+            next: { revalidate },
+            cache: "force-cache",
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.data ?? [];
+        }
+
+        return [];
+    } catch (error) {
+        console.error("Failed to fetch news:", error);
+        return [];
+    }
+}
+
+async function fetchEventsServer(): Promise<EventRecord[]> {
+    try {
+        const baseUrl = resolveApiBaseUrl();
+        const url = new URL("/api/events", baseUrl);
+        url.searchParams.set("status", "published");
+        url.searchParams.set("limit", "12");
+
+        const response = await fetch(url.toString(), {
+            next: { revalidate },
+            cache: "force-cache",
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data.data ?? [];
+        }
+
+        return [];
+    } catch (error) {
+        console.error("Failed to fetch events:", error);
+        return [];
+    }
+}
+
+async function fetchHomeContentServer(): Promise<HomePageContent> {
+    try {
+        const baseUrl = resolveApiBaseUrl();
+        const url = new URL("/api/site-content", baseUrl);
+        url.searchParams.set("pageKey", "home");
+        url.searchParams.set("sectionKey", "main");
+
+        const response = await fetch(url.toString(), {
+            next: { revalidate },
+            cache: "force-cache",
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data?.content) {
+                return data.data.content as HomePageContent;
+            }
+        }
+
+        return DEFAULT_HOME_CONTENT;
+    } catch (error) {
+        console.error("Failed to fetch home content:", error);
+        return DEFAULT_HOME_CONTENT;
+    }
+}
+
+export default async function Frontend() {
+    // Fetch all data in parallel on the server
+    const [testimonials, newsRecords, eventRecords, homeContent] = await Promise.all([
+        fetchTestimonialsServer(),
+        fetchNewsServer(),
+        fetchEventsServer(),
+        fetchHomeContentServer(),
+    ]);
+
+    // Process news
+    const sortedNews = sortNewsRecords(newsRecords);
+    const selectedNews = sortedNews.slice(0, 3);
+    const newsCards = selectedNews.length > 0
+        ? selectedNews.map(mapNewsRecord)
+        : FALLBACK_NEWS;
+
+    // Process events
+    const selectedEvents = pickHomepageEvents(eventRecords);
+    const eventCards = selectedEvents.length > 0
+        ? selectedEvents.map(mapEventRecord)
+        : FALLBACK_EVENTS;
 
     // Merge dynamic stats with icons
     const achievementStats = (homeContent?.achievementStats || DEFAULT_HOME_CONTENT.achievementStats).map(
@@ -473,125 +545,6 @@ export default function Frontend() {
             icon: achievementIcons[index] || Rocket,
         })
     );
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const fetchTestimonials = async () => {
-            setTestimonialsLoading(true);
-
-            try {
-                let dataset = await listTestimonials({ status: "published", isFeatured: true, limit: 6 });
-
-                if (dataset.length === 0) {
-                    dataset = await listTestimonials({ status: "published", limit: 6 });
-                }
-
-                if (cancelled) {
-                    return;
-                }
-
-                setTestimonials(dataset);
-                setTestimonialsError(null);
-            } catch (error) {
-                if (cancelled) {
-                    return;
-                }
-
-                const message =
-                    error instanceof HttpError ? error.message : "Unable to load testimonials";
-                setTestimonialsError(message);
-                setTestimonials([]);
-            } finally {
-                if (!cancelled) {
-                    setTestimonialsLoading(false);
-                }
-            }
-        };
-
-        const fetchNews = async () => {
-            setNewsLoading(true);
-
-            try {
-                const dataset = await listNews({ status: "published", limit: 6 });
-
-                if (cancelled) {
-                    return;
-                }
-
-                const sorted = sortNewsRecords(dataset);
-                const selected = sorted.slice(0, 3);
-
-                if (selected.length > 0) {
-                    setNewsCards(selected.map(mapNewsRecord));
-                    setNewsFromApi(true);
-                    setNewsError(null);
-                } else {
-                    setNewsCards(FALLBACK_NEWS);
-                    setNewsFromApi(false);
-                    setNewsError(null);
-                }
-            } catch (error) {
-                if (cancelled) {
-                    return;
-                }
-
-                const message = error instanceof HttpError ? error.message : "Unable to load news";
-                setNewsError(message);
-                setNewsCards(FALLBACK_NEWS);
-                setNewsFromApi(false);
-            } finally {
-                if (!cancelled) {
-                    setNewsLoading(false);
-                }
-            }
-        };
-
-        const fetchEvents = async () => {
-            setEventsLoading(true);
-
-            try {
-                const dataset = await listEvents({ status: "published", limit: 12 });
-
-                if (cancelled) {
-                    return;
-                }
-
-                const selected = pickHomepageEvents(dataset);
-
-                if (selected.length > 0) {
-                    setEventCards(selected.map(mapEventRecord));
-                    setEventsFromApi(true);
-                    setEventsError(null);
-                } else {
-                    setEventCards(FALLBACK_EVENTS);
-                    setEventsFromApi(false);
-                    setEventsError(null);
-                }
-            } catch (error) {
-                if (cancelled) {
-                    return;
-                }
-
-                const message = error instanceof HttpError ? error.message : "Unable to load events";
-                setEventsError(message);
-                setEventCards(FALLBACK_EVENTS);
-                setEventsFromApi(false);
-            } finally {
-                if (!cancelled) {
-                    setEventsLoading(false);
-                }
-            }
-        };
-
-        void fetchTestimonials();
-        void fetchNews();
-        void fetchEvents();
-
-        return () => {
-            cancelled = true;
-        };
-    }, []);
 
     const displayTestimonials =
         testimonials.length > 0
@@ -609,12 +562,6 @@ export default function Frontend() {
                 author: item.author,
                 role: item.role,
             }));
-
-    const testimonialCount = displayTestimonials.length;
-    const primaryNews = newsCards[0] ?? null;
-    const secondaryNews = primaryNews ? newsCards.slice(1) : [];
-    const showNewsArchiveNotice = !newsError && !newsLoading && !newsFromApi;
-    const showEventsArchiveNotice = !eventsError && !eventsLoading && !eventsFromApi;
 
     return (
         <main className="w-full bg-background text-foreground">
@@ -728,7 +675,7 @@ export default function Frontend() {
                                 </h2>
                             </div>
                             <p className="text-lg leading-relaxed text-foreground/70">
-                                At the Innovation Lab, we empower students to transform bold ideas into real-world solutions. Through collaborative experimentation, cutting-edge technology, and creative thinking, we're shaping the future one project at a time.
+                                At the Innovation Lab, we empower students to transform bold ideas into real-world solutions. Through collaborative experimentation, cutting-edge technology, and creative thinking, we&apos;re shaping the future one project at a time.
                             </p>
 
                             <div className="p-6 rounded-2xl bg-muted/50 border border-border/50 relative overflow-hidden group">
@@ -802,12 +749,6 @@ export default function Frontend() {
                             </Link>
                         </Button>
                     </div>
-
-                    {newsError && (
-                        <p className="mb-8 text-sm text-destructive border border-destructive/20 p-4 rounded-xl bg-destructive/5">
-                            {newsError}
-                        </p>
-                    )}
 
                     <div className="grid gap-8 lg:grid-cols-3">
                         {newsCards.map((item, index) => (
@@ -885,12 +826,6 @@ export default function Frontend() {
                         </Button>
                     </div>
 
-                    {eventsError && (
-                        <p className="mb-8 text-sm text-destructive border border-destructive/20 p-4 rounded-xl bg-destructive/5">
-                            {eventsError}
-                        </p>
-                    )}
-
                     <div className="grid gap-8">
                         {eventCards.map((event, index) => {
                             // Extract date components if possible
@@ -909,7 +844,7 @@ export default function Frontend() {
                                         day = parts[1].replace(",", "");
                                     }
                                 }
-                            } catch (e) {
+                            } catch {
                                 day = "??";
                                 month = "DEC";
                             }
@@ -1076,57 +1011,43 @@ export default function Frontend() {
                         <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Stories from the Lab</h2>
                     </div>
 
-                    {testimonialsLoading && (
-                        <div className="text-center text-foreground/60 py-12 flex items-center justify-center gap-2">
-                            <CircleDashed className="animate-spin w-5 h-5" />
-                            Loading stories...
-                        </div>
-                    )}
-
-                    {testimonialsError && (
-                        <p className="text-sm text-destructive border border-destructive/20 p-4 mb-8 rounded-xl bg-destructive/5 text-center">
-                            {testimonialsError}
-                        </p>
-                    )}
-
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                        {!testimonialsLoading &&
-                            displayTestimonials.map((item: any) => (
-                                <div
-                                    key={item.key}
-                                    className="glass-card p-8 rounded-3xl space-y-6 flex flex-col relative group"
-                                >
-                                    <div className="text-6xl text-primary/20 font-serif absolute top-4 right-6 leading-none">"</div>
+                        {displayTestimonials.map((item) => (
+                            <div
+                                key={item.key}
+                                className="glass-card p-8 rounded-3xl space-y-6 flex flex-col relative group"
+                            >
+                                <div className="text-6xl text-primary/20 font-serif absolute top-4 right-6 leading-none">&quot;</div>
 
-                                    <p className="text-base leading-relaxed text-foreground/80 relative z-10 italic">
-                                        {item.quote}
-                                    </p>
+                                <p className="text-base leading-relaxed text-foreground/80 relative z-10 italic">
+                                    {item.quote}
+                                </p>
 
-                                    <div className="pt-6 mt-auto border-t border-border/50 flex items-center gap-4">
-                                        {item.image ? (
-                                            <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors">
-                                                <Image
-                                                    src={item.image}
-                                                    alt={item.author}
-                                                    fill
-                                                    className="object-cover"
-                                                    sizes="48px"
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="h-12 w-12 flex-shrink-0 rounded-full border-2 border-primary/20 flex items-center justify-center bg-primary/5 text-primary font-bold">
-                                                {item.author.charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
-                                        <div>
-                                            <p className="font-bold text-foreground">{item.author}</p>
-                                            {item.role && (
-                                                <p className="text-xs font-medium text-foreground/60 mt-0.5">{item.role}</p>
-                                            )}
+                                <div className="pt-6 mt-auto border-t border-border/50 flex items-center gap-4">
+                                    {item.image ? (
+                                        <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-primary/20 group-hover:border-primary transition-colors">
+                                            <Image
+                                                src={item.image}
+                                                alt={item.author}
+                                                fill
+                                                className="object-cover"
+                                                sizes="48px"
+                                            />
                                         </div>
+                                    ) : (
+                                        <div className="h-12 w-12 flex-shrink-0 rounded-full border-2 border-primary/20 flex items-center justify-center bg-primary/5 text-primary font-bold">
+                                            {item.author.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
+                                    <div>
+                                        <p className="font-bold text-foreground">{item.author}</p>
+                                        {item.role && (
+                                            <p className="text-xs font-medium text-foreground/60 mt-0.5">{item.role}</p>
+                                        )}
                                     </div>
                                 </div>
-                            ))}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

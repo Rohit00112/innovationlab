@@ -1,19 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { siteContent } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { getSessionUser } from "@/lib/auth/service";
+import type { SiteContentRecord } from "@/lib/types/site-content";
 
-// Type for content data
-export interface SiteContentRecord {
-    id: number;
-    pageKey: string;
-    sectionKey: string;
-    content: unknown;
-    updatedAt: Date;
-    updatedById: number | null;
-}
+// Re-export type for consumers
+export type { SiteContentRecord };
 
 // GET - Retrieve content for a page/section
 export async function GET(request: NextRequest) {
@@ -150,6 +145,9 @@ export async function PUT(request: NextRequest) {
                 })
                 .returning();
         }
+
+        // Revalidate cache for this content
+        revalidateTag(`site-content-${pageKey}-${sectionKey}`);
 
         return NextResponse.json(
             { success: true, data: result[0], message: "Content saved successfully" },
