@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
     ArrowRight,
     CalendarDays,
-    CircleDashed,
-    MessageCircle,
     Sparkles,
-    CheckCircle2,
     Lightbulb,
     Code2,
     Briefcase,
@@ -107,24 +104,6 @@ const FALLBACK_TESTIMONIALS: FallbackTestimonial[] = [
             "Yesko presentation ma lights off bhaye pani energy on. I could not see them, tara uniharule future dekheshan, wow!",
         author: "John Cena",
         role: "Still invisible",
-    },
-];
-
-const highlightTracks = [
-    {
-        title: "Future of Learning",
-        description: "Reimagining education through technology — from interactive learning platforms to AI-powered tutoring systems that adapt to every student.",
-        icon: Sparkles,
-    },
-    {
-        title: "Civic Tech",
-        description: "Building tools that strengthen communities — open-data dashboards, civic engagement apps, and solutions that make governance more transparent.",
-        icon: CircleDashed,
-    },
-    {
-        title: "Responsible AI",
-        description: "Developing AI systems with fairness, accountability, and transparency at their core — ensuring technology serves everyone equitably.",
-        icon: MessageCircle,
     },
 ];
 
@@ -614,87 +593,6 @@ export default async function Frontend() {
                                 </article>
                             )
                         })}
-                    </div>
-                </div>
-            </section>
-
-            <section className="py-24 relative overflow-hidden bg-muted/30 dark:bg-muted/10">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/20 dark:bg-secondary/10 rounded-full filter blur-3xl opacity-50 -z-10"></div>
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
-                        <div className="space-y-8">
-                            <div className="space-y-4">
-                                <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
-                                    Our Focus
-                                </span>
-                                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-                                    Innovation Tracks
-                                </h2>
-                            </div>
-                            <p className="text-lg leading-relaxed text-foreground/70">
-                                We explore cutting-edge themes through our residency and challenge programs, combining technical excellence with responsible innovation and real-world impact.
-                            </p>
-
-                            <div className="grid gap-4 pt-8">
-                                <div className="glass-card p-6 rounded-2xl flex items-start gap-4 hover:bg-card/80 transition-colors">
-                                    <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
-                                        <CheckCircle2 className="h-5 w-5" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold mb-1">Mentorship Programs</h3>
-                                        <p className="text-sm text-foreground/70">50+ collaborators guiding student projects</p>
-                                    </div>
-                                </div>
-                                <div className="glass-card p-6 rounded-2xl flex items-start gap-4 hover:bg-card/80 transition-colors">
-                                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 shrink-0">
-                                        <CheckCircle2 className="h-5 w-5" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold mb-1">Proven Track Record</h3>
-                                        <p className="text-sm text-foreground/70">500+ projects delivered across multiple domains</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid gap-6 relative">
-                            {highlightTracks.map((track, index) => {
-                                const Icon = track.icon;
-                                const colors = [
-                                    "from-violet-500/10 to-transparent border-violet-500/20",
-                                    "from-pink-500/10 to-transparent border-pink-500/20",
-                                    "from-cyan-500/10 to-transparent border-cyan-500/20"
-                                ];
-                                const iconColors = [
-                                    "bg-violet-500/10 text-violet-600",
-                                    "bg-pink-500/10 text-pink-600",
-                                    "bg-cyan-500/10 text-cyan-600"
-                                ];
-
-                                return (
-                                    <div
-                                        key={track.title}
-                                        className={`group relative p-8 rounded-3xl border bg-gradient-to-br ${colors[index % colors.length]} hover:shadow-lg transition-all duration-300 hover:scale-[1.02]`}
-                                    >
-                                        <div className="absolute right-4 top-4 opacity-5 group-hover:opacity-20 transition-opacity">
-                                            <Icon className="w-32 h-32" />
-                                        </div>
-
-                                        <div className="flex items-start gap-6 relative z-10">
-                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 ${iconColors[index % iconColors.length]} shadow-sm`}>
-                                                <Icon className="h-7 w-7" />
-                                            </div>
-                                            <div className="space-y-3">
-                                                <h3 className="text-2xl font-bold">{track.title}</h3>
-                                                <p className="text-sm leading-relaxed text-foreground/70">
-                                                    {track.description}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
                     </div>
                 </div>
             </section>
