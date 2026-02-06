@@ -53,26 +53,26 @@ const CONTACT_DETAILS = [
         description:
             "Itahari International College, 4th Floor Innovation Wing, Sunsari 56705",
         icon: MapPin,
-        color: "bg-blue-500/10 text-blue-600",
+        color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
     },
     {
         title: "Talk With Us",
         description: "+977-25-525123 (Sun–Fri, 9:00 AM – 5:00 PM)",
         icon: Phone,
-        color: "bg-green-500/10 text-green-600",
+        color: "bg-green-500/10 text-green-600 dark:text-green-400",
     },
     {
         title: "Write to Us",
         description: "hello@innovationlab.com",
         icon: Mail,
-        color: "bg-purple-500/10 text-purple-600",
+        color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
     },
     {
         title: "Open Hours",
         description:
             "Drop-in mentoring every Wednesday & Thursday, 2:00 PM – 4:00 PM.",
         icon: Clock,
-        color: "bg-orange-500/10 text-orange-600",
+        color: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
     },
 ];
 
@@ -190,7 +190,7 @@ export default function ContactPage() {
                             </div>
                         </div>
 
-                        <div className="glass-card p-8 sm:p-10 rounded-3xl border border-white/20 shadow-xl relative overflow-hidden">
+                        <div className="glass-card p-8 sm:p-10 rounded-3xl border border-border/30 dark:border-border/20 shadow-xl dark:shadow-2xl relative overflow-hidden">
                             {/* Form Background Decoration */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl -z-10"></div>
 
