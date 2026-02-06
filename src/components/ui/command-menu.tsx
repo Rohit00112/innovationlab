@@ -14,25 +14,23 @@ import {
 import { useDebounce } from "use-debounce";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Search, Calendar, Newspaper, Users, HelpCircle, Loader2 } from "lucide-react";
+import { Search, Calendar, Users, HelpCircle, Loader2 } from "lucide-react";
 
 type SearchResult = {
     id: string;
     title: string;
     href: string;
-    type: "Event" | "News" | "Community" | "FAQ";
+    type: "Event" | "Community" | "FAQ";
 };
 
 const typeIcons = {
     Event: Calendar,
-    News: Newspaper,
     Community: Users,
     FAQ: HelpCircle,
 };
 
 const typeColors = {
     Event: "text-blue-500",
-    News: "text-green-500",
     Community: "text-purple-500",
     FAQ: "text-orange-500",
 };
@@ -113,7 +111,7 @@ export function CommandMenu() {
             </Button>
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <CommandInput
-                    placeholder="Search events, news, communities..."
+                    placeholder="Search events, communities..."
                     value={query}
                     onValueChange={setQuery}
                 />
@@ -159,10 +157,6 @@ export function CommandMenu() {
                         <CommandItem value="events" onSelect={() => runCommand(() => router.push("/events"))}>
                             <Calendar className="mr-2 h-4 w-4 text-blue-500" />
                             Browse Events
-                        </CommandItem>
-                        <CommandItem value="news" onSelect={() => runCommand(() => router.push("/news"))}>
-                            <Newspaper className="mr-2 h-4 w-4 text-green-500" />
-                            Latest News
                         </CommandItem>
                         <CommandItem value="communities" onSelect={() => runCommand(() => router.push("/communities"))}>
                             <Users className="mr-2 h-4 w-4 text-purple-500" />

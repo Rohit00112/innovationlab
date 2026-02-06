@@ -31,7 +31,6 @@ const MENU_ITEMS: FooterMenuItem[] = [
   {
     title: "Resources",
     links: [
-      { text: "News & Updates", url: "/news" },
       { text: "Events", url: "/events" },
       { text: "Documentation", url: "#" },
       { text: "Blog", url: "#" },

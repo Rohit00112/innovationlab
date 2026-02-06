@@ -26,12 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.9,
         },
         {
-            url: `${BASE_URL}/news`,
-            lastModified: new Date(),
-            changeFrequency: "weekly",
-            priority: 0.9,
-        },
-        {
             url: `${BASE_URL}/communities`,
             lastModified: new Date(),
             changeFrequency: "weekly",
@@ -67,22 +61,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let dynamicPages: MetadataRoute.Sitemap = [];
 
     try {
-        // Published news articles
-        const newsArticles = await db
-            .select({
-                slug: schema.news.slug,
-                updatedAt: schema.news.updatedAt,
-            })
-            .from(schema.news)
-            .where(eq(schema.news.status, "published"));
-
-        const newsPages: MetadataRoute.Sitemap = newsArticles.map((article) => ({
-            url: `${BASE_URL}/news/${article.slug}`,
-            lastModified: article.updatedAt,
-            changeFrequency: "weekly" as const,
-            priority: 0.7,
-        }));
-
         // Published events
         const publishedEvents = await db
             .select({
@@ -117,7 +95,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             })
         );
 
-        dynamicPages = [...newsPages, ...eventPages, ...communityPages];
+        dynamicPages = [...eventPages, ...communityPages];
     } catch (error) {
         // Log error but don't fail sitemap generation
         console.error("Error fetching dynamic sitemap entries:", error);

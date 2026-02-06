@@ -34,13 +34,11 @@ import {
     Calendar,
     Settings,
     LayoutDashboard,
-    FileText,
     Sparkles,
     Bell,
     Users2,
     HelpCircle,
     UserCircle,
-    MessageSquare,
     Palette,
 } from "lucide-react";
 
@@ -104,17 +102,12 @@ export default async function DashboardLayout({
 export function AppSidebar({ user }: { user: { name?: string | null; email?: string | null; image?: string | null } }) {
     const items = [
         { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-        { title: "News & Articles", url: "/dashboard/news", icon: FileText },
         { title: "Events", url: "/dashboard/events", icon: Calendar },
         { title: "Team", url: "/dashboard/team", icon: UserCircle },
         { title: "Communities", url: "/dashboard/communities", icon: Users2 },
         { title: "Testimonials", url: "/dashboard/testimonials", icon: Sparkles },
+        { title: "Milestones", url: "/dashboard/milestones", icon: Palette },
         { title: "FAQs", url: "/dashboard/faqs", icon: HelpCircle },
-        { title: "Suggestions", url: "/dashboard/feedbacks", icon: MessageSquare },
-    ];
-
-    const contentItems = [
-        { title: "About Page", url: "/dashboard/content/about", icon: Palette },
     ];
 
     return (
@@ -133,23 +126,6 @@ export function AppSidebar({ user }: { user: { name?: string | null; email?: str
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild tooltip={item.title} className="hover:bg-primary/10 hover:text-primary transition-colors data-[active=true]:bg-primary/10 data-[active=true]:text-primary rounded-lg my-0.5 font-medium">
-                                        <Link href={item.url}>
-                                            <item.icon className="size-4" />
-                                            <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-                <SidebarGroup>
-                    <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-widest px-2 mb-2">Content</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {contentItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild tooltip={item.title} className="hover:bg-primary/10 hover:text-primary transition-colors data-[active=true]:bg-primary/10 data-[active=true]:text-primary rounded-lg my-0.5 font-medium">
                                         <Link href={item.url}>

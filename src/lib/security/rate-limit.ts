@@ -109,11 +109,6 @@ export const RATE_LIMITS = {
         limit: 3,
         windowSeconds: 300, // 3 requests per 5 minutes
     },
-    // Feedback/suggestions
-    feedback: {
-        limit: 5,
-        windowSeconds: 300, // 5 requests per 5 minutes
-    },
     // File uploads
     upload: {
         limit: 10,

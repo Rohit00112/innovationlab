@@ -1,6 +1,6 @@
 
 import { db } from "@/lib/db";
-import { communities, events, faqs, news } from "@/lib/db/schema";
+import { communities, events, faqs } from "@/lib/db/schema";
 import { eq, ilike, or, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
         const searchPattern = `%${query}%`;
 
-        const [eventsResults, communitiesResults, faqsResults, newsResults] = await Promise.all([
+        const [eventsResults, communitiesResults, faqsResults] = await Promise.all([
             db
                 .select({
                     id: events.id,
@@ -57,20 +57,6 @@ export async function GET(req: Request) {
                     )
                 )
                 .limit(5),
-            db
-                .select({
-                    id: news.id,
-                    title: news.title,
-                    slug: news.slug,
-                })
-                .from(news)
-                .where(
-                    and(
-                        eq(news.status, "published"),
-                        or(ilike(news.title, searchPattern), ilike(news.excerpt, searchPattern))
-                    )
-                )
-                .limit(5),
         ]);
 
         const results = [
@@ -79,12 +65,6 @@ export async function GET(req: Request) {
                 title: item.title,
                 href: `/events/${item.slug}`,
                 type: "Event" as const,
-            })),
-            ...newsResults.map((item) => ({
-                id: `news-${item.id}`,
-                title: item.title,
-                href: `/news/${item.slug}`,
-                type: "News" as const,
             })),
             ...communitiesResults.map((item) => ({
                 id: `community-${item.id}`,

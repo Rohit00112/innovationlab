@@ -10,7 +10,6 @@ const authRoutes = ["/login", "/register"];
 // API routes that need rate limiting
 const AUTH_API_ROUTES = ["/api/auth/*"];
 const CONTACT_API_ROUTES = ["/api/contact/*"];
-const FEEDBACK_API_ROUTES = ["/api/feedback/*"];
 const UPLOAD_API_ROUTES = ["/api/upload/*"];
 
 export async function middleware(request: NextRequest) {
@@ -35,9 +34,6 @@ export async function middleware(request: NextRequest) {
     } else if (matchesPath(pathname, CONTACT_API_ROUTES)) {
       rateLimitConfig = RATE_LIMITS.contact;
       rateLimitKey = `contact:${ip}`;
-    } else if (matchesPath(pathname, FEEDBACK_API_ROUTES)) {
-      rateLimitConfig = RATE_LIMITS.feedback;
-      rateLimitKey = `feedback:${ip}`;
     } else if (matchesPath(pathname, UPLOAD_API_ROUTES)) {
       rateLimitConfig = RATE_LIMITS.upload;
       rateLimitKey = `upload:${ip}`;

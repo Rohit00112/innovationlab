@@ -74,37 +74,6 @@ export const userSessions = pgTable(
   })
 );
 
-export const newsStatusEnum = pgEnum("news_status", [
-  "draft",
-  "scheduled",
-  "published",
-  "archived"
-]);
-
-export const news = pgTable(
-  "news",
-  {
-    id: serial("id").primaryKey(),
-    title: text("title").notNull(),
-    slug: text("slug").notNull(),
-    excerpt: text("excerpt"),
-    content: text("content").notNull(),
-    coverImageUrl: text("cover_image_url"),
-    status: newsStatusEnum("status").notNull().default("draft"),
-    publishedAt: timestamp("published_at", { withTimezone: true, mode: "date" }),
-    authorId: integer("author_id").references(() => users.id, {
-      onDelete: "set null"
-    }),
-    createdAt: timestampWithDefaults("created_at"),
-    updatedAt: timestampWithDefaults("updated_at")
-  },
-  table => ({
-    slugIdx: uniqueIndex("news_slug_unique").on(table.slug),
-    statusIdx: index("news_status_idx").on(table.status),
-    authorIdx: index("news_author_idx").on(table.authorId)
-  })
-);
-
 export const eventStatusEnum = pgEnum("event_status", [
   "draft",
   "published",
@@ -188,19 +157,11 @@ export const testimonials = pgTable(
 );
 
 export const usersRelations = relations(users, ({ many }) => ({
-  news: many(news),
   events: many(events),
   testimonials: many(testimonials),
   sessions: many(userSessions),
   eventRegistrations: many(eventRegistrations),
   passwordResetTokens: many(passwordResetTokens)
-}));
-
-export const newsRelations = relations(news, ({ one }) => ({
-  author: one(users, {
-    fields: [news.authorId],
-    references: [users.id]
-  })
 }));
 
 export const eventsRelations = relations(events, ({ one, many }) => ({
@@ -452,47 +413,19 @@ export const faqs = pgTable(
   })
 );
 
-// Feedbacks
-export const feedbackCategoryEnum = pgEnum("feedback_category", [
-  "suggestion",
-  "issue",
-  "other"
-]);
-
-export const feedbacks = pgTable(
-  "feedbacks",
+// Milestones
+export const milestones = pgTable(
+  "milestones",
   {
     id: serial("id").primaryKey(),
-    message: text("message").notNull(),
-    email: text("email"),
-    category: feedbackCategoryEnum("category").notNull().default("suggestion"),
+    year: text("year").notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    displayOrder: integer("display_order").notNull().default(0),
     createdAt: timestampWithDefaults("created_at"),
+    updatedAt: timestampWithDefaults("updated_at")
   },
   table => ({
-    categoryIdx: index("feedbacks_category_idx").on(table.category)
+    displayOrderIdx: index("milestones_display_order_idx").on(table.displayOrder)
   })
 );
-
-// Site Content - Dynamic CMS for page sections
-export const siteContent = pgTable(
-  "site_content",
-  {
-    id: serial("id").primaryKey(),
-    pageKey: text("page_key").notNull(), // e.g., "home", "about", "contact", "global"
-    sectionKey: text("section_key").notNull(), // e.g., "hero", "stats", "contact_details"
-    content: json("content").notNull(), // JSON blob containing the section's editable fields
-    updatedAt: timestampWithDefaults("updated_at"),
-    updatedById: integer("updated_by_id").references(() => users.id, { onDelete: "set null" })
-  },
-  table => ({
-    uniquePageSection: uniqueIndex("site_content_page_section_unique").on(table.pageKey, table.sectionKey),
-    pageKeyIdx: index("site_content_page_key_idx").on(table.pageKey)
-  })
-);
-
-export const siteContentRelations = relations(siteContent, ({ one }) => ({
-  updatedBy: one(users, {
-    fields: [siteContent.updatedById],
-    references: [users.id]
-  })
-}));

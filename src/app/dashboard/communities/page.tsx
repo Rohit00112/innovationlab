@@ -42,6 +42,7 @@ import {
     TableRow
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { MarkdownEditor } from "@/components/markdown-editor";
 import { HttpError } from "@/lib/http/api-client";
 import {
     createCommunity,
@@ -304,7 +305,7 @@ export default function CommunitiesDashboard() {
             </Card>
 
             <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
-                <DialogContent className="sm:max-w-lg">
+                <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>{dialogMode === "create" ? "Create Community" : "Edit Community"}</DialogTitle>
                         <DialogDescription>
@@ -345,15 +346,17 @@ export default function CommunitiesDashboard() {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="content">Full Content</Label>
-                                <Textarea
-                                    id="content"
+                                <MarkdownEditor
+                                    key={activeCommunity?.id ?? "new"}
                                     value={formState.content}
-                                    onChange={event =>
-                                        setFormState(prev => ({ ...prev, content: event.target.value }))
+                                    onChange={(value) =>
+                                        setFormState(prev => ({ ...prev, content: value }))
                                     }
-                                    rows={4}
-                                    placeholder="Detailed information about the community"
+                                    placeholder="Write detailed community content using markdown…"
                                 />
+                                <p className="text-xs text-muted-foreground">
+                                    Supports markdown shortcuts: # heading, **bold**, *italic*, - list, &gt; quote, ``` code
+                                </p>
                             </div>
 
                             <div className="grid gap-2">

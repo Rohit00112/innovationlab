@@ -18,9 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { getSiteContent } from "@/lib/data/site-content";
 import { getActiveTeamMembers } from "@/lib/data/team";
-import { type AboutPageContent, DEFAULT_ABOUT_CONTENT } from "@/lib/types/site-content";
+import { getMilestones } from "@/lib/data/milestones";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
@@ -95,9 +94,7 @@ export default async function AboutPage() {
     teamMembers = [];
   }
 
-  // Only milestones are fetched from CMS
-  const content = await getSiteContent<AboutPageContent>("about", "main") || DEFAULT_ABOUT_CONTENT;
-  const milestones = content.milestones || DEFAULT_ABOUT_CONTENT.milestones;
+  const milestones = await getMilestones();
 
   const values = [
     { title: "Impactful Innovation", description: "We do not innovate for the sake of novelty; we innovate to create value.", icon: Heart, color: "bg-violet-500/10 text-violet-600 dark:text-violet-400" },

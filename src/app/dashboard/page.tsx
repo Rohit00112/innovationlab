@@ -4,27 +4,23 @@ import Link from "next/link"
 import { getSessionUser } from "@/lib/auth/service"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
     ArrowUpRight,
     Calendar,
-    FileText,
     Plus,
     Settings,
     Sparkles,
     UserCircle,
     Users2,
-    MessageSquare,
     TrendingUp,
     TrendingDown,
     CalendarCheck,
-    Newspaper,
 } from "lucide-react"
 
 import { db } from "@/lib/db";
-import { communities, events, eventRegistrations, feedbacks, news, users, testimonials } from "@/lib/db/schema";
-import { count, eq, gte, lt, and, desc } from "drizzle-orm";
+import { communities, events, eventRegistrations, users, testimonials } from "@/lib/db/schema";
+import { count, eq, gte, lt, and } from "drizzle-orm";
 
 export default async function Dashboard() {
     const cookieStore = await cookies()
@@ -46,32 +42,21 @@ export default async function Dashboard() {
         [userCount],
         , // eventCount intentionally unused
         [communityCount],
-        [feedbackCount],
-        [newsCount],
         [registrationCount],
         [testimonialCount],
         [recentUsers],
-        [recentFeedbacks],
-        [prevFeedbacks],
         [recentRegistrations],
         [prevRegistrations],
         [publishedEvents],
         [upcomingEvents],
-        recentActivity
     ] = await Promise.all([
         db.select({ value: count() }).from(users),
         db.select({ value: count() }).from(events),
         db.select({ value: count() }).from(communities),
-        db.select({ value: count() }).from(feedbacks),
-        db.select({ value: count() }).from(news),
         db.select({ value: count() }).from(eventRegistrations),
         db.select({ value: count() }).from(testimonials),
         // Recent users (last 30 days)
         db.select({ value: count() }).from(users).where(gte(users.createdAt, thirtyDaysAgo)),
-        // Recent feedbacks (last 30 days)
-        db.select({ value: count() }).from(feedbacks).where(gte(feedbacks.createdAt, thirtyDaysAgo)),
-        // Previous period feedbacks (30-60 days ago)
-        db.select({ value: count() }).from(feedbacks).where(and(gte(feedbacks.createdAt, sixtyDaysAgo), lt(feedbacks.createdAt, thirtyDaysAgo))),
         // Recent registrations (last 30 days)
         db.select({ value: count() }).from(eventRegistrations).where(gte(eventRegistrations.createdAt, thirtyDaysAgo)),
         // Previous period registrations
@@ -80,21 +65,9 @@ export default async function Dashboard() {
         db.select({ value: count() }).from(events).where(eq(events.status, "published")),
         // Upcoming events
         db.select({ value: count() }).from(events).where(and(eq(events.status, "published"), gte(events.startsAt, now))),
-        // Recent activity (latest 5 feedbacks)
-        db.select({
-            id: feedbacks.id,
-            message: feedbacks.message,
-            email: feedbacks.email,
-            category: feedbacks.category,
-            createdAt: feedbacks.createdAt
-        }).from(feedbacks).orderBy(desc(feedbacks.createdAt)).limit(5)
     ])
 
     // Calculate trends
-    const feedbackTrend = prevFeedbacks.value > 0
-        ? Math.round(((recentFeedbacks.value - prevFeedbacks.value) / prevFeedbacks.value) * 100)
-        : recentFeedbacks.value > 0 ? 100 : 0
-
     const registrationTrend = prevRegistrations.value > 0
         ? Math.round(((recentRegistrations.value - prevRegistrations.value) / prevRegistrations.value) * 100)
         : recentRegistrations.value > 0 ? 100 : 0
@@ -125,10 +98,9 @@ export default async function Dashboard() {
             bgColor: "bg-purple-500/10 dark:bg-purple-500/15"
         },
         {
-            title: "Feedbacks",
-            value: feedbackCount.value,
-            trend: feedbackTrend,
-            icon: MessageSquare,
+            title: "Communities",
+            value: communityCount.value,
+            icon: Users2,
             color: "text-orange-500 dark:text-orange-400",
             bgColor: "bg-orange-500/10 dark:bg-orange-500/15"
         }
@@ -146,8 +118,8 @@ export default async function Dashboard() {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button asChild className="rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
-                        <Link href="/dashboard/news/create">
-                            <Plus className="mr-2 h-4 w-4" /> Create Article
+                        <Link href="/dashboard/events">
+                            <Plus className="mr-2 h-4 w-4" /> Create Event
                         </Link>
                     </Button>
                 </div>
@@ -182,18 +154,7 @@ export default async function Dashboard() {
             </div>
 
             {/* Content Summary Row */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card className="rounded-2xl border-border/50">
-                    <CardContent className="p-6 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-blue-500/10 dark:bg-blue-500/15">
-                            <Newspaper className="h-6 w-6 text-blue-500 dark:text-blue-400" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold">{newsCount.value}</p>
-                            <p className="text-sm text-muted-foreground">News Articles</p>
-                        </div>
-                    </CardContent>
-                </Card>
+            <div className="grid gap-4 md:grid-cols-2">
                 <Card className="rounded-2xl border-border/50">
                     <CardContent className="p-6 flex items-center gap-4">
                         <div className="p-3 rounded-xl bg-pink-500/10 dark:bg-pink-500/15">
@@ -218,68 +179,14 @@ export default async function Dashboard() {
                 </Card>
             </div>
 
-            {/* Recent Activity and Quick Actions */}
-            <div className="grid gap-6 lg:grid-cols-2">
-                {/* Recent Feedback */}
-                <Card className="rounded-2xl border-border/50">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                            <MessageSquare className="h-5 w-5 text-orange-500" />
-                            Recent Feedback
-                        </CardTitle>
-                        <CardDescription>Latest messages from your users</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {recentActivity.length === 0 ? (
-                            <p className="text-sm text-muted-foreground text-center py-8">No feedback yet</p>
-                        ) : (
-                            <div className="space-y-4">
-                                {recentActivity.map((feedback) => (
-                                    <div key={feedback.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                                        <div className="p-1.5 rounded-full bg-orange-500/10">
-                                            <MessageSquare className="h-3.5 w-3.5 text-orange-500" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm line-clamp-2">{feedback.message}</p>
-                                            <div className="flex items-center gap-2 mt-1.5">
-                                                <Badge variant="secondary" className="text-xs capitalize">
-                                                    {feedback.category}
-                                                </Badge>
-                                                <span className="text-xs text-muted-foreground">
-                                                    {new Date(feedback.createdAt).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        <Button variant="ghost" className="w-full mt-4" asChild>
-                            <Link href="/dashboard/feedbacks">
-                                View all feedback <ArrowUpRight className="ml-2 h-4 w-4" />
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
-
-                {/* Quick Actions */}
+            {/* Quick Actions */}
+            <div className="grid gap-6">
                 <Card className="rounded-2xl border-border/50">
                     <CardHeader className="pb-3">
                         <CardTitle className="text-lg">Quick Actions</CardTitle>
                         <CardDescription>Manage your content and platform</CardDescription>
                     </CardHeader>
-                    <CardContent className="grid gap-3">
-                        <Link href="/dashboard/news" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
-                            <div className="p-2 rounded-full bg-blue-500/10 dark:bg-blue-500/15">
-                                <FileText className="h-5 w-5 text-blue-500 dark:text-blue-400" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="font-medium">News Articles</h3>
-                                <p className="text-xs text-muted-foreground">Manage and publish news stories</p>
-                            </div>
-                            <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                        </Link>
-
+                    <CardContent className="grid gap-3 md:grid-cols-2">
                         <Link href="/dashboard/events" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
                             <div className="p-2 rounded-full bg-purple-500/10 dark:bg-purple-500/15">
                                 <Calendar className="h-5 w-5 text-purple-500 dark:text-purple-400" />
@@ -298,6 +205,17 @@ export default async function Dashboard() {
                             <div className="flex-1">
                                 <h3 className="font-medium">Team</h3>
                                 <p className="text-xs text-muted-foreground">Manage team members</p>
+                            </div>
+                            <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        </Link>
+
+                        <Link href="/dashboard/communities" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
+                            <div className="p-2 rounded-full bg-indigo-500/10 dark:bg-indigo-500/15">
+                                <Users2 className="h-5 w-5 text-indigo-500 dark:text-indigo-400" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-medium">Communities</h3>
+                                <p className="text-xs text-muted-foreground">Manage community labs</p>
                             </div>
                             <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </Link>

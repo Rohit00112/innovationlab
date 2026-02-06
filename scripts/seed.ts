@@ -49,100 +49,34 @@ const SALT_ROUNDS = Number.parseInt(
 // Default Content Data
 // =============================================================================
 
-const DEFAULT_ABOUT_CONTENT = {
-    milestones: [
-        {
-            year: "2015",
-            title: "Foundation",
-            description:
-                "Innovation Lab was established at Itahari International College with a vision to create a collaborative space for student innovation.",
-        },
-        {
-            year: "2018",
-            title: "First Breakthrough",
-            description:
-                "Successfully launched our first major project, gaining recognition from industry partners.",
-        },
-        {
-            year: "2021",
-            title: "Expansion",
-            description:
-                "Expanded our programs and partnerships, reaching international collaborators and broadening our impact.",
-        },
-        {
-            year: "2024",
-            title: "Recognition",
-            description:
-                "Received multiple awards for innovation and community impact, solidifying our position as a leading student innovation hub.",
-        },
-    ],
-};
-
-// Site content to seed
-const SITE_CONTENT_SEEDS = [
-    { pageKey: "about", sectionKey: "main", content: DEFAULT_ABOUT_CONTENT },
-];
-
-// Sample News Articles
-const SAMPLE_NEWS = [
+const SAMPLE_MILESTONES = [
     {
-        title: "Innovation Lab Launches New AI Research Initiative",
-        slug: "ai-research-initiative-2024",
-        excerpt: "We're excited to announce our new AI research program focusing on machine learning applications for social good.",
-        content: JSON.stringify({
-            root: {
-                children: [
-                    { type: "paragraph", children: [{ type: "text", text: "Innovation Lab is proud to announce the launch of our new AI Research Initiative, a comprehensive program designed to explore the frontiers of artificial intelligence and machine learning." }] },
-                    { type: "paragraph", children: [{ type: "text", text: "This initiative will focus on developing AI solutions that address real-world challenges in education, healthcare, and environmental sustainability." }] }
-                ],
-                direction: "ltr",
-                format: "",
-                indent: 0,
-                type: "root",
-                version: 1
-            }
-        }),
-        status: "published" as const,
-        publishedAt: new Date(),
+        year: "2015",
+        title: "Foundation",
+        description:
+            "Innovation Lab was established at Itahari International College with a vision to create a collaborative space for student innovation.",
+        displayOrder: 0,
     },
     {
-        title: "Student Team Wins National Hackathon",
-        slug: "national-hackathon-victory",
-        excerpt: "Our student team secured first place at the National Innovation Hackathon with their sustainable energy solution.",
-        content: JSON.stringify({
-            root: {
-                children: [
-                    { type: "paragraph", children: [{ type: "text", text: "Congratulations to our amazing student team who brought home the gold at this year's National Innovation Hackathon!" }] },
-                    { type: "paragraph", children: [{ type: "text", text: "Their project, 'GreenGrid', is an innovative smart energy management system that helps reduce electricity waste in residential buildings." }] }
-                ],
-                direction: "ltr",
-                format: "",
-                indent: 0,
-                type: "root",
-                version: 1
-            }
-        }),
-        status: "published" as const,
-        publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
+        year: "2018",
+        title: "First Breakthrough",
+        description:
+            "Successfully launched our first major project, gaining recognition from industry partners.",
+        displayOrder: 1,
     },
     {
-        title: "New Partnership with Tech Industry Leaders",
-        slug: "industry-partnership-announcement",
-        excerpt: "Innovation Lab establishes strategic partnerships with leading technology companies to enhance student opportunities.",
-        content: JSON.stringify({
-            root: {
-                children: [
-                    { type: "paragraph", children: [{ type: "text", text: "We are thrilled to announce new partnerships with several leading technology companies that will provide our students with unprecedented learning and career opportunities." }] }
-                ],
-                direction: "ltr",
-                format: "",
-                indent: 0,
-                type: "root",
-                version: 1
-            }
-        }),
-        status: "published" as const,
-        publishedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
+        year: "2021",
+        title: "Expansion",
+        description:
+            "Expanded our programs and partnerships, reaching international collaborators and broadening our impact.",
+        displayOrder: 2,
+    },
+    {
+        year: "2024",
+        title: "Recognition",
+        description:
+            "Received multiple awards for innovation and community impact, solidifying our position as a leading student innovation hub.",
+        displayOrder: 3,
     },
 ];
 
@@ -397,55 +331,32 @@ async function seed() {
         }
 
         // =========================================================================
-        // 2. Seed Site Content
+        // 2. Seed Milestones
         // =========================================================================
-        console.log("\n📄 Seeding site content...");
+        console.log("\n🏆 Seeding milestones...");
 
-        for (const { pageKey, sectionKey, content } of SITE_CONTENT_SEEDS) {
+        for (const milestone of SAMPLE_MILESTONES) {
             const existing = await db
-                .select({ id: schema.siteContent.id })
-                .from(schema.siteContent)
+                .select({ id: schema.milestones.id })
+                .from(schema.milestones)
                 .where(
                     and(
-                        eq(schema.siteContent.pageKey, pageKey),
-                        eq(schema.siteContent.sectionKey, sectionKey)
+                        eq(schema.milestones.year, milestone.year),
+                        eq(schema.milestones.title, milestone.title)
                     )
                 )
                 .limit(1);
 
             if (existing.length > 0) {
-                console.log(`   ⏭️  ${pageKey}/${sectionKey} already exists`);
+                console.log(`   ⏭️  ${milestone.year} - ${milestone.title} already exists`);
             } else {
-                await db.insert(schema.siteContent).values({
-                    pageKey,
-                    sectionKey,
-                    content,
-                });
-                console.log(`   ✅ ${pageKey}/${sectionKey} created`);
+                await db.insert(schema.milestones).values(milestone);
+                console.log(`   ✅ ${milestone.year} - ${milestone.title} created`);
             }
         }
 
         // =========================================================================
-        // 3. Seed News Articles
-        // =========================================================================
-        console.log("\n📰 Seeding news articles...");
-
-        const existingNews = await db
-            .select({ slug: schema.news.slug })
-            .from(schema.news)
-            .limit(1);
-
-        if (existingNews.length > 0) {
-            console.log("   ⏭️  News articles already exist, skipping...");
-        } else {
-            for (const article of SAMPLE_NEWS) {
-                await db.insert(schema.news).values(article);
-                console.log(`   ✅ News: "${article.title}" created`);
-            }
-        }
-
-        // =========================================================================
-        // 4. Seed Events
+        // 3. Seed Events
         // =========================================================================
         console.log("\n📅 Seeding events...");
 
@@ -464,7 +375,7 @@ async function seed() {
         }
 
         // =========================================================================
-        // 5. Seed Testimonials
+        // 4. Seed Testimonials
         // =========================================================================
         console.log("\n💬 Seeding testimonials...");
 
@@ -483,7 +394,7 @@ async function seed() {
         }
 
         // =========================================================================
-        // 6. Seed Team Members
+        // 5. Seed Team Members
         // =========================================================================
         console.log("\n👥 Seeding team members...");
 
@@ -502,7 +413,7 @@ async function seed() {
         }
 
         // =========================================================================
-        // 7. Seed Communities
+        // 6. Seed Communities
         // =========================================================================
         console.log("\n🏘️ Seeding communities...");
 
@@ -521,7 +432,7 @@ async function seed() {
         }
 
         // =========================================================================
-        // 8. Seed FAQs
+        // 7. Seed FAQs
         // =========================================================================
         console.log("\n❓ Seeding FAQs...");
 
@@ -545,8 +456,7 @@ async function seed() {
         console.log("\n✨ Database seed completed successfully!\n");
         console.log("📋 Summary:");
         console.log(`   - Admin email: ${ADMIN_EMAIL}`);
-        console.log(`   - Site content pages: ${SITE_CONTENT_SEEDS.length}`);
-        console.log(`   - News articles: ${SAMPLE_NEWS.length}`);
+        console.log(`   - Milestones: ${SAMPLE_MILESTONES.length}`);
         console.log(`   - Events: ${SAMPLE_EVENTS.length}`);
         console.log(`   - Testimonials: ${SAMPLE_TESTIMONIALS.length}`);
         console.log(`   - Team members: ${SAMPLE_TEAM_MEMBERS.length}`);

@@ -164,11 +164,7 @@ export function BulkActionsBar<T, TStatus extends string = string>({
                         variant={action.variant || "outline"}
                         onClick={() => handleActionClick(action)}
                         disabled={isProcessing}
-                        className={cn(
-                            "h-8 text-xs rounded-lg gap-1.5",
-                            action.variant === "destructive" &&
-                            "text-destructive hover:text-destructive"
-                        )}
+                        className="h-8 text-xs rounded-lg gap-1.5"
                     >
                         {action.icon}
                         {action.label}
