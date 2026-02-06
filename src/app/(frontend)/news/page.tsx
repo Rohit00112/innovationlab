@@ -157,10 +157,10 @@ export default async function NewsPage() {
             </div>
 
             {/* Featured Article Card */}
-            <article className="group relative bg-card rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-border/50 hover:translate-y-[-4px]">
+            <article className="group relative bg-card dark:bg-card/80 rounded-3xl overflow-hidden shadow-xl dark:shadow-primary/5 hover:shadow-2xl transition-all duration-300 border border-border/50 dark:border-border/30 hover:translate-y-[-4px]">
               {featuredArticle.coverImage && (
                 <div className="relative h-80 w-full overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 opacity-80"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 opacity-80 dark:opacity-90"></div>
                   <Image
                     src={featuredArticle.coverImage}
                     alt={featuredArticle.title}
@@ -198,7 +198,7 @@ export default async function NewsPage() {
       </section>
 
       {/* Articles Grid Section */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-24 bg-muted/30 dark:bg-muted/10">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16">
             <div className="space-y-4">
@@ -223,7 +223,7 @@ export default async function NewsPage() {
               otherArticles.map((article) => (
                 <article
                   key={article.slug}
-                  className="group flex flex-col bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px]"
+                  className="group flex flex-col bg-card dark:bg-card/80 rounded-3xl overflow-hidden border border-border/50 dark:border-border/30 shadow-sm hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-primary/10 transition-all duration-300 hover:translate-y-[-4px]"
                 >
                   {article.coverImage && (
                     <div className="relative h-56 w-full overflow-hidden">

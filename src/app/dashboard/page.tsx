@@ -105,32 +105,32 @@ export default async function Dashboard() {
             value: userCount.value,
             subtitle: `+${recentUsers.value} this month`,
             icon: Users2,
-            color: "text-blue-500",
-            bgColor: "bg-blue-500/10"
+            color: "text-blue-500 dark:text-blue-400",
+            bgColor: "bg-blue-500/10 dark:bg-blue-500/15"
         },
         {
             title: "Event Registrations",
             value: registrationCount.value,
             trend: registrationTrend,
             icon: CalendarCheck,
-            color: "text-green-500",
-            bgColor: "bg-green-500/10"
+            color: "text-green-500 dark:text-green-400",
+            bgColor: "bg-green-500/10 dark:bg-green-500/15"
         },
         {
             title: "Published Events",
             value: publishedEvents.value,
             subtitle: `${upcomingEvents.value} upcoming`,
             icon: Calendar,
-            color: "text-purple-500",
-            bgColor: "bg-purple-500/10"
+            color: "text-purple-500 dark:text-purple-400",
+            bgColor: "bg-purple-500/10 dark:bg-purple-500/15"
         },
         {
             title: "Feedbacks",
             value: feedbackCount.value,
             trend: feedbackTrend,
             icon: MessageSquare,
-            color: "text-orange-500",
-            bgColor: "bg-orange-500/10"
+            color: "text-orange-500 dark:text-orange-400",
+            bgColor: "bg-orange-500/10 dark:bg-orange-500/15"
         }
     ]
 
@@ -156,14 +156,14 @@ export default async function Dashboard() {
             {/* Stats Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {stats.map((stat) => (
-                    <Card key={stat.title} className="rounded-2xl border-border/50 shadow-sm hover:shadow-md transition-shadow">
+                    <Card key={stat.title} className="rounded-2xl border-border/50 dark:border-border/30 shadow-sm hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-primary/5 transition-shadow">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div className={`p-2 rounded-xl ${stat.bgColor}`}>
                                     <stat.icon className={`h-5 w-5 ${stat.color}`} />
                                 </div>
                                 {stat.trend !== undefined && (
-                                    <div className={`flex items-center gap-1 text-xs font-medium ${stat.trend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    <div className={`flex items-center gap-1 text-xs font-medium ${stat.trend >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                                         {stat.trend >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                                         {Math.abs(stat.trend)}%
                                     </div>
@@ -185,8 +185,8 @@ export default async function Dashboard() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card className="rounded-2xl border-border/50">
                     <CardContent className="p-6 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-blue-500/10">
-                            <Newspaper className="h-6 w-6 text-blue-500" />
+                        <div className="p-3 rounded-xl bg-blue-500/10 dark:bg-blue-500/15">
+                            <Newspaper className="h-6 w-6 text-blue-500 dark:text-blue-400" />
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{newsCount.value}</p>
@@ -196,8 +196,8 @@ export default async function Dashboard() {
                 </Card>
                 <Card className="rounded-2xl border-border/50">
                     <CardContent className="p-6 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-pink-500/10">
-                            <Sparkles className="h-6 w-6 text-pink-500" />
+                        <div className="p-3 rounded-xl bg-pink-500/10 dark:bg-pink-500/15">
+                            <Sparkles className="h-6 w-6 text-pink-500 dark:text-pink-400" />
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{testimonialCount.value}</p>
@@ -207,8 +207,8 @@ export default async function Dashboard() {
                 </Card>
                 <Card className="rounded-2xl border-border/50">
                     <CardContent className="p-6 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-indigo-500/10">
-                            <Users2 className="h-6 w-6 text-indigo-500" />
+                        <div className="p-3 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/15">
+                            <Users2 className="h-6 w-6 text-indigo-500 dark:text-indigo-400" />
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{communityCount.value}</p>
@@ -270,8 +270,8 @@ export default async function Dashboard() {
                     </CardHeader>
                     <CardContent className="grid gap-3">
                         <Link href="/dashboard/news" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
-                            <div className="p-2 rounded-full bg-blue-500/10">
-                                <FileText className="h-5 w-5 text-blue-500" />
+                            <div className="p-2 rounded-full bg-blue-500/10 dark:bg-blue-500/15">
+                                <FileText className="h-5 w-5 text-blue-500 dark:text-blue-400" />
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-medium">News Articles</h3>
@@ -281,8 +281,8 @@ export default async function Dashboard() {
                         </Link>
 
                         <Link href="/dashboard/events" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
-                            <div className="p-2 rounded-full bg-purple-500/10">
-                                <Calendar className="h-5 w-5 text-purple-500" />
+                            <div className="p-2 rounded-full bg-purple-500/10 dark:bg-purple-500/15">
+                                <Calendar className="h-5 w-5 text-purple-500 dark:text-purple-400" />
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-medium">Events</h3>
@@ -292,8 +292,8 @@ export default async function Dashboard() {
                         </Link>
 
                         <Link href="/dashboard/team" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
-                            <div className="p-2 rounded-full bg-orange-500/10">
-                                <UserCircle className="h-5 w-5 text-orange-500" />
+                            <div className="p-2 rounded-full bg-orange-500/10 dark:bg-orange-500/15">
+                                <UserCircle className="h-5 w-5 text-orange-500 dark:text-orange-400" />
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-medium">Team</h3>
@@ -303,8 +303,8 @@ export default async function Dashboard() {
                         </Link>
 
                         <Link href="/dashboard/settings" className="group flex items-center gap-4 p-4 rounded-xl border bg-background hover:shadow-md transition-all">
-                            <div className="p-2 rounded-full bg-slate-500/10">
-                                <Settings className="h-5 w-5 text-slate-500" />
+                            <div className="p-2 rounded-full bg-slate-500/10 dark:bg-slate-400/10">
+                                <Settings className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-medium">Settings</h3>

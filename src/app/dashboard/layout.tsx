@@ -65,10 +65,10 @@ export default async function DashboardLayout({
     }
 
     return (
-        <SidebarProvider className="bg-muted/40 min-h-screen font-sans">
+        <SidebarProvider className="bg-muted/40 dark:bg-background min-h-screen font-sans">
             <AppSidebar user={session.user} />
             <main className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out w-full">
-                <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border/50 dark:border-border/30 bg-background/80 dark:bg-card/60 px-4 backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                     <div className="flex items-center gap-2 px-4 w-full">
                         <SidebarTrigger className="-ml-1" />
                         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -118,8 +118,8 @@ export function AppSidebar({ user }: { user: { name?: string | null; email?: str
     ];
 
     return (
-        <Sidebar collapsible="icon" className="border-r border-border/50 bg-card">
-            <SidebarHeader className="h-16 border-b border-border/50 flex items-center justify-center px-4">
+        <Sidebar collapsible="icon" className="border-r border-border/50 dark:border-border/30 bg-card dark:bg-card/80">
+            <SidebarHeader className="h-16 border-b border-border/50 dark:border-border/30 flex items-center justify-center px-4">
                 <div className="flex items-center gap-2 font-bold text-xl text-foreground w-full overflow-hidden transition-all">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                         <Sparkles className="size-4" />
@@ -163,7 +163,7 @@ export function AppSidebar({ user }: { user: { name?: string | null; email?: str
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="border-t border-border/50 p-4">
+            <SidebarFooter className="border-t border-border/50 dark:border-border/30 p-4">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <div className="flex items-center gap-3 px-2 py-2 mb-2 rounded-lg bg-muted/40 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">

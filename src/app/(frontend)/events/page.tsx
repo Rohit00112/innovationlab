@@ -190,10 +190,10 @@ export default async function EventsPage() {
               </div>
             </div>
 
-            <article className="group relative bg-card rounded-3xl overflow-hidden shadow-2xl border border-border/50 hover:translate-y-[-4px] transition-all duration-500">
+            <article className="group relative bg-card dark:bg-card/80 rounded-3xl overflow-hidden shadow-2xl dark:shadow-primary/5 border border-border/50 dark:border-border/30 hover:translate-y-[-4px] transition-all duration-500">
               {spotlightImage ? (
                 <div className="relative h-80 w-full overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-60"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 opacity-60 dark:opacity-70"></div>
                   <Image
                     src={spotlightImage}
                     alt={spotlight.title}
@@ -256,7 +256,7 @@ export default async function EventsPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-muted/30 border-t border-border/50">
+      <section className="py-24 bg-muted/30 dark:bg-muted/10 border-t border-border/50">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mb-10 max-w-2xl">
             <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">

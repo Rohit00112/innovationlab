@@ -114,53 +114,55 @@
 }
 
 .dark {
-  /* Rich, sophisticated dark mode with subtle purple undertones */
-  --background: oklch(0.12 0.015 275.00);
-  --foreground: oklch(0.93 0.005 270.00);
+  /* Deep, refined dark mode with subtle cool undertones */
+  --background: oklch(0.13 0.012 270.00);
+  --foreground: oklch(0.95 0.004 265.00);
 
-  --card: oklch(0.16 0.018 275.00);
-  --card-foreground: oklch(0.93 0.005 270.00);
+  --card: oklch(0.17 0.014 272.00);
+  --card-foreground: oklch(0.95 0.004 265.00);
 
-  --popover: oklch(0.16 0.018 275.00);
-  --popover-foreground: oklch(0.93 0.005 270.00);
+  --popover: oklch(0.17 0.014 272.00);
+  --popover-foreground: oklch(0.95 0.004 265.00);
 
-  /* Vibrant purple primary that pops in dark mode */
-  --primary: oklch(0.72 0.20 285.00);
+  /* Vibrant purple primary — brighter for dark backgrounds */
+  --primary: oklch(0.74 0.18 280.00);
   --primary-foreground: oklch(0.10 0.02 275.00);
 
-  /* Elevated secondary with subtle color */
-  --secondary: oklch(0.20 0.025 280.00);
-  --secondary-foreground: oklch(0.88 0.01 270.00);
+  /* Elevated secondary with subtle saturation */
+  --secondary: oklch(0.21 0.022 275.00);
+  --secondary-foreground: oklch(0.90 0.008 270.00);
 
-  /* Better muted tones */
-  --muted: oklch(0.18 0.02 275.00);
-  --muted-foreground: oklch(0.65 0.015 270.00);
+  /* Softer muted tones for readability */
+  --muted: oklch(0.19 0.016 272.00);
+  --muted-foreground: oklch(0.68 0.012 268.00);
 
-  /* Accent with more pop */
-  --accent: oklch(0.24 0.05 285.00);
-  --accent-foreground: oklch(0.93 0.005 270.00);
+  /* Accent that's visible but not harsh */
+  --accent: oklch(0.23 0.04 280.00);
+  --accent-foreground: oklch(0.95 0.004 265.00);
 
-  --destructive: oklch(0.60 0.22 25.00);
+  --destructive: oklch(0.62 0.22 25.00);
 
-  /* More visible borders for structure */
-  --border: oklch(0.26 0.02 280.00);
-  --input: oklch(0.20 0.02 280.00);
-  --ring: oklch(0.65 0.18 285.00);
+  /* Clear borders for visual structure */
+  --border: oklch(0.27 0.018 275.00);
+  --input: oklch(0.22 0.016 275.00);
+  --ring: oklch(0.68 0.16 280.00);
 
-  --chart-1: oklch(0.65 0.24 285.00);
-  --chart-2: oklch(0.70 0.17 162.00);
-  --chart-3: oklch(0.75 0.19 70.00);
-  --chart-4: oklch(0.65 0.26 305.00);
-  --chart-5: oklch(0.65 0.25 20.00);
+  /* Harmonised chart palette for dark backgrounds */
+  --chart-1: oklch(0.70 0.20 280.00);
+  --chart-2: oklch(0.72 0.15 168.00);
+  --chart-3: oklch(0.78 0.17 75.00);
+  --chart-4: oklch(0.68 0.22 305.00);
+  --chart-5: oklch(0.68 0.22 20.00);
 
-  --sidebar: oklch(0.13 0.015 275.00);
-  --sidebar-foreground: oklch(0.93 0.005 270.00);
-  --sidebar-primary: oklch(0.72 0.20 285.00);
+  /* Sidebar: slightly darker than main background for depth */
+  --sidebar: oklch(0.11 0.012 270.00);
+  --sidebar-foreground: oklch(0.95 0.004 265.00);
+  --sidebar-primary: oklch(0.74 0.18 280.00);
   --sidebar-primary-foreground: oklch(0.10 0.02 275.00);
-  --sidebar-accent: oklch(0.22 0.04 285.00);
-  --sidebar-accent-foreground: oklch(0.93 0.005 270.00);
-  --sidebar-border: oklch(0.24 0.02 280.00);
-  --sidebar-ring: oklch(0.65 0.18 285.00);
+  --sidebar-accent: oklch(0.22 0.035 280.00);
+  --sidebar-accent-foreground: oklch(0.95 0.004 265.00);
+  --sidebar-border: oklch(0.25 0.018 275.00);
+  --sidebar-ring: oklch(0.68 0.16 280.00);
 }
 
 @layer base {
@@ -171,16 +173,24 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Smooth dark mode transitions on key elements */
+  html.dark {
+    color-scheme: dark;
+  }
 }
 
 /* Custom Utilities for Glassmorphism & Effects */
 @layer utilities {
   .glass {
-    @apply bg-background/60 backdrop-blur-md border border-white/10 shadow-lg;
+    @apply bg-background/60 backdrop-blur-md border border-border/30 shadow-lg;
   }
 
   .dark .glass {
-    @apply bg-background/40 border-white/5 shadow-2xl;
+    @apply bg-card/30 backdrop-blur-xl border-border/20 shadow-2xl;
+    box-shadow:
+      0 8px 32px -8px oklch(0 0 0 / 0.4),
+      inset 0 1px 0 oklch(1 0 0 / 0.03);
   }
 
   .glass-card {
@@ -188,7 +198,10 @@
   }
 
   .dark .glass-card {
-    @apply bg-card/60 border-border/40 shadow-md;
+    @apply bg-card/50 backdrop-blur-md border-border/30 shadow-lg;
+    box-shadow:
+      0 4px 24px -4px oklch(0 0 0 / 0.3),
+      inset 0 1px 0 oklch(1 0 0 / 0.04);
   }
 
   .glass-card:hover {
@@ -196,7 +209,11 @@
   }
 
   .dark .glass-card:hover {
-    @apply bg-card/80 border-primary/40 shadow-primary/10;
+    @apply bg-card/70 border-primary/30;
+    box-shadow:
+      0 12px 40px -8px oklch(0 0 0 / 0.4),
+      0 0 20px -8px oklch(0.74 0.18 280 / 0.15),
+      inset 0 1px 0 oklch(1 0 0 / 0.05);
   }
 
   .text-glow {
@@ -218,10 +235,34 @@
 
   /* Glow effects for dark mode */
   .glow-primary {
-    box-shadow: 0 0 40px -10px oklch(0.72 0.20 285.00 / 0.4);
+    box-shadow: 0 0 40px -10px oklch(0.74 0.18 280.00 / 0.35);
   }
 
   .glow-accent {
-    box-shadow: 0 0 60px -20px oklch(0.65 0.26 305.00 / 0.3);
+    box-shadow: 0 0 60px -20px oklch(0.68 0.22 305.00 / 0.25);
+  }
+
+  /* Dark mode image overlay – use instead of hardcoded from-black */
+  .dark-overlay {
+    @apply bg-gradient-to-t from-black/70 via-black/20 to-transparent;
+  }
+
+  .dark .dark-overlay {
+    @apply from-black/85 via-black/30;
+  }
+
+  /* Subtle dark mode noise texture for depth */
+  .dark .noise-bg {
+    position: relative;
+  }
+
+  .dark .noise-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
   }
 }

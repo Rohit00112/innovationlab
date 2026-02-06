@@ -338,9 +338,9 @@ export default async function Frontend() {
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 bg-background z-0">
                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-70"></div>
-                    <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob opacity-70 dark:opacity-30"></div>
-                    <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-secondary/80 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob animation-delay-2000 opacity-70 dark:opacity-30"></div>
-                    <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-accent/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob animation-delay-4000 opacity-70 dark:opacity-30"></div>
+                    <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob opacity-70 dark:opacity-20"></div>
+                    <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-secondary/80 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob animation-delay-2000 opacity-70 dark:opacity-15"></div>
+                    <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-accent/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob animation-delay-4000 opacity-70 dark:opacity-20"></div>
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 w-full">
@@ -349,7 +349,7 @@ export default async function Frontend() {
                             {/* Decorative element */}
                             <div className="absolute -left-8 -top-8 w-24 h-24 border-t-2 border-l-2 border-primary/20 rounded-tl-3xl"></div>
 
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-white/10 backdrop-blur-md border border-primary/10 rounded-full text-xs font-medium tracking-wide text-primary shadow-sm">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-white/5 backdrop-blur-md border border-primary/10 dark:border-primary/20 rounded-full text-xs font-medium tracking-wide text-primary shadow-sm dark:shadow-none">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
@@ -420,7 +420,7 @@ export default async function Frontend() {
                                 At the Innovation Lab, we empower students to transform bold ideas into real-world solutions. Through collaborative experimentation, cutting-edge technology, and creative thinking, we&apos;re shaping the future one project at a time.
                             </p>
 
-                            <div className="p-6 rounded-2xl bg-muted/50 border border-border/50 relative overflow-hidden group">
+                            <div className="p-6 rounded-2xl bg-muted/50 dark:bg-muted/30 border border-border/50 dark:border-border/30 relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all duration-500"></div>
                                 <div className="relative z-10">
                                     <div className="flex items-center gap-2 mb-2">
@@ -440,19 +440,19 @@ export default async function Frontend() {
                                     icon: Lightbulb,
                                     title: "Ideation & Design",
                                     description: "From concept to prototype, we help students explore innovative solutions to real-world challenges.",
-                                    color: "bg-orange-500/10 text-orange-600"
+                                    color: "bg-orange-500/10 text-orange-600 dark:text-orange-400"
                                 },
                                 {
                                     icon: Code2,
                                     title: "Technical Development",
                                     description: "Hands-on experience with cutting-edge tools, frameworks, and technologies across multiple domains.",
-                                    color: "bg-blue-500/10 text-blue-600"
+                                    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                                 },
                                 {
                                     icon: Briefcase,
                                     title: "Project Execution",
                                     description: "Transform ideas into fully-realized projects with mentorship and industry-standard practices.",
-                                    color: "bg-green-500/10 text-green-600"
+                                    color: "bg-green-500/10 text-green-600 dark:text-green-400"
                                 }
                             ].map((item, index) => {
                                 const Icon = item.icon;
@@ -524,7 +524,7 @@ export default async function Frontend() {
                             return (
                                 <article
                                     key={`${event.link}-${index}`}
-                                    className="group relative bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-2px]"
+                                    className="group relative bg-card dark:bg-card/80 rounded-3xl overflow-hidden border border-border/50 dark:border-border/30 shadow-sm hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-primary/10 transition-all duration-300 hover:translate-y-[-2px]"
                                 >
                                     <div className="flex flex-col md:flex-row h-full">
                                         <div className="relative h-48 md:h-auto md:w-1/3 overflow-hidden">

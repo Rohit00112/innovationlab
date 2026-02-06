@@ -56,8 +56,8 @@ const BOTTOM_LINKS = [
 
 export function Footer() {
   return (
-    <footer className="relative bg-background pt-20 pb-10 overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50"></div>
+    <footer className="relative bg-background dark:bg-card/30 pt-20 pb-10 overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50 dark:opacity-40"></div>
 
       <div className="mx-auto max-w-7xl px-6 lg:px-8 relative z-10">
         <div className="grid gap-16 lg:grid-cols-[1.5fr_1fr_1fr_1fr] mb-16">
@@ -85,7 +85,7 @@ export function Footer() {
                   <a
                     key={index}
                     href={social.url}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/50 border border-border/50 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/50 dark:bg-secondary/30 border border-border/50 dark:border-border/30 hover:border-primary/50 hover:bg-primary/10 hover:text-primary transition-all duration-300"
                     aria-label={social.platform}
                   >
                     <Icon className="h-4 w-4" />

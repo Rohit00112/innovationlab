@@ -40,7 +40,7 @@ const MISSION_PANELS = [
     description:
       "We provide students with the resources, mentorship, and collaborative environment needed to transform bold ideas into impactful solutions.",
     icon: Target,
-    color: "bg-orange-500/10 text-orange-600",
+    color: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
   },
   {
     title: "Vision",
@@ -48,7 +48,7 @@ const MISSION_PANELS = [
     description:
       "To become a leading innovation hub that bridges academia and industry, fostering a culture of creativity, experimentation, and technological advancement.",
     icon: Lightbulb,
-    color: "bg-blue-500/10 text-blue-600",
+    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
   },
   {
     title: "Approach",
@@ -56,7 +56,7 @@ const MISSION_PANELS = [
     description:
       "Hands-on project-based learning combined with industry mentorship, enabling students to gain practical experience while developing innovative solutions.",
     icon: Layers,
-    color: "bg-green-500/10 text-green-600",
+    color: "bg-green-500/10 text-green-600 dark:text-green-400",
   },
   {
     title: "Community",
@@ -64,7 +64,7 @@ const MISSION_PANELS = [
     description:
       "A diverse and welcoming community where every voice is heard, collaboration is celebrated, and innovation thrives through collective effort.",
     icon: Users,
-    color: "bg-purple-500/10 text-purple-600",
+    color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
   },
 ];
 
@@ -191,7 +191,7 @@ export default async function AboutPage() {
               return (
                 <div
                   key={panel.title}
-                  className="group relative bg-card/60 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px] overflow-hidden"
+                  className="group relative bg-card/60 dark:bg-card/40 backdrop-blur-md p-8 rounded-3xl border border-border/50 dark:border-border/30 shadow-sm hover:shadow-xl hover:shadow-primary/5 dark:hover:shadow-primary/10 transition-all duration-300 hover:translate-y-[-4px] overflow-hidden"
                 >
                   <div className={`absolute top-0 right-0 w-32 h-32 ${panel.color.split(" ")[0]} opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500`}></div>
 

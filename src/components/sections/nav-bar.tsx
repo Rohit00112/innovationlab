@@ -49,7 +49,7 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2.5 transition-transform hover:scale-[1.02]"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/20">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/20 dark:shadow-indigo-500/30">
               <span className="text-sm font-bold tracking-tighter">IL</span>
             </div>
             <span className="hidden font-bold tracking-tight text-foreground sm:inline-block">
@@ -60,7 +60,7 @@ export function Navbar() {
 
         {/* Center: Navigation */}
         <div className="hidden md:flex flex-1 items-center justify-center gap-6 px-8">
-          <nav className="flex items-center rounded-full border border-border/50 bg-background/50 dark:bg-background/70 p-1 shadow-sm backdrop-blur-md">
+          <nav className="flex items-center rounded-full border border-border/50 dark:border-border/30 bg-background/50 dark:bg-card/40 p-1 shadow-sm dark:shadow-md backdrop-blur-md dark:backdrop-blur-xl">
             <ul className="flex items-center gap-1">
               {NAV_ITEMS.map((item) => {
                 const isActive = pathname === item.href;
@@ -107,7 +107,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute left-0 top-full w-full border-b border-border/10 bg-background/95 p-6 shadow-2xl backdrop-blur-3xl md:hidden animate-in slide-in-from-top-2">
+        <div className="absolute left-0 top-full w-full border-b border-border/10 dark:border-border/20 bg-background/95 dark:bg-card/95 p-6 shadow-2xl backdrop-blur-3xl md:hidden animate-in slide-in-from-top-2">
           <nav className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => (
               <Link
