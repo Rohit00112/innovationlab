@@ -2,7 +2,7 @@
  * Server-side data fetching for communities
  */
 
-import { and, asc, eq, sql } from "drizzle-orm";
+import { aliasedTable, and, asc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { communities, communityMembers } from "@/lib/db/schema";
 
@@ -24,14 +24,18 @@ export async function getPublishedCommunities() {
             displayOrder: communities.displayOrder,
             createdAt: communities.createdAt,
             updatedAt: communities.updatedAt,
-            memberCount: sql<number>`(
-                SELECT COUNT(*) FROM ${communityMembers}
-                WHERE ${communityMembers.communityId} = ${communities.id}
-                AND ${communityMembers.isActive} = true
-            )`.as("member_count"),
+            memberCount: sql<number>`count(${communityMembers.id})::int`,
         })
         .from(communities)
+        .leftJoin(
+            communityMembers,
+            and(
+                eq(communityMembers.communityId, communities.id),
+                eq(communityMembers.isActive, true)
+            )
+        )
         .where(eq(communities.status, "published"))
+        .groupBy(communities.id)
         .orderBy(asc(communities.displayOrder));
 
     return records.map(record => ({
@@ -43,7 +47,7 @@ export async function getPublishedCommunities() {
         coverImageUrl: record.coverImageUrl,
         status: record.status,
         displayOrder: record.displayOrder,
-        memberCount: Number(record.memberCount) || 0,
+        memberCount: record.memberCount || 0,
         createdAt: record.createdAt.toISOString(),
         updatedAt: record.updatedAt.toISOString(),
     }));

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { aliasedTable, and, asc, desc, eq, sql } from "drizzle-orm";
 
 import { requireUser } from "@/lib/api/auth";
 import { ApiError, toErrorResponse } from "@/lib/api/errors";
 import { communitySelection, generateSlug, getCommunityBySlug } from "@/lib/api/resources/communities";
 import { createCommunitySchema } from "@/lib/api/validation/communities";
 import { db } from "@/lib/db";
-import { communities, communityStatusEnum } from "@/lib/db/schema";
+import { communities, communityMembers, communityStatusEnum } from "@/lib/db/schema";
 
 export async function GET(request: Request) {
     try {
@@ -53,9 +53,14 @@ export async function GET(request: Request) {
             const baseQuery = db
                 .select({
                     ...communitySelection,
-                    memberCount: sql<number>`(SELECT COUNT(*) FROM community_members WHERE community_id = ${communities.id})`.as("member_count")
+                    memberCount: sql<number>`count(${communityMembers.id})::int`
                 })
-                .from(communities);
+                .from(communities)
+                .leftJoin(
+                    communityMembers,
+                    eq(communityMembers.communityId, communities.id)
+                )
+                .groupBy(communities.id);
 
             const filteredQuery = filters.length > 0 ? baseQuery.where(and(...filters)) : baseQuery;
 
