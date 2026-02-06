@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import {
     Clock,
+    Globe,
     MapPin,
     Mail,
     Phone,
@@ -334,9 +335,26 @@ export default function ContactPage() {
                                 <p className="text-lg leading-relaxed text-foreground/70">
                                     {LOCATION_DESCRIPTION}
                                 </p>
-                                <Button variant="outline" className="rounded-full mt-4 border-primary/20 hover:bg-primary/5 hover:text-primary">
-                                    Get Directions <MapPin className="ml-2 h-4 w-4" />
-                                </Button>
+                                <div className="flex flex-wrap gap-4 mt-6">
+                                    <Button asChild className="rounded-full shadow-lg shadow-primary/20">
+                                        <a
+                                            href="https://www.google.com/maps/dir/?api=1&destination=Itahari+International+College"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Get Directions <MapPin className="ml-2 h-4 w-4" />
+                                        </a>
+                                    </Button>
+                                    <Button variant="outline" asChild className="rounded-full border-primary/20 hover:bg-primary/5 hover:text-primary">
+                                        <a
+                                            href="https://maps.google.com/?q=Itahari+International+College"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            View on Google Maps <Globe className="ml-2 h-4 w-4" />
+                                        </a>
+                                    </Button>
+                                </div>
                             </div>
                             <div className="aspect-[4/3] lg:aspect-auto lg:h-full w-full bg-muted/40 relative min-h-[400px]">
                                 <iframe
