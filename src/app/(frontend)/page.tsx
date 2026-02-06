@@ -6,11 +6,7 @@ import {
     CalendarDays,
     CircleDashed,
     MessageCircle,
-    Rocket,
     Sparkles,
-    Target,
-    Trophy,
-    Users,
     CheckCircle2,
     Lightbulb,
     Code2,
@@ -21,28 +17,20 @@ import {
 } from "lucide-react";
 
 import { FaqSection } from "@/components/faqs/faq-section";
-import { normalizeLexicalState, estimateReadingTime } from "@/lib/editor/lexical-utils";
 import { getPublishedTestimonials } from "@/lib/data/testimonials";
-import { getLatestNews } from "@/lib/data/news";
 import { getPublishedEvents } from "@/lib/data/events";
-import { getSiteContent } from "@/lib/data/site-content";
 import { type TestimonialRecord } from "@/lib/types/testimonials";
-import { type NewsRecord } from "@/lib/types/news";
 import { type EventRecord } from "@/lib/types/events";
-import { type HomePageContent, DEFAULT_HOME_CONTENT } from "@/lib/types/site-content";
+
+// ---------------------------------------------------------------------------
+// Static hero content
+// ---------------------------------------------------------------------------
+const HERO_TITLE = "INNOVATION LABS";
+const HERO_DESCRIPTION =
+    "A collaborative space for students to explore, create, and innovate.";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60; // Revalidate every 60 seconds
-
-interface NewsItem {
-    image: string | null;
-    category: string;
-    date: string;
-    title: string;
-    description: string;
-    href: string;
-    readTime: string;
-}
 
 interface EventItem {
     image: string | null;
@@ -61,42 +49,6 @@ interface FallbackTestimonial {
     author: string;
     role: string;
 }
-
-const FALLBACK_NEWS: NewsItem[] = [
-    {
-        image:
-            "https://images.unsplash.com/photo-1483478550801-ceba5fe50e8e?auto=format&fit=crop&w=1200&q=80",
-        category: "Development",
-        date: "01 Feb, 2025",
-        title: "Robot haru le momo banaunda laptop pani royo",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eget ligula sit amet sem tincidunt auctor.",
-        href: "#",
-        readTime: "3 min read",
-    },
-    {
-        image:
-            "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1200&q=80",
-        category: "Community",
-        date: "18 Jan, 2025",
-        title: "Community meetup ma free sel roti, say no more",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eget ligula sit amet sem tincidunt auctor.",
-        href: "#",
-        readTime: "2 min read",
-    },
-    {
-        image:
-            "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80",
-        category: "Research",
-        date: "09 Jan, 2025",
-        title: "Tihar lights le sensors confuse, data pani chillax",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eget ligula sit amet sem tincidunt auctor.",
-        href: "#",
-        readTime: "4 min read",
-    },
-];
 
 const FALLBACK_EVENTS: EventItem[] = [
     {
@@ -161,22 +113,20 @@ const FALLBACK_TESTIMONIALS: FallbackTestimonial[] = [
 const highlightTracks = [
     {
         title: "Future of Learning",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam accumsan leo nec sapien mattis dapibus.",
+        description: "Reimagining education through technology — from interactive learning platforms to AI-powered tutoring systems that adapt to every student.",
         icon: Sparkles,
     },
     {
         title: "Civic Tech",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam accumsan leo nec sapien mattis dapibus.",
+        description: "Building tools that strengthen communities — open-data dashboards, civic engagement apps, and solutions that make governance more transparent.",
         icon: CircleDashed,
     },
     {
         title: "Responsible AI",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam accumsan leo nec sapien mattis dapibus.",
+        description: "Developing AI systems with fairness, accountability, and transparency at their core — ensuring technology serves everyone equitably.",
         icon: MessageCircle,
     },
 ];
-
-const achievementIcons = [Rocket, CalendarDays, Users, Trophy];
 
 function safeText(value: string | null | undefined) {
     return value?.trim() ?? "";
@@ -197,66 +147,6 @@ function truncateText(value: string, limit: number) {
     }
 
     return `${value.slice(0, Math.max(0, limit - 3)).trimEnd()}...`;
-}
-
-function formatNewsDate(record: NewsRecord) {
-    const source = record.publishedAt ?? record.createdAt;
-    const date = new Date(source);
-
-    if (Number.isNaN(date.getTime())) {
-        return "Publication date coming soon";
-    }
-
-    return date.toLocaleDateString(undefined, {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-    });
-}
-
-function resolveNewsCategory(record: NewsRecord) {
-    const role = safeText(record.author?.role ?? null);
-
-    if (role) {
-        return role;
-    }
-
-    const name = safeText(record.author?.name ?? null);
-
-    if (name) {
-        return name;
-    }
-
-    const email = safeText(record.author?.email ?? null);
-    return email || "Innovation Lab";
-}
-
-function sortNewsRecords(records: NewsRecord[]) {
-    return [...records].sort((a, b) => {
-        const aTime = Date.parse(a.publishedAt ?? a.createdAt);
-        const bTime = Date.parse(b.publishedAt ?? b.createdAt);
-        const safeATime = Number.isNaN(aTime) ? 0 : aTime;
-        const safeBTime = Number.isNaN(bTime) ? 0 : bTime;
-
-        return safeBTime - safeATime;
-    });
-}
-
-function mapNewsRecord(record: NewsRecord): NewsItem {
-    const normalized = normalizeLexicalState(record.content);
-    const excerptSource = safeText(record.excerpt) || (normalized.paragraphs[0] ?? "");
-    const excerpt = excerptSource || "More details arriving soon.";
-    const plainText = normalized.plainText || excerpt;
-
-    return {
-        image: safeUrl(record.coverImageUrl),
-        category: resolveNewsCategory(record),
-        date: formatNewsDate(record),
-        title: record.title,
-        description: truncateText(excerpt, 180),
-        href: `/news/${record.slug}`,
-        readTime: estimateReadingTime(plainText),
-    };
 }
 
 function getEventStartTimestamp(event: EventRecord) {
@@ -412,16 +302,6 @@ async function fetchTestimonialsServer(): Promise<TestimonialRecord[]> {
     }
 }
 
-async function fetchNewsServer(): Promise<NewsRecord[]> {
-    try {
-        const news = await getLatestNews(6);
-        return news as unknown as NewsRecord[];
-    } catch (error) {
-        console.error("Failed to fetch news:", error);
-        return [];
-    }
-}
-
 async function fetchEventsServer(): Promise<EventRecord[]> {
     try {
         const events = await getPublishedEvents({ limit: 12 });
@@ -432,31 +312,12 @@ async function fetchEventsServer(): Promise<EventRecord[]> {
     }
 }
 
-async function fetchHomeContentServer(): Promise<HomePageContent> {
-    try {
-        const content = await getSiteContent<HomePageContent>("home", "main");
-        return content ?? DEFAULT_HOME_CONTENT;
-    } catch (error) {
-        console.error("Failed to fetch home content:", error);
-        return DEFAULT_HOME_CONTENT;
-    }
-}
-
 export default async function Frontend() {
     // Fetch all data in parallel on the server
-    const [testimonials, newsRecords, eventRecords, homeContent] = await Promise.all([
+    const [testimonials, eventRecords] = await Promise.all([
         fetchTestimonialsServer(),
-        fetchNewsServer(),
         fetchEventsServer(),
-        fetchHomeContentServer(),
     ]);
-
-    // Process news
-    const sortedNews = sortNewsRecords(newsRecords);
-    const selectedNews = sortedNews.slice(0, 3);
-    const newsCards = selectedNews.length > 0
-        ? selectedNews.map(mapNewsRecord)
-        : FALLBACK_NEWS;
 
     // Process events
     const selectedEvents = pickHomepageEvents(eventRecords);
@@ -464,23 +325,24 @@ export default async function Frontend() {
         ? selectedEvents.map(mapEventRecord)
         : FALLBACK_EVENTS;
 
-    // Merge dynamic stats with icons
-    const achievementStats = (homeContent?.achievementStats || DEFAULT_HOME_CONTENT.achievementStats).map(
-        (stat, index) => ({
-            ...stat,
-            icon: achievementIcons[index] || Rocket,
-        })
-    );
-
     const displayTestimonials =
         testimonials.length > 0
-            ? testimonials.map((item) => ({
-                key: `testimonial-${item.id}`,
-                image: safeUrl(item.avatarUrl),
-                quote: item.quote,
-                author: item.author,
-                role: [item.role, item.company].filter(Boolean).join(" · ") || undefined,
-            }))
+            ? testimonials.map((item) => {
+                // Handle both API types: DB returns body/authorName/authorTitle, type interface has quote/author/role
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const raw = item as any;
+                const quote = raw.body ?? raw.quote ?? "";
+                const author = raw.authorName ?? raw.author ?? "Anonymous";
+                const role = raw.authorTitle ?? raw.role ?? null;
+                const company = raw.company ?? null;
+                return {
+                    key: `testimonial-${item.id}`,
+                    image: safeUrl(item.avatarUrl),
+                    quote: quote as string,
+                    author: author as string,
+                    role: [role, company].filter(Boolean).join(" · ") || undefined,
+                };
+            })
             : FALLBACK_TESTIMONIALS.map((item, index) => ({
                 key: `fallback-${index}`,
                 image: item.avatarUrl,
@@ -497,18 +359,18 @@ export default async function Frontend() {
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 bg-background z-0">
                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-70"></div>
-                    <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob opacity-70"></div>
-                    <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-secondary/80 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000 opacity-70"></div>
-                    <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-accent/60 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000 opacity-70"></div>
+                    <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob opacity-70 dark:opacity-30"></div>
+                    <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-secondary/80 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob animation-delay-2000 opacity-70 dark:opacity-30"></div>
+                    <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] bg-accent/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl animate-blob animation-delay-4000 opacity-70 dark:opacity-30"></div>
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20 w-full">
                     <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-                        <div className="space-y-8 relative">
+                        <div className="space-y-8 relative lg:col-span-1">
                             {/* Decorative element */}
                             <div className="absolute -left-8 -top-8 w-24 h-24 border-t-2 border-l-2 border-primary/20 rounded-tl-3xl"></div>
 
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-black/20 backdrop-blur-md border border-primary/10 rounded-full text-xs font-medium tracking-wide text-primary shadow-sm">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-white/10 backdrop-blur-md border border-primary/10 rounded-full text-xs font-medium tracking-wide text-primary shadow-sm">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
@@ -518,12 +380,12 @@ export default async function Frontend() {
 
                             <div className="space-y-6">
                                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-                                    {homeContent?.heroTitle?.split(" ")[0] || "INNOVATION"}
+                                    {HERO_TITLE.split(" ")[0]}
                                     <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">{homeContent?.heroTitle?.split(" ").slice(1).join(" ") || "LAB"}</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">{HERO_TITLE.split(" ").slice(1).join(" ")}</span>
                                 </h1>
                                 <p className="text-xl leading-relaxed text-foreground/80 max-w-xl">
-                                    {homeContent?.heroDescription || DEFAULT_HOME_CONTENT.heroDescription}
+                                    {HERO_DESCRIPTION}
                                 </p>
                             </div>
 
@@ -542,44 +404,19 @@ export default async function Frontend() {
                             </div>
                         </div>
 
-                        <div className="relative">
-                            <div className="grid grid-cols-2 gap-6 relative z-10">
-                                <div className="space-y-6 pt-12">
-                                    <div className="glass-card p-8 rounded-2xl">
-                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary/10 rounded-xl text-primary">
-                                            <Target className="h-6 w-6" />
+                        <div className="relative hidden lg:flex items-center justify-center">
+                            <div className="relative w-full max-w-md aspect-square">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 rounded-3xl blur-2xl"></div>
+                                <div className="relative w-full h-full rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm flex items-center justify-center overflow-hidden">
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
+                                    <div className="text-center space-y-4 relative z-10">
+                                        <div className="w-20 h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center">
+                                            <Sparkles className="h-10 w-10 text-primary" />
                                         </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[0]?.value || "500+"}</h3>
-                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[0]?.label || "Projects Delivered"}</p>
-                                    </div>
-                                    <div className="glass-card p-8 rounded-2xl bg-primary/5 border-primary/20">
-                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary text-primary-foreground rounded-xl shadow-lg shadow-primary/30">
-                                            <Users className="h-6 w-6" />
-                                        </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[2]?.value || "50+"}</h3>
-                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[2]?.label || "Collaborators"}</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-6">
-                                    <div className="glass-card p-8 rounded-2xl bg-gradient-to-br from-card to-secondary/50">
-                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-secondary rounded-xl text-secondary-foreground">
-                                            <Trophy className="h-6 w-6" />
-                                        </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[3]?.value || "25"}</h3>
-                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[3]?.label || "Awards Won"}</p>
-                                    </div>
-                                    <div className="glass-card p-8 rounded-2xl">
-                                        <div className="w-12 h-12 mb-4 flex items-center justify-center bg-accent/20 rounded-xl text-accent-foreground">
-                                            <CalendarDays className="h-6 w-6" />
-                                        </div>
-                                        <h3 className="text-3xl font-bold mb-1 text-foreground">{achievementStats[1]?.value || "12+"}</h3>
-                                        <p className="text-sm font-medium text-foreground/60">{achievementStats[1]?.label || "Years Legacy"}</p>
+                                        <p className="text-sm font-medium text-foreground/60 px-8">Where ideas become reality</p>
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Floating decorative elements */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl -z-10"></div>
                         </div>
                     </div>
                 </div>
@@ -659,77 +496,7 @@ export default async function Frontend() {
                 </div>
             </section>
 
-            <section className="py-24 bg-muted/30 border-y border-border/50">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
-                        <div className="space-y-4">
-                            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase border border-border/50">
-                                Latest Updates
-                            </span>
-                            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">News & Insights</h2>
-                        </div>
-                        <Button variant="outline" className="w-fit rounded-full px-6 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" asChild>
-                            <Link href="/news">
-                                View All News
-                                <ArrowUpRight className="ml-2 h-4 w-4" />
-                            </Link>
-                        </Button>
-                    </div>
 
-                    <div className="grid gap-8 lg:grid-cols-3">
-                        {newsCards.map((item, index) => (
-                            <article
-                                key={`${item.href}-${index}`}
-                                className="group flex flex-col bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:translate-y-[-4px]"
-                            >
-                                {item.image && (
-                                    <div className="relative h-64 w-full overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
-                                        <Image
-                                            src={item.image}
-                                            alt={item.title}
-                                            fill
-                                            className="object-cover transition-transform duration-700 group-hover:scale-110"
-                                            sizes="(max-width: 1024px) 100vw, 33vw"
-                                        />
-                                        <div className="absolute top-4 left-4 z-20">
-                                            <span className="inline-block px-3 py-1 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-xs font-semibold shadow-sm">
-                                                {item.category}
-                                            </span>
-                                        </div>
-                                    </div>
-                                )}
-                                <div className="flex-1 p-8 flex flex-col space-y-4">
-                                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                                        <CalendarDays className="w-3 h-3" />
-                                        <span>{item.date}</span>
-                                        <span>•</span>
-                                        <span>{item.readTime}</span>
-                                    </div>
-                                    <h3 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3 mb-4 flex-1">
-                                        {item.description}
-                                    </p>
-
-                                    {item.href === "#" ? (
-                                        <Button variant="ghost" className="p-0 h-auto text-sm font-semibold hover:bg-transparent hover:text-primary justify-start" disabled>
-                                            Read Article <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                        </Button>
-                                    ) : (
-                                        <Button variant="ghost" className="p-0 h-auto text-sm font-semibold hover:bg-transparent hover:text-primary justify-start" asChild>
-                                            <Link href={item.href}>
-                                                Read Article <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                            </Link>
-                                        </Button>
-                                    )}
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </div>
-            </section>
 
             <section className="py-24 relative overflow-hidden">
                 <div className="absolute inset-0 z-0">
@@ -851,8 +618,8 @@ export default async function Frontend() {
                 </div>
             </section>
 
-            <section className="py-24 relative overflow-hidden bg-muted/30">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/20 rounded-full filter blur-3xl opacity-50 -z-10"></div>
+            <section className="py-24 relative overflow-hidden bg-muted/30 dark:bg-muted/10">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/20 dark:bg-secondary/10 rounded-full filter blur-3xl opacity-50 -z-10"></div>
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
                         <div className="space-y-8">
@@ -875,7 +642,7 @@ export default async function Frontend() {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold mb-1">Mentorship Programs</h3>
-                                        <p className="text-sm text-foreground/70">110+ industry mentors guiding student projects</p>
+                                        <p className="text-sm text-foreground/70">50+ collaborators guiding student projects</p>
                                     </div>
                                 </div>
                                 <div className="glass-card p-6 rounded-2xl flex items-start gap-4 hover:bg-card/80 transition-colors">
@@ -883,8 +650,8 @@ export default async function Frontend() {
                                         <CheckCircle2 className="h-5 w-5" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold mb-1">Global Collaborations</h3>
-                                        <p className="text-sm text-foreground/70">72+ international pilot projects launched</p>
+                                        <h3 className="text-lg font-bold mb-1">Proven Track Record</h3>
+                                        <p className="text-sm text-foreground/70">500+ projects delivered across multiple domains</p>
                                     </div>
                                 </div>
                             </div>
@@ -983,51 +750,7 @@ export default async function Frontend() {
                 </div>
             </section>
 
-            <section className="relative py-24 overflow-hidden bg-card border-t border-border/50">
-                {/* Background gradients that adapt to theme */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/5 z-0"></div>
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 z-10"></div>
 
-                {/* Animated blobs */}
-                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/10 rounded-full blur-3xl animate-blob z-0"></div>
-                <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-accent/10 rounded-full blur-3xl animate-blob animation-delay-4000 z-0"></div>
-
-                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-20">
-                    <div className="max-w-3xl mx-auto text-center space-y-8">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase border border-primary/20 backdrop-blur-sm">
-                            <Rocket className="w-3 h-3" />
-                            Launch Your Ideas
-                        </div>
-
-                        <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight">
-                            Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Innovate?</span>
-                        </h2>
-
-                        <p className="text-lg leading-relaxed text-foreground/70 max-w-2xl mx-auto">
-                            Join the Innovation Lab and transform your ideas into reality. Whether you&apos;re a student, researcher, or entrepreneur, we provide the tools, community, and mentorship you need to succeed.
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-                            <Button size="lg" className="px-10 h-14 text-base font-bold rounded-full shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
-                                Get Started Now
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="px-10 h-14 text-base font-medium rounded-full border-primary/30 hover:bg-primary/10 hover:text-primary transition-all"
-                                asChild
-                            >
-                                <Link href="/about">Learn More About Us</Link>
-                            </Button>
-                        </div>
-
-                        <p className="text-sm text-muted-foreground pt-8">
-                            Join 50+ other students building the future today.
-                        </p>
-                    </div>
-                </div>
-            </section>
             <FaqSection />
         </main>
     );

@@ -37,9 +37,12 @@ export async function POST(request: Request) {
         const dataUri = `data:${file.type};base64,${base64}`;
 
         // Upload to Cloudinary
+        // We use "auto" resource_type for all files. For non-image files like PDFs,
+        // Cloudinary stores them under /image/upload/ but the proxy at /api/download
+        // serves them with correct Content-Type headers for in-browser viewing.
         const result = await cloudinary.uploader.upload(dataUri, {
             folder: `innovationlab/${folder}`,
-            resource_type: resourceType as "auto" | "image" | "video" | "raw",
+            resource_type: "auto",
             // Use original filename without extension as public_id prefix
             public_id: `${Date.now()}-${file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, "_")}`,
         });

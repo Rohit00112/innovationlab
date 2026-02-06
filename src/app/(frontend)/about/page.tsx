@@ -10,6 +10,10 @@ import {
   Zap,
   ArrowRight,
   Sparkles,
+  Mail,
+  Linkedin,
+  Github,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -21,12 +25,59 @@ import { type AboutPageContent, DEFAULT_ABOUT_CONTENT } from "@/lib/types/site-c
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
+// ---------------------------------------------------------------------------
+// Static content
+// ---------------------------------------------------------------------------
+
+const HERO_TITLE = "SHAPING THE FUTURE";
+const HERO_DESCRIPTION =
+  "At Innovation Lab, we transform bold ideas into real-world solutions through technology, creativity, and collaborative innovation.";
+
+const MISSION_PANELS = [
+  {
+    title: "Mission",
+    subtitle: "Empower Innovators",
+    description:
+      "We provide students with the resources, mentorship, and collaborative environment needed to transform bold ideas into impactful solutions.",
+    icon: Target,
+    color: "bg-orange-500/10 text-orange-600",
+  },
+  {
+    title: "Vision",
+    subtitle: "Lead Innovation",
+    description:
+      "To become a leading innovation hub that bridges academia and industry, fostering a culture of creativity, experimentation, and technological advancement.",
+    icon: Lightbulb,
+    color: "bg-blue-500/10 text-blue-600",
+  },
+  {
+    title: "Approach",
+    subtitle: "Learning by Building",
+    description:
+      "Hands-on project-based learning combined with industry mentorship, enabling students to gain practical experience while developing innovative solutions.",
+    icon: Layers,
+    color: "bg-green-500/10 text-green-600",
+  },
+  {
+    title: "Community",
+    subtitle: "Inclusive by Design",
+    description:
+      "A diverse and welcoming community where every voice is heard, collaboration is celebrated, and innovation thrives through collective effort.",
+    icon: Users,
+    color: "bg-purple-500/10 text-purple-600",
+  },
+];
+
 interface TeamMember {
   id: number;
   name: string;
   position: string;
   bio: string | null;
   photoUrl: string | null;
+  email: string | null;
+  linkedinUrl: string | null;
+  githubUrl: string | null;
+  websiteUrl: string | null;
   category: "head" | "core" | "mentor";
 }
 
@@ -44,25 +95,20 @@ export default async function AboutPage() {
     teamMembers = [];
   }
 
+  // Only milestones are fetched from CMS
   const content = await getSiteContent<AboutPageContent>("about", "main") || DEFAULT_ABOUT_CONTENT;
-
-  const missionPanels = (content.missionPanels || DEFAULT_ABOUT_CONTENT.missionPanels).map((panel, index) => ({
-    ...panel,
-    icon: [Target, Lightbulb, Layers, Users][index % 4],
-    color: ["bg-orange-500/10 text-orange-600", "bg-blue-500/10 text-blue-600", "bg-green-500/10 text-green-600", "bg-purple-500/10 text-purple-600"][index % 4]
-  }));
-
-  const values = (content.values || DEFAULT_ABOUT_CONTENT.values).map((value, index) => ({
-    ...value,
-    icon: [Heart, Users, Zap, Globe, Rocket, Trophy][index % 6]
-  }));
-
   const milestones = content.milestones || DEFAULT_ABOUT_CONTENT.milestones;
 
-  const achievements = (content.achievements || DEFAULT_ABOUT_CONTENT.achievements).map((stat, index) => ({
-    ...stat,
-    icon: [Rocket, Trophy, Users, Globe][index % 4]
-  }));
+  const values = [
+    { title: "Impactful Innovation", description: "We do not innovate for the sake of novelty; we innovate to create value.", icon: Heart, color: "bg-violet-500/10 text-violet-600 dark:text-violet-400" },
+    { title: "Honesty", description: "We are committed to truthfulness in all our communications and actions.", icon: Users, color: "bg-rose-500/10 text-rose-600 dark:text-rose-400" },
+    { title: "Inclusivity & Respect", description: "We value diverse perspectives and treat every individual with dignity.", icon: Zap, color: "bg-sky-500/10 text-sky-600 dark:text-sky-400" },
+    { title: "Integrity & Accountability", description: "We hold ourselves to the highest ethical standards and take ownership of our results.", icon: Globe, color: "bg-amber-500/10 text-amber-600 dark:text-amber-400" },
+    { title: "Excellence in Execution", description: "We accept nothing less than high-quality work in everything we deliver.", icon: Rocket, color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
+    { title: "Collaborative Growth", description: "We believe that diverse teams working together achieve more than individuals working alone.", icon: Trophy, color: "bg-pink-500/10 text-pink-600 dark:text-pink-400" },
+    { title: "Learner-Centered", description: "We view education as a lifelong pursuit that drives our evolution.", icon: Heart, color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" },
+    { title: "Global Mindset, Local Roots", description: "We apply international standards while solving problems relevant to our community.", icon: Users, color: "bg-teal-500/10 text-teal-600 dark:text-teal-400" },
+  ];
 
 
 
@@ -72,8 +118,8 @@ export default async function AboutPage() {
       <section className="relative min-h-[60vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-background z-0">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background opacity-70"></div>
-          <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-secondary/30 rounded-full blur-3xl animate-blob opacity-60"></div>
-          <div className="absolute bottom-[-10%] left-[10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-blob animation-delay-4000 opacity-60"></div>
+          <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-secondary/30 dark:bg-secondary/10 rounded-full blur-3xl animate-blob opacity-60"></div>
+          <div className="absolute bottom-[-10%] left-[10%] w-[500px] h-[500px] bg-primary/20 dark:bg-primary/10 rounded-full blur-3xl animate-blob animation-delay-4000 opacity-60"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 w-full relative z-10">
@@ -86,12 +132,12 @@ export default async function AboutPage() {
 
               <div className="space-y-6">
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
-                  {content.heroTitle.split(" ").slice(0, -1).join(" ")}
+                  {HERO_TITLE.split(" ").slice(0, -1).join(" ")}
                   <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{content.heroTitle.split(" ").slice(-1)[0]}</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{HERO_TITLE.split(" ").slice(-1)[0]}</span>
                 </h1>
                 <p className="text-xl leading-relaxed text-foreground/80 max-w-xl">
-                  {content.heroDescription}
+                  {HERO_DESCRIPTION}
                 </p>
               </div>
 
@@ -113,25 +159,17 @@ export default async function AboutPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4 translate-y-8">
-                <div className="glass-card p-8 rounded-2xl flex flex-col justify-center text-center">
-                  <h3 className="text-4xl font-bold mb-2 text-primary">87%</h3>
-                  <p className="text-xs uppercase tracking-widest text-foreground/60 font-medium">Ideas Shipped</p>
-                </div>
-                <div className="glass-card p-8 rounded-2xl flex flex-col justify-center text-center bg-secondary/30">
-                  <h3 className="text-4xl font-bold mb-2 text-foreground">110</h3>
-                  <p className="text-xs uppercase tracking-widest text-foreground/60 font-medium">Mentors</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="glass-card p-8 rounded-2xl flex flex-col justify-center text-center bg-primary/5">
-                  <h3 className="text-4xl font-bold mb-2 text-foreground">42</h3>
-                  <p className="text-xs uppercase tracking-widest text-foreground/60 font-medium">Industry Allies</p>
-                </div>
-                <div className="glass-card p-8 rounded-2xl flex flex-col justify-center text-center">
-                  <h3 className="text-4xl font-bold mb-2 text-accent-foreground">72</h3>
-                  <p className="text-xs uppercase tracking-widest text-foreground/60 font-medium">Global Pilots</p>
+            <div className="relative hidden lg:flex items-center justify-center">
+              <div className="relative w-full max-w-md aspect-square">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 rounded-3xl blur-2xl"></div>
+                <div className="relative w-full h-full rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm flex items-center justify-center overflow-hidden">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
+                  <div className="text-center space-y-4 relative z-10">
+                    <div className="w-20 h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center">
+                      <Sparkles className="h-10 w-10 text-primary" />
+                    </div>
+                    <p className="text-sm font-medium text-foreground/60 px-8">Driving innovation forward</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -139,7 +177,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-muted/30 border-y border-border/50">
+      <section className="py-24 bg-muted/30 dark:bg-muted/10 border-y border-border/50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="space-y-4 mb-16 text-center max-w-2xl mx-auto">
             <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
@@ -148,7 +186,7 @@ export default async function AboutPage() {
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Mission, Vision & Approach</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {missionPanels.map((panel) => {
+            {MISSION_PANELS.map((panel) => {
               const Icon = panel.icon;
               return (
                 <div
@@ -177,43 +215,78 @@ export default async function AboutPage() {
       <section className="py-24 relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-secondary/20 rounded-full blur-3xl opacity-40 -z-10"></div>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <span className="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-semibold tracking-wide uppercase">
-                  Our Values
-                </span>
-                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-                  What Drives Us Forward
-                </h2>
-              </div>
-              <p className="text-lg leading-relaxed text-foreground/70">
-                Our core values shape every project, collaboration, and innovation that emerges from the lab. They guide our approach to problem-solving and community building.
-              </p>
+          {/* Section header */}
+          <div className="text-center space-y-4 mb-16 max-w-2xl mx-auto">
+            <span className="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-semibold tracking-wide uppercase">
+              Our Values
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
+              What Drives Us Forward
+            </h2>
+            <p className="text-lg leading-relaxed text-foreground/70">
+              Our core values shape every project, collaboration, and innovation that emerges from the lab.
+            </p>
+          </div>
 
-              <div className="relative h-64 w-full rounded-2xl overflow-hidden shadow-lg border border-border/50 hidden lg:block">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 z-0"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Sparkles className="w-16 h-16 text-primary/40 animate-pulse" />
+          {/* Values grid — full width */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {values.map((value) => {
+              const Icon = value.icon;
+              return (
+                <div
+                  key={value.title}
+                  className="group p-6 rounded-2xl border border-border/50 bg-card/40 dark:bg-card/30 hover:bg-card hover:border-primary/20 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className={`w-11 h-11 rounded-xl ${value.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-sm font-bold mb-2 group-hover:text-primary transition-colors leading-snug">{value.title}</h3>
+                  <p className="text-sm text-foreground/60 leading-relaxed">{value.description}</p>
                 </div>
-              </div>
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            <div className="grid gap-6">
-              {values.map((value) => {
-                const Icon = value.icon;
+      <section className="py-24 border-y border-border/50 bg-muted/20 dark:bg-muted/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase">
+              Our Journey
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
+              Evolution of Excellence
+            </h2>
+            <p className="text-lg max-w-2xl mx-auto leading-relaxed text-foreground/70">
+              From our founding to today, we&apos;ve grown into a thriving innovation ecosystem that continues to push boundaries and create impact.
+            </p>
+          </div>
+
+          {/* Alternating timeline */}
+          <div className="relative">
+            {/* Center line */}
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-px" />
+
+            <div className="space-y-12">
+              {milestones.map((item, index) => {
+                const isLeft = index % 2 === 0;
                 return (
-                  <div
-                    key={value.title}
-                    className="flex gap-6 p-6 rounded-2xl hover:bg-card/50 hover:border-border/50 border border-transparent transition-all duration-300 group"
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <Icon className="h-6 w-6" />
+                  <div key={item.year} className="relative group md:flex md:items-start">
+                    {/* Dot on the line */}
+                    <span className="absolute left-4 md:left-1/2 top-6 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-primary bg-background group-hover:bg-primary transition-colors z-10 shadow-[0_0_0_4px_hsl(var(--background))]" />
+
+                    {/* Left spacer / content */}
+                    <div className={`md:w-1/2 ${isLeft ? 'md:pr-12 md:text-right' : 'md:order-2 md:pl-12'} pl-10 md:pl-0`}>
+                      <div className="glass-card p-6 rounded-2xl border border-border/50 hover:border-primary/30 transition-all">
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-secondary text-secondary-foreground mb-2">{item.year}</span>
+                        <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
+                        <p className="text-sm leading-relaxed text-foreground/70">{item.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{value.title}</h3>
-                      <p className="text-foreground/70 leading-relaxed">{value.description}</p>
-                    </div>
+
+                    {/* Right spacer */}
+                    <div className={`hidden md:block md:w-1/2 ${isLeft ? 'md:order-2' : ''}`} />
                   </div>
                 );
               })}
@@ -222,83 +295,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="py-24 border-y border-border/50 bg-muted/20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid gap-16 lg:grid-cols-[1fr_1.5fr]">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase">
-                  Our Journey
-                </span>
-                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-                  Evolution of Excellence
-                </h2>
-              </div>
-              <p className="text-lg leading-relaxed text-foreground/70">
-                From our founding to today, we&apos;ve grown into a thriving innovation ecosystem that continues to push boundaries and create impact.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="glass-card p-6 rounded-2xl text-center">
-                  <p className="text-xs uppercase tracking-widest text-foreground/50 font-semibold">Global Pilots</p>
-                  <p className="mt-2 text-4xl font-bold text-primary">72</p>
-                </div>
-                <div className="glass-card p-6 rounded-2xl text-center">
-                  <p className="text-xs uppercase tracking-widest text-foreground/50 font-semibold">Mentors</p>
-                  <p className="mt-2 text-4xl font-bold text-primary">110</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative pl-8 md:pl-12">
-              <div className="absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-primary/80 to-transparent" />
-              <div className="space-y-12">
-                {milestones.map((item) => (
-                  <div key={item.year} className="relative group">
-                    <span className="absolute -left-[39px] md:-left-[55px] top-1.5 h-4 w-4 rounded-full border-2 border-primary bg-background group-hover:bg-primary transition-colors shadow-[0_0_0_4px_rgba(var(--primary),0.2)]" />
-                    <div className="glass-card p-6 rounded-2xl border border-border/50 hover:border-primary/30 transition-all">
-                      <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-secondary text-secondary-foreground mb-2">{item.year}</span>
-                      <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
-                      <p className="text-sm leading-relaxed text-foreground/70">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 relative">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <span className="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-semibold tracking-wide uppercase">
-              Our Impact
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">
-              Building Momentum Together
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-            {achievements.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={stat.label}
-                  className="glass-card p-8 rounded-3xl text-center hover:scale-105 transition-transform duration-300"
-                >
-                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <span className="block text-3xl font-bold mb-2">{stat.value}</span>
-                  <span className="text-xs uppercase tracking-widest text-foreground/60 font-medium">
-                    {stat.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       <section className="py-24 border-t border-border/50 bg-gradient-to-b from-background to-muted/30">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -349,10 +345,32 @@ export default async function AboutPage() {
                     {member.bio && (
                       <p className="text-sm leading-relaxed text-foreground/70">{member.bio}</p>
                     )}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center justify-between">
                       <span className="inline-flex items-center gap-2 border border-border bg-muted/50 px-3 py-1 text-xs font-medium rounded-full text-foreground/70">
                         {categoryLabels[member.category]}
                       </span>
+                      <div className="flex items-center gap-2">
+                        {member.email && (
+                          <a href={`mailto:${member.email}`} className="text-muted-foreground hover:text-primary transition-colors" aria-label={`Email ${member.name}`}>
+                            <Mail className="h-4 w-4" />
+                          </a>
+                        )}
+                        {member.linkedinUrl && (
+                          <a href={member.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={`${member.name} LinkedIn`}>
+                            <Linkedin className="h-4 w-4" />
+                          </a>
+                        )}
+                        {member.githubUrl && (
+                          <a href={member.githubUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={`${member.name} GitHub`}>
+                            <Github className="h-4 w-4" />
+                          </a>
+                        )}
+                        {member.websiteUrl && (
+                          <a href={member.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label={`${member.name} website`}>
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
 

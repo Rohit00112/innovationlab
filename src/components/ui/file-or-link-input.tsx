@@ -63,7 +63,7 @@ export function FileOrLinkInput({
             const formData = new FormData()
             formData.append("file", file)
             formData.append("folder", folder)
-            formData.append("resourceType", type === "image" ? "image" : "auto")
+            formData.append("resourceType", type === "image" ? "image" : "raw")
 
             const response = await fetch("/api/upload", {
                 method: "POST",

@@ -42,7 +42,6 @@ import {
     UserCircle,
     MessageSquare,
     Palette,
-    Navigation,
 } from "lucide-react";
 
 import "../globals.css";
@@ -115,11 +114,7 @@ export function AppSidebar({ user }: { user: { name?: string | null; email?: str
     ];
 
     const contentItems = [
-        { title: "Navigation", url: "/dashboard/content/navigation", icon: Navigation },
-        { title: "Home Page", url: "/dashboard/content/home", icon: Palette },
         { title: "About Page", url: "/dashboard/content/about", icon: Palette },
-        { title: "Contact Page", url: "/dashboard/content/contact", icon: Palette },
-        { title: "Global", url: "/dashboard/content/global", icon: Settings },
     ];
 
     return (

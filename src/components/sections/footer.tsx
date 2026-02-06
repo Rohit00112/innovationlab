@@ -6,16 +6,19 @@ interface FooterMenuItem {
   links: { text: string; url: string }[];
 }
 
-interface FooterProps {
-  tagline?: string;
-  description?: string;
-  menuItems?: FooterMenuItem[];
-  bottomLinks?: { text: string; url: string }[];
-  copyright?: string;
-  socialLinks?: { platform: string; url: string }[];
-}
+const FOOTER_DESCRIPTION =
+  "Innovation Labs is a collaborative space for students to explore, create, and innovate at Itahari International College.";
 
-const menuDefaults: FooterMenuItem[] = [
+const FOOTER_COPYRIGHT = "© 2024 Innovation Labs. All rights reserved.";
+
+const SOCIAL_LINKS = [
+  { platform: "Facebook", url: "https://facebook.com/innovationlabs" },
+  { platform: "Twitter", url: "https://twitter.com/innovationlabs" },
+  { platform: "LinkedIn", url: "https://linkedin.com/company/innovationlabs" },
+  { platform: "GitHub", url: "https://github.com/innovationlabs" },
+];
+
+const MENU_ITEMS: FooterMenuItem[] = [
   {
     title: "About",
     links: [
@@ -45,21 +48,13 @@ const menuDefaults: FooterMenuItem[] = [
   },
 ];
 
-const bottomDefaults = [
+const BOTTOM_LINKS = [
   { text: "Privacy Policy", url: "#" },
   { text: "Terms of Service", url: "#" },
   { text: "Cookie Policy", url: "#" },
 ];
 
-export function Footer({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  tagline = "Empowering Innovation",
-  description = "Transforming bold ideas into real-world solutions through technology, creativity, and collaborative innovation at Itahari International College.",
-  menuItems = menuDefaults,
-  bottomLinks = bottomDefaults,
-  copyright = "© 2025 Innovation Lab, Itahari International College. All rights reserved.",
-  socialLinks,
-}: FooterProps) {
+export function Footer() {
   return (
     <footer className="relative bg-background pt-20 pb-10 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50"></div>
@@ -77,16 +72,11 @@ export function Footer({
               <span className="group-hover:text-primary transition-colors">INNOVATION LAB</span>
             </Link>
             <p className="text-sm leading-relaxed text-foreground/60 max-w-sm">
-              {description}
+              {FOOTER_DESCRIPTION}
             </p>
 
             <div className="flex items-center gap-3 pt-2">
-              {(socialLinks || [
-                { platform: "LinkedIn", url: "#" },
-                { platform: "Twitter", url: "#" },
-                { platform: "GitHub", url: "#" },
-                { platform: "Email", url: "#" }
-              ]).map((social, index) => {
+              {SOCIAL_LINKS.map((social, index) => {
                 const Icon = social.platform.toLowerCase().includes("linkedin") ? Linkedin :
                   social.platform.toLowerCase().includes("twitter") ? Twitter :
                     social.platform.toLowerCase().includes("github") ? Github : Mail;
@@ -105,7 +95,7 @@ export function Footer({
             </div>
           </div>
 
-          {menuItems.map((section) => (
+          {MENU_ITEMS.map((section) => (
             <div key={section.title} className="space-y-6">
               <h3 className="text-sm font-bold tracking-wide text-foreground">
                 {section.title}
@@ -127,9 +117,9 @@ export function Footer({
         </div>
 
         <div className="border-t border-border/50 pt-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs text-foreground/50">{copyright}</p>
+          <p className="text-xs text-foreground/50">{FOOTER_COPYRIGHT}</p>
           <div className="flex flex-wrap gap-8">
-            {bottomLinks.map((link) => (
+            {BOTTOM_LINKS.map((link) => (
               <Link
                 key={link.text}
                 href={link.url}

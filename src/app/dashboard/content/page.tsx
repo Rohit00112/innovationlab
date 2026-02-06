@@ -7,15 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
-    Home,
     Info,
-    Phone,
-    Settings,
     ExternalLink,
     RefreshCw,
     CheckCircle2,
     XCircle,
-    Navigation,
 } from "lucide-react";
 import { PAGE_KEYS, SECTION_KEYS } from "@/lib/types/site-content";
 
@@ -31,47 +27,13 @@ interface ContentSection {
 
 const CONTENT_SECTIONS: ContentSection[] = [
     {
-        pageKey: PAGE_KEYS.GLOBAL,
-        sectionKey: SECTION_KEYS.NAVIGATION,
-        title: "Navigation",
-        description: "Navbar items, visibility, and CTA button",
-        icon: Navigation,
-        href: "/dashboard/content/navigation",
-    },
-    {
-        pageKey: PAGE_KEYS.HOME,
-        sectionKey: SECTION_KEYS.MAIN,
-        title: "Home Page",
-        description: "Hero section, capabilities, and achievement stats",
-        icon: Home,
-        href: "/dashboard/content/home",
-        previewUrl: "/",
-    },
-    {
         pageKey: PAGE_KEYS.ABOUT,
         sectionKey: SECTION_KEYS.MAIN,
         title: "About Page",
-        description: "Mission, vision, values, and milestones",
+        description: "Milestones and journey timeline",
         icon: Info,
         href: "/dashboard/content/about",
         previewUrl: "/about",
-    },
-    {
-        pageKey: PAGE_KEYS.CONTACT,
-        sectionKey: SECTION_KEYS.MAIN,
-        title: "Contact Page",
-        description: "Contact details and location information",
-        icon: Phone,
-        href: "/dashboard/content/contact",
-        previewUrl: "/contact",
-    },
-    {
-        pageKey: PAGE_KEYS.GLOBAL,
-        sectionKey: SECTION_KEYS.GLOBAL_SETTINGS,
-        title: "Global Settings",
-        description: "Site branding, footer, and social links",
-        icon: Settings,
-        href: "/dashboard/content/global",
     },
 ];
 
