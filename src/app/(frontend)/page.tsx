@@ -22,9 +22,10 @@ import { type EventRecord } from "@/lib/types/events";
 // ---------------------------------------------------------------------------
 // Static hero content
 // ---------------------------------------------------------------------------
-const HERO_TITLE = "INNOVATION LABS";
+const HERO_TAGLINE = "Where Ideas Get Shape";
+const HERO_TITLE = "Innovation Lab";
 const HERO_DESCRIPTION =
-    "A collaborative space for students to explore, create, and innovate.";
+    "A collaborative space for fostering innovation, applied learning, product development, research, events, and industry engagement through organized units and communities.";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -360,10 +361,12 @@ export default async function Frontend() {
                             <div className="space-y-6">
                                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
                                     {HERO_TITLE.split(" ")[0]}
-                                    <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">{HERO_TITLE.split(" ").slice(1).join(" ")}</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">{" " + HERO_TITLE.split(" ").slice(1).join(" ")}</span>
                                 </h1>
-                                <p className="text-xl leading-relaxed text-foreground/80 max-w-xl">
+                                <p className="text-lg sm:text-xl font-medium text-primary tracking-wide">
+                                    {HERO_TAGLINE}
+                                </p>
+                                <p className="text-lg leading-relaxed text-foreground/70 max-w-xl">
                                     {HERO_DESCRIPTION}
                                 </p>
                             </div>
@@ -381,7 +384,7 @@ export default async function Frontend() {
                                         variant="outline"
                                         className="px-8 text-sm font-medium h-12 rounded-xl border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
                                     >
-                                        Explore Communities
+                                        Our Communities
                                     </Button>
                                 </Link>
                             </div>
@@ -396,7 +399,7 @@ export default async function Frontend() {
                                         <div className="w-20 h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center">
                                             <Sparkles className="h-10 w-10 text-primary" />
                                         </div>
-                                        <p className="text-sm font-medium text-foreground/60 px-8">Where ideas become reality</p>
+                                        <p className="text-sm font-medium text-foreground/60 px-8">{HERO_TAGLINE}</p>
                                     </div>
                                 </div>
                             </div>
