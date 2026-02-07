@@ -21,6 +21,14 @@ import Image from "next/image";
 import { getActiveTeamMembers } from "@/lib/data/team";
 import { getMilestones } from "@/lib/data/milestones";
 
+function toTitleCase(str: string) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
@@ -332,9 +340,16 @@ export default async function AboutPage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-foreground">{member.name}</h3>
-                      <p className="text-xs font-bold uppercase tracking-widest text-primary/80">
-                        {member.position}
-                      </p>
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {member.position.split("|").map((role: string, i: number) => (
+                          <span
+                            key={i}
+                            className="inline-block px-2 py-0.5 text-[10px] font-semibold rounded-full bg-primary/10 text-primary"
+                          >
+                            {toTitleCase(role.trim())}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 

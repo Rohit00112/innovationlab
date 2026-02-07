@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Users, ArrowLeft, Github, Linkedin, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { getCommunityBySlug } from "@/lib/data/communities";
 
 export const revalidate = 60;
@@ -97,11 +98,7 @@ export default async function CommunityDetailPage({ params }: PageProps) {
             {community.content && (
                 <section className="py-16 border-b border-border/50">
                     <div className="mx-auto max-w-3xl px-6 lg:px-8">
-                        <div className="prose prose-neutral dark:prose-invert max-w-none">
-                            <p className="text-lg text-foreground/80 leading-relaxed whitespace-pre-wrap">
-                                {community.content}
-                            </p>
-                        </div>
+                        <MarkdownRenderer content={community.content} />
                     </div>
                 </section>
             )}

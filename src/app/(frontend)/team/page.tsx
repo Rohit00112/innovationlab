@@ -4,6 +4,30 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getActiveTeamMembers } from "@/lib/data/team";
 
+function toTitleCase(str: string) {
+    return str
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}
+
+function PositionDisplay({ position }: { position: string }) {
+    const roles = position.split("|").map((r) => r.trim()).filter(Boolean);
+    return (
+        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
+            {roles.map((role, i) => (
+                <span
+                    key={i}
+                    className="inline-block px-2.5 py-0.5 text-xs font-medium rounded-full bg-primary/10 text-primary"
+                >
+                    {toTitleCase(role)}
+                </span>
+            ))}
+        </div>
+    );
+}
+
 export const dynamic = "force-dynamic";
 export const revalidate = 60;
 
@@ -165,7 +189,7 @@ function HeadMemberCard({ member }: { member: TeamMember }) {
                 )}
             </div>
             <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
-            <p className="text-sm text-primary/80 font-medium mt-1">{member.position}</p>
+            <PositionDisplay position={member.position} />
 
             {member.bio && (
                 <p className="text-sm text-foreground/70 mt-4 leading-relaxed">{member.bio}</p>
@@ -229,7 +253,7 @@ function MemberCard({ member }: { member: TeamMember }) {
                 )}
             </div>
             <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">{member.name}</h3>
-            <p className="text-sm text-muted-foreground mt-1">{member.position}</p>
+            <PositionDisplay position={member.position} />
 
             {member.bio && (
                 <p className="text-xs text-foreground/60 mt-3 line-clamp-2">{member.bio}</p>
