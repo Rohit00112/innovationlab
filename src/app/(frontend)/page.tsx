@@ -369,17 +369,21 @@ export default async function Frontend() {
                             </div>
 
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
-                                <Button size="lg" className="px-8 text-sm font-medium h-12 rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/30">
-                                    Explore Projects
-                                    <ArrowRight className="ml-2 h-4 w-4" />
-                                </Button>
-                                <Button
-                                    size="lg"
-                                    variant="outline"
-                                    className="px-8 text-sm font-medium h-12 rounded-xl border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
-                                >
-                                    Get Involved
-                                </Button>
+                                <Link href="/events">
+                                    <Button size="lg" className="px-8 text-sm font-medium h-12 rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-105 hover:shadow-primary/30">
+                                        Explore Events
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </Link>
+                                <Link href="/communities">
+                                    <Button
+                                        size="lg"
+                                        variant="outline"
+                                        className="px-8 text-sm font-medium h-12 rounded-xl border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
+                                    >
+                                        Explore Communities
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
 

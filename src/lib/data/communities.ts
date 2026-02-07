@@ -2,7 +2,7 @@
  * Server-side data fetching for communities
  */
 
-import { aliasedTable, and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { communities, communityMembers } from "@/lib/db/schema";
 
