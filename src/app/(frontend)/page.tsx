@@ -192,11 +192,13 @@ function formatEventSchedule(event: EventRecord) {
         month: "short",
         day: "2-digit",
         year: "numeric",
+        timeZone: "Asia/Kathmandu",
     });
 
     const startTime = start.toLocaleTimeString(undefined, {
         hour: "numeric",
         minute: "2-digit",
+        timeZone: "Asia/Kathmandu",
     });
 
     if (!event.endsAt) {
@@ -212,6 +214,7 @@ function formatEventSchedule(event: EventRecord) {
     const endTime = end.toLocaleTimeString(undefined, {
         hour: "numeric",
         minute: "2-digit",
+        timeZone: "Asia/Kathmandu",
     });
 
     return {
@@ -514,7 +517,7 @@ export default async function Frontend() {
                                 const dateParts = new Date(event.date);
                                 if (!isNaN(dateParts.getTime())) {
                                     day = dateParts.getDate().toString();
-                                    month = dateParts.toLocaleString('default', { month: 'short' });
+                                    month = dateParts.toLocaleString('default', { month: 'short', timeZone: 'Asia/Kathmandu' });
                                 } else {
                                     // Fallback for pre-formatted strings
                                     const parts = event.date.split(" ");

@@ -67,11 +67,13 @@ function formatSchedule(event: EventRecord) {
     month: "short",
     day: "2-digit",
     year: "numeric",
+    timeZone: "Asia/Kathmandu",
   })
 
   const startTime = start.toLocaleTimeString(undefined, {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "Asia/Kathmandu",
   })
 
   if (!event.endsAt) {
@@ -87,6 +89,7 @@ function formatSchedule(event: EventRecord) {
   const endTime = end.toLocaleTimeString(undefined, {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "Asia/Kathmandu",
   })
 
   return {

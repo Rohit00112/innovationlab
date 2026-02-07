@@ -91,6 +91,7 @@ export function SubEventsList({ parentEventId }: SubEventsListProps) {
                                             day: 'numeric',
                                             hour: 'numeric',
                                             minute: '2-digit',
+                                            timeZone: 'Asia/Kathmandu',
                                         })}
                                     </span>
                                 </div>

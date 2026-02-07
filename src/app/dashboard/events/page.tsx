@@ -174,6 +174,7 @@ function formatTimestamp(value: string | null | undefined) {
     return date.toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: "Asia/Kathmandu",
     })
   } catch {
     return "-"

@@ -29,11 +29,13 @@ function formatSchedule(event: EventRecord) {
         month: "short",
         day: "2-digit",
         year: "numeric",
+        timeZone: "Asia/Kathmandu",
     });
 
     const startTime = start.toLocaleTimeString(undefined, {
         hour: "numeric",
         minute: "2-digit",
+        timeZone: "Asia/Kathmandu",
     });
 
     if (!event.endsAt) {
@@ -49,6 +51,7 @@ function formatSchedule(event: EventRecord) {
     const endTime = end.toLocaleTimeString(undefined, {
         hour: "numeric",
         minute: "2-digit",
+        timeZone: "Asia/Kathmandu",
     });
 
     return {
@@ -155,8 +158,8 @@ export function EventsListClient({ events }: EventsListClientProps) {
                                     {/* Virtual/In-person Badge */}
                                     <div className="absolute top-4 right-4 z-20">
                                         <span className={`text-xs font-bold uppercase px-2 py-1 rounded-full ${event.isVirtual
-                                                ? "bg-blue-500/90 text-white"
-                                                : "bg-emerald-500/90 text-white"
+                                            ? "bg-blue-500/90 text-white"
+                                            : "bg-emerald-500/90 text-white"
                                             }`}>
                                             {event.isVirtual ? "Virtual" : "In-person"}
                                         </span>
