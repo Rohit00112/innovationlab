@@ -148,20 +148,35 @@ export async function DELETE(request: Request, context: RouteParams) {
             throw new ApiError(400, "Invalid event ID");
         }
 
-        // Find and delete registration
-        const [deleted] = await db
-            .delete(eventRegistrations)
+        // Find the registration first to check the 24-hour window
+        const [registration] = await db
+            .select({ id: eventRegistrations.id, createdAt: eventRegistrations.createdAt })
+            .from(eventRegistrations)
             .where(
                 and(
                     eq(eventRegistrations.userId, session.user.id),
                     eq(eventRegistrations.eventId, eventId)
                 )
             )
-            .returning({ id: eventRegistrations.id });
+            .limit(1);
 
-        if (!deleted) {
+        if (!registration) {
             throw new ApiError(404, "Registration not found");
         }
+
+        // Enforce 24-hour cancellation window
+        const registeredAt = new Date(registration.createdAt);
+        const now = new Date();
+        const hoursSinceRegistration = (now.getTime() - registeredAt.getTime()) / (1000 * 60 * 60);
+
+        if (hoursSinceRegistration > 24) {
+            throw new ApiError(403, "Cancellation window has expired. Registrations can only be cancelled within 24 hours.");
+        }
+
+        // Delete registration
+        await db
+            .delete(eventRegistrations)
+            .where(eq(eventRegistrations.id, registration.id));
 
         return NextResponse.json({ message: "Registration cancelled" });
     } catch (error) {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, Check, X } from "lucide-react"
+import { Loader2, Check, X, Info } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -12,10 +12,20 @@ interface EventRegisterButtonProps {
     hasRegistration?: boolean
 }
 
+function canCancelRegistration(createdAt: string | null): { canCancel: boolean; hoursLeft: number } {
+    if (!createdAt) return { canCancel: false, hoursLeft: 0 }
+    const registeredAt = new Date(createdAt)
+    const now = new Date()
+    const hoursSince = (now.getTime() - registeredAt.getTime()) / (1000 * 60 * 60)
+    const hoursLeft = Math.max(0, 24 - hoursSince)
+    return { canCancel: hoursSince <= 24, hoursLeft }
+}
+
 export function EventRegisterButton({ eventId, eventSlug, hasRegistration = true }: EventRegisterButtonProps) {
     const router = useRouter()
     const [isLoading, setLoading] = useState(true)
     const [isRegistered, setRegistered] = useState(false)
+    const [registeredAt, setRegisteredAt] = useState<string | null>(null)
     const [isSubmitting, setSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -32,6 +42,7 @@ export function EventRegisterButton({ eventId, eventSlug, hasRegistration = true
                 if (response.ok) {
                     const data = await response.json()
                     setRegistered(data.isRegistered)
+                    setRegisteredAt(data.registration?.createdAt ?? null)
                 }
             } catch (err) {
                 console.error("[check-registration]", err)
@@ -90,24 +101,42 @@ export function EventRegisterButton({ eventId, eventSlug, hasRegistration = true
                         <Check className="h-4 w-4" />
                         <span className="text-sm font-medium">You&apos;re registered!</span>
                     </div>
-                    <Button
-                        variant="outline"
-                        onClick={handleCancel}
-                        disabled={isSubmitting}
-                        className="w-full"
-                    >
-                        {isSubmitting ? (
-                            <span className="inline-flex items-center gap-2">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                Cancelling...
-                            </span>
+                    {(() => {
+                        const { canCancel, hoursLeft } = canCancelRegistration(registeredAt)
+                        return canCancel ? (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleCancel}
+                                    disabled={isSubmitting}
+                                    className="w-full"
+                                >
+                                    {isSubmitting ? (
+                                        <span className="inline-flex items-center gap-2">
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            Cancelling...
+                                        </span>
+                                    ) : (
+                                        <span className="inline-flex items-center gap-2">
+                                            <X className="h-4 w-4" />
+                                            Cancel Registration
+                                        </span>
+                                    )}
+                                </Button>
+                                <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                                    <Info className="h-3 w-3" />
+                                    You can cancel within {Math.ceil(hoursLeft)} hour{Math.ceil(hoursLeft) !== 1 ? "s" : ""}
+                                </p>
+                            </>
                         ) : (
-                            <span className="inline-flex items-center gap-2">
-                                <X className="h-4 w-4" />
-                                Cancel Registration
-                            </span>
-                        )}
-                    </Button>
+                            <div className="rounded-lg bg-muted/50 border border-border px-3 py-2">
+                                <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                                    <Info className="h-3 w-3 flex-shrink-0" />
+                                    The 24-hour cancellation window has passed. Registration can no longer be cancelled.
+                                </p>
+                            </div>
+                        )
+                    })()}
                 </div>
             ) : (
                 <Button
