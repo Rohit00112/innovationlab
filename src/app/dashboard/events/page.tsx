@@ -78,6 +78,8 @@ const eventFormSchema = z.object({
   isVirtual: z.boolean().default(false),
   hasRegistration: z.boolean().default(true),
   enableProposalSubmission: z.boolean().default(false),
+  minParticipants: z.union([z.coerce.number().int().min(1), z.literal(""), z.null()]).optional(),
+  maxParticipants: z.union([z.coerce.number().int().min(1), z.literal(""), z.null()]).optional(),
   submissionFields: z
     .array(
       z.object({
@@ -256,6 +258,8 @@ const defaultFormValues: EventFormValues = {
   isVirtual: false,
   hasRegistration: true,
   enableProposalSubmission: false,
+  minParticipants: "",
+  maxParticipants: "",
   submissionFields: [],
   allowedRegistrationTypes: "both",
   startsAt: "",
@@ -468,6 +472,8 @@ export default function EventsDashboard() {
       isVirtual: record.isVirtual,
       hasRegistration: record.hasRegistration,
       enableProposalSubmission: record.enableProposalSubmission,
+      minParticipants: record.minParticipants ?? "",
+      maxParticipants: record.maxParticipants ?? "",
       submissionFields: record.submissionFields ?? [],
       allowedRegistrationTypes: record.allowedRegistrationTypes,
       startsAt: toDatetimeLocal(record.startsAt),
@@ -542,6 +548,8 @@ export default function EventsDashboard() {
       isVirtual: values.isVirtual,
       hasRegistration: values.hasRegistration,
       enableProposalSubmission: values.enableProposalSubmission,
+      minParticipants: values.minParticipants ? Number(values.minParticipants) : null,
+      maxParticipants: values.maxParticipants ? Number(values.maxParticipants) : null,
       submissionFields: values.enableProposalSubmission && values.submissionFields?.length
         ? values.submissionFields.filter((f: { title: string }) => f.title.trim())
         : null,
@@ -912,6 +920,50 @@ export default function EventsDashboard() {
                                 )}
                               />
                             )}
+
+                            {/* Participant Limits */}
+                            <div className="grid grid-cols-2 gap-3">
+                              <FormField
+                                control={form.control}
+                                name="minParticipants"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm">Min Participants</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        type="number"
+                                        min={1}
+                                        placeholder="No minimum"
+                                        value={field.value ?? ""}
+                                        onChange={(e) => field.onChange(e.target.value === "" ? "" : Number(e.target.value))}
+                                        className="rounded-lg"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name="maxParticipants"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel className="text-sm">Max Participants</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        type="number"
+                                        min={1}
+                                        placeholder="No limit"
+                                        value={field.value ?? ""}
+                                        onChange={(e) => field.onChange(e.target.value === "" ? "" : Number(e.target.value))}
+                                        className="rounded-lg"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
 
                             {hasExternalRegistration && (
                               <FormField

@@ -102,6 +102,8 @@ export const events = pgTable(
     hasRegistration: boolean("has_registration").notNull().default(true),
     allowedRegistrationTypes: allowedRegistrationTypesEnum("allowed_registration_types").notNull().default("both"),
     enableProposalSubmission: boolean("enable_proposal_submission").notNull().default(false),
+    minParticipants: integer("min_participants"),
+    maxParticipants: integer("max_participants"),
     submissionFields: json("submission_fields"), // JSON of Array<{ id: string, title: string, required: boolean }>
     startsAt: timestamp("starts_at", { withTimezone: true, mode: "date" }).notNull(),
     endsAt: timestamp("ends_at", { withTimezone: true, mode: "date" }),
@@ -211,8 +213,7 @@ export const eventRegistrations = pgTable(
   {
     id: serial("id").primaryKey(),
     userId: integer("user_id")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "set null" }),
     eventId: integer("event_id")
       .notNull()
       .references(() => events.id, { onDelete: "cascade" }),
@@ -221,6 +222,7 @@ export const eventRegistrations = pgTable(
     participantName: text("participant_name").notNull(),
     participantEmail: text("participant_email").notNull(),
     participantPhone: text("participant_phone"),
+    londonmetId: text("londonmet_id"),
     notes: text("notes"),
     teamMembers: text("team_members"), // JSON string of team members array
     proposalLink: text("proposal_link"), // deprecated, use submissions
@@ -229,8 +231,8 @@ export const eventRegistrations = pgTable(
     createdAt: timestampWithDefaults("created_at")
   },
   table => ({
-    userEventIdx: uniqueIndex("event_registrations_user_event_unique").on(
-      table.userId,
+    emailEventIdx: uniqueIndex("event_registrations_email_event_unique").on(
+      table.participantEmail,
       table.eventId
     ),
     userIdx: index("event_registrations_user_idx").on(table.userId),

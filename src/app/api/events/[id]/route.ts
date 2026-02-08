@@ -119,6 +119,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       updates.enableProposalSubmission = payload.enableProposalSubmission;
     }
 
+    if (payload.minParticipants !== undefined) {
+      updates.minParticipants = payload.minParticipants ?? null;
+    }
+
+    if (payload.maxParticipants !== undefined) {
+      updates.maxParticipants = payload.maxParticipants ?? null;
+    }
+
     if (payload.submissionFields !== undefined) {
       updates.submissionFields = payload.submissionFields ?? null;
     }

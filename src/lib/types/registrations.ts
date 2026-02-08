@@ -27,6 +27,7 @@ export interface EventRegistrationRecord {
     participantName: string
     participantEmail: string
     participantPhone: string | null
+    londonmetId: string | null
     notes: string | null
     teamMembers: string | null // JSON string
     proposalLink: string | null // deprecated, use submissions

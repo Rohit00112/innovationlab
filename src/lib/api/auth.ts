@@ -29,6 +29,13 @@ export async function requireUser(options?: { roles?: UserRole[] }) {
   return session as SessionWithUser;
 }
 
+export async function optionalUser() {
+  const cookieStore = await cookies();
+  const session = await getSessionUser(cookieStore);
+  if (!session || session.user.status !== "active") return null;
+  return session as SessionWithUser;
+}
+
 export function assertRole(user: PublicUser, roles: UserRole[]) {
   if (!roles.includes(user.role)) {
     throw new ApiError(403, "Insufficient permissions");

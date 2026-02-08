@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Plus, X, Users, User } from 'lucide-react'
+import { ArrowLeft, Loader2, Plus, X, Users, User, AlertCircle } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,6 +18,7 @@ interface TeamMember {
     name: string
     email: string
     phone?: string
+    londonmetId: string
 }
 
 interface EventRegistrationFormProps {
@@ -28,6 +30,8 @@ interface EventRegistrationFormProps {
     enableProposalSubmission: boolean
     submissionFields?: SubmissionField[] | null
     allowedRegistrationTypes: AllowedRegistrationType
+    minParticipants?: number | null
+    maxParticipants?: number | null
 }
 
 export function EventRegistrationForm({
@@ -39,6 +43,8 @@ export function EventRegistrationForm({
     enableProposalSubmission,
     submissionFields: rawSubmissionFields,
     allowedRegistrationTypes = 'both',
+    minParticipants,
+    maxParticipants,
 }: EventRegistrationFormProps) {
     const router = useRouter()
     const [isSubmitting, setSubmitting] = useState(false)
@@ -47,7 +53,102 @@ export function EventRegistrationForm({
     const [registrationType, setRegistrationType] = useState<'individual' | 'team'>(
         allowedRegistrationTypes === 'team' ? 'team' : 'individual'
     )
-    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([{ name: '', email: '', phone: '' }])
+    // Calculate team member limits (total participants = 1 leader + N members)
+    const minMembers = minParticipants ? Math.max(minParticipants - 1, 1) : 1
+    const maxMembers = maxParticipants ? maxParticipants - 1 : undefined
+
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => {
+        const initialCount = minMembers
+        return Array.from({ length: initialCount }, () => ({ name: '', email: '', phone: '', londonmetId: '' }))
+    })
+
+    // LondonMet ID duplicate checking
+    const [leaderLondonmetId, setLeaderLondonmetId] = useState('')
+    const [londonmetErrors, setLondonmetErrors] = useState<Record<string, string>>({})
+    const [londonmetChecking, setLondonmetChecking] = useState<Record<string, boolean>>({})
+    const debounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
+
+    const checkLondonmetId = useCallback(async (id: string, fieldKey: string) => {
+        if (!id.trim()) {
+            setLondonmetErrors(prev => {
+                const next = { ...prev }
+                delete next[fieldKey]
+                return next
+            })
+            setLondonmetChecking(prev => ({ ...prev, [fieldKey]: false }))
+            return
+        }
+
+        // First check locally — within the form itself
+        const allIds: { key: string; value: string }[] = []
+        if (leaderLondonmetId.trim() && fieldKey !== 'leader') {
+            allIds.push({ key: 'leader', value: leaderLondonmetId.trim() })
+        }
+        teamMembers.forEach((m, i) => {
+            const k = `member-${i}`
+            if (m.londonmetId.trim() && k !== fieldKey) {
+                allIds.push({ key: k, value: m.londonmetId.trim() })
+            }
+        })
+        if (fieldKey === 'leader') {
+            // check leader against current state
+        }
+        const localDup = allIds.find(a => a.value === id.trim())
+        if (localDup) {
+            setLondonmetErrors(prev => ({ ...prev, [fieldKey]: 'This LondonMet ID is already used in this registration form' }))
+            setLondonmetChecking(prev => ({ ...prev, [fieldKey]: false }))
+            return
+        }
+
+        // Then check server
+        setLondonmetChecking(prev => ({ ...prev, [fieldKey]: true }))
+        try {
+            const res = await fetch(`/api/events/${eventId}/check-londonmet?londonmetId=${encodeURIComponent(id.trim())}`)
+            if (res.ok) {
+                const data = await res.json()
+                if (data.exists) {
+                    setLondonmetErrors(prev => ({ ...prev, [fieldKey]: data.message }))
+                } else {
+                    setLondonmetErrors(prev => {
+                        const next = { ...prev }
+                        delete next[fieldKey]
+                        return next
+                    })
+                }
+            }
+        } catch {
+            // silently fail
+        } finally {
+            setLondonmetChecking(prev => ({ ...prev, [fieldKey]: false }))
+        }
+    }, [eventId, leaderLondonmetId, teamMembers])
+
+    const debouncedCheck = useCallback((id: string, fieldKey: string) => {
+        if (debounceTimers.current[fieldKey]) {
+            clearTimeout(debounceTimers.current[fieldKey])
+        }
+        if (!id.trim()) {
+            setLondonmetErrors(prev => {
+                const next = { ...prev }
+                delete next[fieldKey]
+                return next
+            })
+            return
+        }
+        setLondonmetChecking(prev => ({ ...prev, [fieldKey]: true }))
+        debounceTimers.current[fieldKey] = setTimeout(() => {
+            checkLondonmetId(id, fieldKey)
+        }, 500)
+    }, [checkLondonmetId])
+
+    // Cleanup timers
+    useEffect(() => {
+        return () => {
+            Object.values(debounceTimers.current).forEach(clearTimeout)
+        }
+    }, [])
+
+    const hasLondonmetError = Object.keys(londonmetErrors).length > 0
 
     // Normalize submission fields to always be an array
     const submissionFields = Array.isArray(rawSubmissionFields) ? rawSubmissionFields : []
@@ -57,26 +158,39 @@ export function EventRegistrationForm({
         setSubmissions(prev => ({ ...prev, [fieldId]: value }))
     }
 
+    const canAddMember = maxMembers === undefined || teamMembers.length < maxMembers
+    const canRemoveMember = teamMembers.length > minMembers
+
     const addTeamMember = () => {
-        setTeamMembers([...teamMembers, { name: '', email: '', phone: '' }])
+        if (!canAddMember) return
+        setTeamMembers([...teamMembers, { name: '', email: '', phone: '', londonmetId: '' }])
     }
 
     const removeTeamMember = (index: number) => {
-        if (teamMembers.length > 1) {
-            setTeamMembers(teamMembers.filter((_, i) => i !== index))
-        }
+        if (!canRemoveMember) return
+        setTeamMembers(teamMembers.filter((_, i) => i !== index))
     }
 
     const updateTeamMember = (index: number, field: keyof TeamMember, value: string) => {
         const updated = [...teamMembers]
         updated[index] = { ...updated[index], [field]: value }
         setTeamMembers(updated)
+        if (field === 'londonmetId') {
+            debouncedCheck(value, `member-${index}`)
+        }
     }
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setSubmitting(true)
         setError(null)
+
+        // Check for LondonMet ID errors
+        if (hasLondonmetError) {
+            setError('Please resolve LondonMet ID issues before submitting')
+            setSubmitting(false)
+            return
+        }
 
         // Validate required submissions
         if (hasSubmissionFields) {
@@ -106,6 +220,7 @@ export function EventRegistrationForm({
             participantName: String(formData.get('participantName') ?? '').trim(),
             participantEmail: String(formData.get('participantEmail') ?? '').trim(),
             participantPhone: String(formData.get('participantPhone') ?? '').trim() || null,
+            londonmetId: String(formData.get('londonmetId') ?? '').trim() || null,
             notes: String(formData.get('notes') ?? '').trim() || null,
             submissions: submissionsArray,
         }
@@ -124,14 +239,17 @@ export function EventRegistrationForm({
 
             if (!response.ok) {
                 const data = await response.json().catch(() => null)
-                if (response.status === 401) {
-                    router.push(`/login?redirect=/events/${eventSlug}/register`)
-                    return
-                }
                 setError(data?.message ?? 'Unable to complete registration')
                 setSubmitting(false)
                 return
             }
+
+            toast.success('Registration Successful!', {
+                description: registrationType === 'team'
+                    ? 'Your team has been registered. Confirmation emails have been sent to all team members.'
+                    : 'You have been registered. A confirmation email has been sent to your email address.',
+                duration: 6000,
+            })
 
             router.push(`/events/${eventSlug}?registered=true`)
             router.refresh()
@@ -159,6 +277,12 @@ export function EventRegistrationForm({
                     <CardDescription>
                         {eventTitle}
                     </CardDescription>
+                    {maxParticipants && (
+                        <p className="text-sm text-muted-foreground mt-2">
+                            Limited to <span className="font-semibold text-foreground">{maxParticipants}</span> participants
+                            {minParticipants ? ` (minimum ${minParticipants})` : ''}
+                        </p>
+                    )}
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -262,6 +386,35 @@ export function EventRegistrationForm({
                                         disabled={isSubmitting}
                                     />
                                 </Field>
+                                <Field>
+                                    <FieldLabel htmlFor="londonmetId">LondonMet ID *</FieldLabel>
+                                    <Input
+                                        id="londonmetId"
+                                        name="londonmetId"
+                                        type="text"
+                                        placeholder="e.g. 23045678"
+                                        required
+                                        disabled={isSubmitting}
+                                        value={leaderLondonmetId}
+                                        onChange={(e) => {
+                                            setLeaderLondonmetId(e.target.value)
+                                            debouncedCheck(e.target.value, 'leader')
+                                        }}
+                                        className={londonmetErrors['leader'] ? 'border-destructive' : ''}
+                                    />
+                                    {londonmetChecking['leader'] && (
+                                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                            Checking...
+                                        </p>
+                                    )}
+                                    {londonmetErrors['leader'] && (
+                                        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                                            <AlertCircle className="h-3 w-3" />
+                                            {londonmetErrors['leader']}
+                                        </p>
+                                    )}
+                                </Field>
                             </FieldGroup>
                         </div>
 
@@ -294,13 +447,24 @@ export function EventRegistrationForm({
                         {registrationType === 'team' && (
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="font-medium">Team Members</h3>
+                                    <div>
+                                        <h3 className="font-medium">Team Members</h3>
+                                        {(minParticipants || maxParticipants) && (
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                {minParticipants && maxParticipants
+                                                    ? `${minParticipants} to ${maxParticipants} total participants (including team leader)`
+                                                    : minParticipants
+                                                        ? `At least ${minParticipants} total participants (including team leader)`
+                                                        : `Up to ${maxParticipants} total participants (including team leader)`}
+                                            </p>
+                                        )}
+                                    </div>
                                     <Button
                                         type="button"
                                         variant="outline"
                                         size="sm"
                                         onClick={addTeamMember}
-                                        disabled={isSubmitting}
+                                        disabled={isSubmitting || !canAddMember}
                                     >
                                         <Plus className="h-4 w-4 mr-1" />
                                         Add Member
@@ -313,7 +477,7 @@ export function EventRegistrationForm({
                                             <span className="text-sm font-medium text-muted-foreground">
                                                 Member {index + 1}
                                             </span>
-                                            {teamMembers.length > 1 && (
+                                            {canRemoveMember && (
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
@@ -325,7 +489,7 @@ export function EventRegistrationForm({
                                                 </Button>
                                             )}
                                         </div>
-                                        <div className="grid gap-3 md:grid-cols-3">
+                                        <div className="grid gap-3 md:grid-cols-2">
                                             <Input
                                                 placeholder="Name"
                                                 value={member.name}
@@ -346,7 +510,27 @@ export function EventRegistrationForm({
                                                 onChange={(e) => updateTeamMember(index, 'phone', e.target.value)}
                                                 disabled={isSubmitting}
                                             />
+                                            <Input
+                                                placeholder="LondonMet ID"
+                                                value={member.londonmetId}
+                                                onChange={(e) => updateTeamMember(index, 'londonmetId', e.target.value)}
+                                                disabled={isSubmitting}
+                                                required
+                                                className={londonmetErrors[`member-${index}`] ? 'border-destructive' : ''}
+                                            />
                                         </div>
+                                        {londonmetChecking[`member-${index}`] && (
+                                            <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                                Checking...
+                                            </p>
+                                        )}
+                                        {londonmetErrors[`member-${index}`] && (
+                                            <p className="text-xs text-destructive flex items-center gap-1">
+                                                <AlertCircle className="h-3 w-3" />
+                                                {londonmetErrors[`member-${index}`]}
+                                            </p>
+                                        )}
                                     </div>
                                 ))}
                             </div>

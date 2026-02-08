@@ -48,6 +48,8 @@ export interface EventRecord {
   hasRegistration: boolean
   allowedRegistrationTypes: AllowedRegistrationType
   enableProposalSubmission: boolean
+  minParticipants: number | null
+  maxParticipants: number | null
   submissionFields: SubmissionField[] | null
   startsAt: string
   endsAt: string | null
@@ -74,6 +76,8 @@ export interface CreateEventPayload {
   hasRegistration?: boolean
   allowedRegistrationTypes?: AllowedRegistrationType
   enableProposalSubmission?: boolean
+  minParticipants?: number | null
+  maxParticipants?: number | null
   submissionFields?: SubmissionField[] | null
   startsAt: string
   endsAt?: string | null

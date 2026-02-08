@@ -16,6 +16,8 @@ export const eventSelection = {
   hasRegistration: events.hasRegistration,
   allowedRegistrationTypes: events.allowedRegistrationTypes,
   enableProposalSubmission: events.enableProposalSubmission,
+  minParticipants: events.minParticipants,
+  maxParticipants: events.maxParticipants,
   submissionFields: events.submissionFields,
   startsAt: events.startsAt,
   endsAt: events.endsAt,

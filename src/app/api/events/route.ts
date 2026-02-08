@@ -210,6 +210,8 @@ export async function POST(request: Request) {
         hasRegistration: payload.hasRegistration ?? true,
         allowedRegistrationTypes: payload.allowedRegistrationTypes ?? "both",
         enableProposalSubmission: payload.enableProposalSubmission ?? false,
+        minParticipants: payload.minParticipants ?? null,
+        maxParticipants: payload.maxParticipants ?? null,
         submissionFields: payload.submissionFields ?? null,
         startsAt,
         endsAt,

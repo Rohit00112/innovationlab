@@ -34,6 +34,7 @@ export async function GET(
                 participantName: eventRegistrations.participantName,
                 participantEmail: eventRegistrations.participantEmail,
                 participantPhone: eventRegistrations.participantPhone,
+                londonmetId: eventRegistrations.londonmetId,
                 notes: eventRegistrations.notes,
                 teamMembers: eventRegistrations.teamMembers,
                 proposalLink: eventRegistrations.proposalLink,

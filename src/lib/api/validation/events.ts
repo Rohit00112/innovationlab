@@ -20,6 +20,8 @@ export const createEventSchema = z.object({
   hasRegistration: z.boolean().optional(),
   allowedRegistrationTypes: z.enum(["individual", "team", "both"]).optional(),
   enableProposalSubmission: z.boolean().optional(),
+  minParticipants: z.number().int().min(1).optional().nullable(),
+  maxParticipants: z.number().int().min(1).optional().nullable(),
   submissionFields: z
     .array(
       z.object({

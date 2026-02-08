@@ -15,7 +15,7 @@ import { LexicalRenderer } from "@/components/blocks/editor-x/viewer";
 import { EventRegisterButton } from "@/components/event-register-button";
 import { SubEventsList } from "@/components/sub-events-list";
 import { ShareButton } from "@/components/share-button";
-import { getEventBySlug, getPublishedEvents, type EventRecord } from "@/lib/data/events";
+import { getEventBySlug, getEventById, getPublishedEvents, type EventRecord } from "@/lib/data/events";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
@@ -201,15 +201,26 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const descriptionContent = resolveDescriptionContent(event.description);
   const imageUrl = event.image && event.image.trim() ? event.image.trim() : null;
 
+  // Resolve back link: sub-events go back to parent event, top-level events go to /events
+  let backHref = "/events";
+  let backLabel = "Back to Events";
+  if (event.parentEventId) {
+    const parentEvent = await getEventById(event.parentEventId);
+    if (parentEvent) {
+      backHref = `/events/${parentEvent.slug}`;
+      backLabel = `Back to ${parentEvent.title}`;
+    }
+  }
+
   return (
     <main className="w-full bg-background text-foreground min-h-screen">
       <section className="relative pt-32 pb-20 bg-muted/20 border-b border-border/50">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           {/* Breadcrumb / Back Link */}
           <Button variant="ghost" className="rounded-full hover:bg-background/50 hover:text-primary mb-8 pl-0" asChild>
-            <Link href="/events">
+            <Link href={backHref}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Events
+              {backLabel}
             </Link>
           </Button>
 

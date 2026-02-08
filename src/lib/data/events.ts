@@ -22,6 +22,8 @@ const eventSelection = {
     hasRegistration: events.hasRegistration,
     allowedRegistrationTypes: events.allowedRegistrationTypes,
     enableProposalSubmission: events.enableProposalSubmission,
+    minParticipants: events.minParticipants,
+    maxParticipants: events.maxParticipants,
     submissionFields: events.submissionFields,
     startsAt: events.startsAt,
     endsAt: events.endsAt,
@@ -105,6 +107,21 @@ export async function getEventBySlug(slug: string) {
 }
 
 /**
+ * Get event by ID
+ */
+export async function getEventById(id: number) {
+    const [record] = await db
+        .select(eventSelection)
+        .from(events)
+        .leftJoin(users, eq(events.organizerId, users.id))
+        .where(eq(events.id, id))
+        .limit(1);
+
+    if (!record) return null;
+    return formatEventRecord(record);
+}
+
+/**
  * Get sub-events for a parent event
  */
 export async function getSubEvents(parentEventId: number) {
@@ -135,6 +152,8 @@ function formatEventRecord(record: typeof eventSelection extends infer T ? { [K 
         hasRegistration: record.hasRegistration as boolean,
         allowedRegistrationTypes: record.allowedRegistrationTypes as "individual" | "team" | "both",
         enableProposalSubmission: record.enableProposalSubmission as boolean,
+        minParticipants: record.minParticipants as number | null,
+        maxParticipants: record.maxParticipants as number | null,
         submissionFields: record.submissionFields as SubmissionField[] | null,
         startsAt: (record.startsAt as Date).toISOString(),
         endsAt: record.endsAt ? (record.endsAt as Date).toISOString() : null,
