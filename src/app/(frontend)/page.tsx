@@ -498,7 +498,7 @@ export default async function Frontend() {
                             <span className="inline-block px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-semibold tracking-wide uppercase">
                                 Upcoming
                             </span>
-                            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Events & Workshops</h2>
+                            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight">Events & Pragrams</h2>
                         </div>
                         <Button variant="outline" className="w-fit rounded-full px-6 border-primary/20 hover:bg-primary/5 hover:text-primary transition-all" asChild>
                             <Link href="/events">

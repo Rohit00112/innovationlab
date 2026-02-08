@@ -150,6 +150,32 @@ export function EventRegistrationForm({
 
     const hasLondonmetError = Object.keys(londonmetErrors).length > 0
 
+    // Email domain validation (@iic.edu.np)
+    const [emailErrors, setEmailErrors] = useState<Record<string, string>>({})
+    const [leaderEmail, setLeaderEmail] = useState(userEmail)
+
+    const validateEmailDomain = (email: string, fieldKey: string) => {
+        if (!email.trim()) {
+            setEmailErrors(prev => {
+                const next = { ...prev }
+                delete next[fieldKey]
+                return next
+            })
+            return
+        }
+        if (!email.trim().toLowerCase().endsWith('@iic.edu.np')) {
+            setEmailErrors(prev => ({ ...prev, [fieldKey]: 'Email must end with @iic.edu.np' }))
+        } else {
+            setEmailErrors(prev => {
+                const next = { ...prev }
+                delete next[fieldKey]
+                return next
+            })
+        }
+    }
+
+    const hasEmailError = Object.keys(emailErrors).length > 0
+
     // Normalize submission fields to always be an array
     const submissionFields = Array.isArray(rawSubmissionFields) ? rawSubmissionFields : []
     const hasSubmissionFields = enableProposalSubmission && submissionFields.length > 0
@@ -178,6 +204,9 @@ export function EventRegistrationForm({
         if (field === 'londonmetId') {
             debouncedCheck(value, `member-${index}`)
         }
+        if (field === 'email') {
+            validateEmailDomain(value, `member-email-${index}`)
+        }
     }
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -185,11 +214,30 @@ export function EventRegistrationForm({
         setSubmitting(true)
         setError(null)
 
+        // Check for email domain errors
+        if (hasEmailError) {
+            setError('All email addresses must end with @iic.edu.np')
+            setSubmitting(false)
+            return
+        }
+
         // Check for LondonMet ID errors
         if (hasLondonmetError) {
             setError('Please resolve LondonMet ID issues before submitting')
             setSubmitting(false)
             return
+        }
+
+        // Validate team member required fields
+        if (registrationType === 'team') {
+            for (let i = 0; i < teamMembers.length; i++) {
+                const m = teamMembers[i]
+                if (!m.name.trim() || !m.email.trim() || !m.phone?.trim() || !m.londonmetId.trim()) {
+                    setError(`All fields are required for Member ${i + 1}`)
+                    setSubmitting(false)
+                    return
+                }
+            }
         }
 
         // Validate required submissions
@@ -370,11 +418,22 @@ export function EventRegistrationForm({
                                         id="participantEmail"
                                         name="participantEmail"
                                         type="email"
-                                        placeholder="john@example.com"
+                                        placeholder="john@iic.edu.np"
                                         required
-                                        defaultValue={userEmail}
+                                        value={leaderEmail}
+                                        onChange={(e) => {
+                                            setLeaderEmail(e.target.value)
+                                            validateEmailDomain(e.target.value, 'leader-email')
+                                        }}
                                         disabled={isSubmitting}
+                                        className={emailErrors['leader-email'] ? 'border-destructive' : ''}
                                     />
+                                    {emailErrors['leader-email'] && (
+                                        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                                            <AlertCircle className="h-3 w-3" />
+                                            {emailErrors['leader-email']}
+                                        </p>
+                                    )}
                                 </Field>
                                 <Field>
                                     <FieldLabel htmlFor="participantPhone">Phone Number</FieldLabel>
@@ -495,20 +554,32 @@ export function EventRegistrationForm({
                                                 value={member.name}
                                                 onChange={(e) => updateTeamMember(index, 'name', e.target.value)}
                                                 disabled={isSubmitting}
+                                                required
                                             />
-                                            <Input
-                                                type="email"
-                                                placeholder="Email"
-                                                value={member.email}
-                                                onChange={(e) => updateTeamMember(index, 'email', e.target.value)}
-                                                disabled={isSubmitting}
-                                            />
+                                            <div>
+                                                <Input
+                                                    type="email"
+                                                    placeholder="Email (@iic.edu.np)"
+                                                    value={member.email}
+                                                    onChange={(e) => updateTeamMember(index, 'email', e.target.value)}
+                                                    disabled={isSubmitting}
+                                                    required
+                                                    className={emailErrors[`member-email-${index}`] ? 'border-destructive' : ''}
+                                                />
+                                                {emailErrors[`member-email-${index}`] && (
+                                                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                                                        <AlertCircle className="h-3 w-3" />
+                                                        {emailErrors[`member-email-${index}`]}
+                                                    </p>
+                                                )}
+                                            </div>
                                             <Input
                                                 type="tel"
-                                                placeholder="Phone (optional)"
+                                                placeholder="Phone"
                                                 value={member.phone ?? ''}
                                                 onChange={(e) => updateTeamMember(index, 'phone', e.target.value)}
                                                 disabled={isSubmitting}
+                                                required
                                             />
                                             <Input
                                                 placeholder="LondonMet ID"
