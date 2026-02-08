@@ -6,14 +6,14 @@ const transporter = nodemailer.createTransport({
     secure: Number(process.env.SMTP_PORT) === 465,
     auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+        pass: process.env.SMTP_PASS || process.env.SMTP_PASSWORD,
     },
 })
 
 const FROM_ADDRESS = process.env.SMTP_FROM || "noreply@innovationlab.edu.np"
 
 function isEmailConfigured(): boolean {
-    return !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD)
+    return !!(process.env.SMTP_HOST && process.env.SMTP_USER && (process.env.SMTP_PASS || process.env.SMTP_PASSWORD))
 }
 
 interface SendEmailOptions {
@@ -56,22 +56,32 @@ interface RegistrationEmailData {
 export function buildRegistrationConfirmationEmail(data: RegistrationEmailData) {
     const { eventTitle, participantName, registrationType, teamName, teamMembers } = data
 
-    const teamSection = registrationType === "team" && teamMembers && teamMembers.length > 0
+    // Build full members list including team leader
+    const allMembers = registrationType === "team"
+        ? [
+            { name: participantName, role: "Team Leader" },
+            ...(teamMembers ?? []).map(m => ({ name: m.name, role: "Member" })),
+        ]
+        : []
+
+    const teamSection = registrationType === "team" && allMembers.length > 0
         ? `
         <div style="margin-top: 20px; padding: 16px; background-color: #f8f9fa; border-radius: 8px;">
             <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #333;">Team: ${teamName || "Unnamed Team"}</h3>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr>
-                        <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd; font-size: 13px; color: #666;">Member</th>
-                        <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd; font-size: 13px; color: #666;">LondonMet ID</th>
+                        <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd; font-size: 13px; color: #666;">#</th>
+                        <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd; font-size: 13px; color: #666;">Name</th>
+                        <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd; font-size: 13px; color: #666;">Role</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${teamMembers.map(m => `
+                    ${allMembers.map((m, i) => `
                     <tr>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 14px;">${m.name || "—"}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; font-family: monospace;">${m.londonmetId || "—"}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 14px;">${i + 1}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; font-weight: ${m.role === 'Team Leader' ? '600' : '400'};">${m.name || "—"}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #eee; font-size: 13px; color: ${m.role === 'Team Leader' ? '#6366f1' : '#666'};">${m.role}</td>
                     </tr>
                     `).join("")}
                 </tbody>

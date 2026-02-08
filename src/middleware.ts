@@ -5,7 +5,7 @@ import { getClientIp, isSuspiciousRequest, matchesPath } from "@/lib/security/ut
 const SESSION_COOKIE_NAME = "ivlab_session";
 
 const protectedRoutes = ["/dashboard"];
-const authRoutes = ["/login", "/register"];
+const authRoutes = ["/login"];
 
 // API routes that need rate limiting
 const AUTH_API_ROUTES = ["/api/auth/*"];

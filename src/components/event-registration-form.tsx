@@ -150,11 +150,75 @@ export function EventRegistrationForm({
 
     const hasLondonmetError = Object.keys(londonmetErrors).length > 0
 
-    // Email domain validation (@iic.edu.np)
+    // Email validation: domain check + database duplicate check
     const [emailErrors, setEmailErrors] = useState<Record<string, string>>({})
+    const [emailChecking, setEmailChecking] = useState<Record<string, boolean>>({})
     const [leaderEmail, setLeaderEmail] = useState(userEmail)
+    const emailDebounceTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
 
-    const validateEmailDomain = (email: string, fieldKey: string) => {
+    const checkEmailInDb = useCallback(async (email: string, fieldKey: string) => {
+        if (!email.trim()) {
+            setEmailErrors(prev => {
+                const next = { ...prev }
+                delete next[fieldKey]
+                return next
+            })
+            setEmailChecking(prev => ({ ...prev, [fieldKey]: false }))
+            return
+        }
+
+        // Domain validation first
+        if (!email.trim().toLowerCase().endsWith('@iic.edu.np')) {
+            setEmailErrors(prev => ({ ...prev, [fieldKey]: 'Email must end with @iic.edu.np' }))
+            setEmailChecking(prev => ({ ...prev, [fieldKey]: false }))
+            return
+        }
+
+        // Local duplicate check within the form
+        const allEmails: { key: string; value: string }[] = []
+        if (leaderEmail.trim() && fieldKey !== 'leader-email') {
+            allEmails.push({ key: 'leader-email', value: leaderEmail.trim().toLowerCase() })
+        }
+        teamMembers.forEach((m, i) => {
+            const k = `member-email-${i}`
+            if (m.email.trim() && k !== fieldKey) {
+                allEmails.push({ key: k, value: m.email.trim().toLowerCase() })
+            }
+        })
+        const localDup = allEmails.find(a => a.value === email.trim().toLowerCase())
+        if (localDup) {
+            setEmailErrors(prev => ({ ...prev, [fieldKey]: 'This email is already used in this registration form' }))
+            setEmailChecking(prev => ({ ...prev, [fieldKey]: false }))
+            return
+        }
+
+        // Server duplicate check
+        setEmailChecking(prev => ({ ...prev, [fieldKey]: true }))
+        try {
+            const res = await fetch(`/api/events/${eventId}/check-email?email=${encodeURIComponent(email.trim())}`)
+            if (res.ok) {
+                const data = await res.json()
+                if (data.exists) {
+                    setEmailErrors(prev => ({ ...prev, [fieldKey]: data.message }))
+                } else {
+                    setEmailErrors(prev => {
+                        const next = { ...prev }
+                        delete next[fieldKey]
+                        return next
+                    })
+                }
+            }
+        } catch {
+            // silently fail
+        } finally {
+            setEmailChecking(prev => ({ ...prev, [fieldKey]: false }))
+        }
+    }, [eventId, leaderEmail, teamMembers])
+
+    const debouncedEmailCheck = useCallback((email: string, fieldKey: string) => {
+        if (emailDebounceTimers.current[fieldKey]) {
+            clearTimeout(emailDebounceTimers.current[fieldKey])
+        }
         if (!email.trim()) {
             setEmailErrors(prev => {
                 const next = { ...prev }
@@ -163,16 +227,23 @@ export function EventRegistrationForm({
             })
             return
         }
+        // Instant domain check
         if (!email.trim().toLowerCase().endsWith('@iic.edu.np')) {
             setEmailErrors(prev => ({ ...prev, [fieldKey]: 'Email must end with @iic.edu.np' }))
-        } else {
-            setEmailErrors(prev => {
-                const next = { ...prev }
-                delete next[fieldKey]
-                return next
-            })
+            return
         }
-    }
+        setEmailChecking(prev => ({ ...prev, [fieldKey]: true }))
+        emailDebounceTimers.current[fieldKey] = setTimeout(() => {
+            checkEmailInDb(email, fieldKey)
+        }, 500)
+    }, [checkEmailInDb])
+
+    // Cleanup email timers
+    useEffect(() => {
+        return () => {
+            Object.values(emailDebounceTimers.current).forEach(clearTimeout)
+        }
+    }, [])
 
     const hasEmailError = Object.keys(emailErrors).length > 0
 
@@ -205,7 +276,7 @@ export function EventRegistrationForm({
             debouncedCheck(value, `member-${index}`)
         }
         if (field === 'email') {
-            validateEmailDomain(value, `member-email-${index}`)
+            debouncedEmailCheck(value, `member-email-${index}`)
         }
     }
 
@@ -423,11 +494,17 @@ export function EventRegistrationForm({
                                         value={leaderEmail}
                                         onChange={(e) => {
                                             setLeaderEmail(e.target.value)
-                                            validateEmailDomain(e.target.value, 'leader-email')
+                                            debouncedEmailCheck(e.target.value, 'leader-email')
                                         }}
                                         disabled={isSubmitting}
                                         className={emailErrors['leader-email'] ? 'border-destructive' : ''}
                                     />
+                                    {emailChecking['leader-email'] && (
+                                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                            Checking...
+                                        </p>
+                                    )}
                                     {emailErrors['leader-email'] && (
                                         <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                                             <AlertCircle className="h-3 w-3" />
@@ -566,6 +643,12 @@ export function EventRegistrationForm({
                                                     required
                                                     className={emailErrors[`member-email-${index}`] ? 'border-destructive' : ''}
                                                 />
+                                                {emailChecking[`member-email-${index}`] && (
+                                                    <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                                        <Loader2 className="h-3 w-3 animate-spin" />
+                                                        Checking...
+                                                    </p>
+                                                )}
                                                 {emailErrors[`member-email-${index}`] && (
                                                     <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                                                         <AlertCircle className="h-3 w-3" />
