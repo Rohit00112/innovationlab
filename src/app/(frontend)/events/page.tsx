@@ -157,7 +157,7 @@ export default async function EventsPage() {
 
   return (
     <main className="w-full bg-background text-foreground">
-      <section className="relative py-20 min-h-[80vh] flex items-center overflow-hidden border-b border-border/50">
+      <section className="relative py-20 min-h-screen flex items-center overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 bg-background z-0">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl opacity-50"></div>
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/20 rounded-full blur-3xl opacity-50"></div>
@@ -259,20 +259,22 @@ export default async function EventsPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-muted/30 dark:bg-muted/10 border-t border-border/50">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mb-10 max-w-2xl">
-            <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
-              Upcoming Gatherings
-            </span>
-            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Don&apos;t Miss Out
-            </h2>
-          </div>
+      {otherEvents.length > 0 && (
+        <section className="py-24 bg-muted/30 dark:bg-muted/10 border-t border-border/50">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mb-10 max-w-2xl">
+              <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase mb-4">
+                Upcoming Gatherings
+              </span>
+              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                Don&apos;t Miss Out
+              </h2>
+            </div>
 
-          <EventsListClient events={otherEvents} />
-        </div>
-      </section>
+            <EventsListClient events={otherEvents} />
+          </div>
+        </section>
+      )}
     </main>
   )
 }

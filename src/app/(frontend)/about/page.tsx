@@ -20,6 +20,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getActiveTeamMembers } from "@/lib/data/team";
 import { getMilestones } from "@/lib/data/milestones";
+import aboutImage from "@/assets/about.jpg";
 
 function toTitleCase(str: string) {
   return str
@@ -146,35 +147,23 @@ export default async function AboutPage() {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
-                <Button size="lg" className="px-8 text-sm font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform" asChild>
-                  <Link href="/events">
-                    Join Us
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-8 text-sm font-bold rounded-xl border-border/50 bg-background/50 backdrop-blur-sm hover:bg-secondary/50 transition-all"
-                  asChild
-                >
-                  <Link href="/#">View Projects</Link>
-                </Button>
-              </div>
+
             </div>
 
             <div className="relative hidden lg:flex items-center justify-center">
-              <div className="relative w-full max-w-md aspect-square">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 rounded-3xl blur-2xl"></div>
-                <div className="relative w-full h-full rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm flex items-center justify-center overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
-                  <div className="text-center space-y-4 relative z-10">
-                    <div className="w-20 h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center">
-                      <Sparkles className="h-10 w-10 text-primary" />
-                    </div>
-                    <p className="text-sm font-medium text-foreground/60 px-8">Driving innovation forward</p>
-                  </div>
+              <div className="relative w-full max-w-lg">
+                <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 rounded-3xl blur-2xl"></div>
+                <div className="relative w-full aspect-[4/3] rounded-3xl border border-border/50 overflow-hidden shadow-2xl">
+                  <Image
+                    src={aboutImage}
+                    alt="Innovation Lab"
+                    fill
+                    sizes="(max-width: 1024px) 0vw, 512px"
+                    quality={100}
+                    unoptimized
+                    priority
+                    placeholder="blur"
+                  />
                 </div>
               </div>
             </div>
@@ -254,9 +243,12 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="py-24 border-y border-border/50 bg-muted/20 dark:bg-muted/10">
+      <section className="py-24 border-y border-border/50 bg-muted/20 dark:bg-muted/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl opacity-50 -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-3xl opacity-50 -z-10"></div>
+
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
+          <div className="text-center space-y-4 mb-20">
             <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase">
               Our Journey
             </span>
@@ -270,27 +262,46 @@ export default async function AboutPage() {
 
           {/* Alternating timeline */}
           <div className="relative">
-            {/* Center line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-px" />
+            {/* Center line with gradient */}
+            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-border to-primary/40 md:-translate-x-px" />
 
-            <div className="space-y-12">
+            <div className="space-y-16 md:space-y-20">
               {milestones.map((item, index) => {
                 const isLeft = index % 2 === 0;
-                return (
-                  <div key={item.year} className="relative group md:flex md:items-start">
-                    {/* Dot on the line */}
-                    <span className="absolute left-4 md:left-1/2 top-6 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-primary bg-background group-hover:bg-primary transition-colors z-10 shadow-[0_0_0_4px_hsl(var(--background))]" />
+                const colors = [
+                  "from-primary/10 to-primary/5 border-primary/20 hover:border-primary/40",
+                  "from-blue-500/10 to-blue-500/5 border-blue-500/20 hover:border-blue-500/40",
+                  "from-emerald-500/10 to-emerald-500/5 border-emerald-500/20 hover:border-emerald-500/40",
+                  "from-violet-500/10 to-violet-500/5 border-violet-500/20 hover:border-violet-500/40",
+                  "from-orange-500/10 to-orange-500/5 border-orange-500/20 hover:border-orange-500/40",
+                ];
+                const colorClass = colors[index % colors.length];
 
-                    {/* Left spacer / content */}
-                    <div className={`md:w-1/2 ${isLeft ? 'md:pr-12 md:text-right' : 'md:order-2 md:pl-12'} pl-10 md:pl-0`}>
-                      <div className="glass-card p-6 rounded-2xl border border-border/50 hover:border-primary/30 transition-all">
-                        <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-secondary text-secondary-foreground mb-2">{item.year}</span>
-                        <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
-                        <p className="text-sm leading-relaxed text-foreground/70">{item.description}</p>
+                return (
+                  <div key={`${item.year}-${index}`} className="relative group md:flex md:items-center">
+                    {/* Dot on the line */}
+                    <div className="absolute left-6 md:left-1/2 top-8 md:top-1/2 -translate-x-1/2 md:-translate-y-1/2 z-10">
+                      <span className="block h-4 w-4 rounded-full border-[3px] border-primary bg-background group-hover:bg-primary group-hover:scale-125 transition-all duration-300 shadow-[0_0_0_4px_hsl(var(--background)),0_0_12px_hsl(var(--primary)/0.3)]" />
+                    </div>
+
+                    {/* Connector line from dot to card */}
+                    <div className={`hidden md:block absolute top-1/2 w-8 h-px bg-border/60 ${isLeft ? 'right-1/2 mr-2' : 'left-1/2 ml-2'}`} />
+
+                    {/* Content card */}
+                    <div className={`md:w-1/2 ${isLeft ? 'md:pr-16' : 'md:order-2 md:pl-16'} pl-14 md:pl-0`}>
+                      <div className={`relative bg-gradient-to-br ${colorClass} p-8 rounded-3xl border shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:translate-y-[-2px] transition-all duration-300 overflow-hidden`}>
+                        {/* Decorative corner glow */}
+                        <div className={`absolute ${isLeft ? 'top-0 right-0' : 'top-0 left-0'} w-24 h-24 bg-primary/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+
+                        <div className="relative z-10">
+                          <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary mb-3">{item.year}</span>
+                          <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
+                          <p className="text-sm leading-relaxed text-foreground/70">{item.description}</p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Right spacer */}
+                    {/* Spacer for the other side */}
                     <div className={`hidden md:block md:w-1/2 ${isLeft ? 'md:order-2' : ''}`} />
                   </div>
                 );

@@ -63,21 +63,7 @@ export default async function CommunitiesPage() {
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-24 border-t border-border/50 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent z-0"></div>
-                <div className="mx-auto max-w-4xl px-6 lg:px-8 text-center relative z-10">
-                    <h2 className="text-3xl font-bold tracking-tight mb-4">Join a Community</h2>
-                    <p className="text-lg text-foreground/70 mb-8 max-w-xl mx-auto">
-                        Interested in joining one of our communities? Reach out to learn more about how you can get involved.
-                    </p>
-                    <Button className="rounded-full px-8 py-6 text-base font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-transform" asChild>
-                        <Link href="/contact">
-                            Get in Touch <ArrowRight className="ml-2 h-5 w-5" />
-                        </Link>
-                    </Button>
-                </div>
-            </section>
+
         </main>
     );
 }
@@ -118,10 +104,7 @@ function CommunityCard({ community }: { community: Community }) {
                 )}
 
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        <span>{community.memberCount} member{community.memberCount === 1 ? "" : "s"}</span>
-                    </div>
+
 
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary">
                         View <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />

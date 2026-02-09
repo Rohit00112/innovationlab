@@ -47,6 +47,7 @@ export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
 
 interface RegistrationEmailData {
     eventTitle: string
+    eventStartDate?: Date | null
     participantName: string
     registrationType: "individual" | "team"
     teamName?: string | null
@@ -54,7 +55,25 @@ interface RegistrationEmailData {
 }
 
 export function buildRegistrationConfirmationEmail(data: RegistrationEmailData) {
-    const { eventTitle, participantName, registrationType, teamName, teamMembers } = data
+    const { eventTitle, eventStartDate, participantName, registrationType, teamName, teamMembers } = data
+
+    const formattedDate = eventStartDate
+        ? new Date(eventStartDate).toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            timeZone: "Asia/Kathmandu",
+        })
+        : null
+
+    const formattedTime = eventStartDate
+        ? new Date(eventStartDate).toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            timeZone: "Asia/Kathmandu",
+        })
+        : null
 
     // Build full members list including team leader
     const allMembers = registrationType === "team"
@@ -120,6 +139,11 @@ export function buildRegistrationConfirmationEmail(data: RegistrationEmailData) 
                 <div style="background: linear-gradient(135deg, #f0f0ff, #f8f0ff); border: 1px solid #e0d8f0; border-radius: 10px; padding: 20px; margin-bottom: 24px;">
                     <p style="margin: 0 0 4px 0; font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px;">Event</p>
                     <p style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e;">${eventTitle}</p>
+                    ${formattedDate ? `
+                    <p style="margin: 8px 0 0 0; font-size: 14px; color: #666;">
+                        📅 ${formattedDate}${formattedTime ? ` at ${formattedTime}` : ""}
+                    </p>
+                    ` : ""}
                     ${registrationType === "team" && teamName ? `
                     <p style="margin: 8px 0 0 0; font-size: 14px; color: #666;">
                         🏷️ Team: <strong>${teamName}</strong>

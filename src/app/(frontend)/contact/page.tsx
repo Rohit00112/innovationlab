@@ -51,19 +51,19 @@ const CONTACT_DETAILS = [
     {
         title: "Visit the Lab",
         description:
-            "Itahari International College, 4th Floor Innovation Wing, Sunsari 56705",
+            "Itahari International College, Sundar Haraincha-4, Morang, Nepal",
         icon: MapPin,
         color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
     },
     {
         title: "Talk With Us",
-        description: "+977-25-525123 (Sun–Fri, 9:00 AM – 5:00 PM)",
+        description: "+977-9801597028 (Sun–Fri, 8:00 AM – 4:00 PM)",
         icon: Phone,
         color: "bg-green-500/10 text-green-600 dark:text-green-400",
     },
     {
         title: "Write to Us",
-        description: "hello@innovationlab.com",
+        description: "innovation.lab@iic.edu.np",
         icon: Mail,
         color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
     },
@@ -145,7 +145,7 @@ export default function ContactPage() {
 
             <section className="relative min-h-[60vh] flex items-center pt-20 pb-12">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
-                    <div className="grid gap-16 lg:grid-cols-[1fr_1.2fr] items-start">
+                    <div className="grid gap-16 lg:grid-cols-[1fr_1fr] items-start">
                         <div className="space-y-12">
                             <div className="space-y-6">
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
@@ -190,12 +190,12 @@ export default function ContactPage() {
                             </div>
                         </div>
 
-                        <div className="glass-card p-8 sm:p-10 rounded-3xl border border-border/30 dark:border-border/20 shadow-xl dark:shadow-2xl relative overflow-hidden">
+                        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-border/30 dark:border-border/20 shadow-xl dark:shadow-2xl relative overflow-hidden lg:self-center">
                             {/* Form Background Decoration */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl -z-10"></div>
 
-                            <h2 className="text-2xl font-bold mb-2">Send us a message</h2>
-                            <p className="text-muted-foreground mb-8 text-sm">Fill out the form below and we&apos;ll get back to you within 24 hours.</p>
+                            <h2 className="text-2xl font-bold mb-1">Send us a message</h2>
+                            <p className="text-muted-foreground mb-5 text-sm">Fill out the form below and we&apos;ll get back to you within 24 hours.</p>
 
                             {statusMessage && (
                                 <div
@@ -212,10 +212,10 @@ export default function ContactPage() {
                             <Form {...form}>
                                 <form
                                     onSubmit={form.handleSubmit(handleSubmit)}
-                                    className="space-y-5"
+                                    className="space-y-4"
                                     noValidate
                                 >
-                                    <div className="grid gap-5 sm:grid-cols-2">
+                                    <div className="grid gap-4 sm:grid-cols-2">
                                         <FormField
                                             control={form.control}
                                             name="fullName"
@@ -284,7 +284,7 @@ export default function ContactPage() {
                                                 <FormControl>
                                                     <Textarea
                                                         placeholder="Tell us more about your project..."
-                                                        rows={5}
+                                                        rows={3}
                                                         className="rounded-xl bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 resize-none p-4"
                                                         {...field}
                                                     />
@@ -323,7 +323,7 @@ export default function ContactPage() {
 
             <section className="py-16 mb-12">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <div className="bg-card rounded-3xl overflow-hidden shadow-lg border border-border/50">
+                    <div className="bg-card rounded-3xl overflow-hidden shadow-lg border border-border/50 mt-12">
                         <div className="grid gap-0 lg:grid-cols-2 lg:items-center">
                             <div className="p-10 lg:p-16 space-y-6">
                                 <span className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-semibold tracking-wide uppercase">

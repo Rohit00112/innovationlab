@@ -55,55 +55,67 @@ export function SubEventsList({ parentEventId }: SubEventsListProps) {
     }
 
     return (
-        <div className="space-y-4">
-            <div className="inline-flex border border-foreground/20 px-4 py-2">
-                <p className="text-xs font-medium uppercase tracking-wider text-foreground/60">
+        <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 backdrop-blur-sm border border-border/50">
+                <p className="text-xs font-semibold uppercase tracking-wider text-foreground/70">
                     Sessions & Sub-Events
                 </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-                {subEvents.map((event) => (
-                    <Link
-                        key={event.id}
-                        href={`/events/${event.slug}`}
-                        className="block border border-foreground/20 p-4 hover:bg-foreground/5 transition-colors group"
-                    >
-                        <div className="flex gap-4">
-                            {event.image && (
-                                <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden">
+            <div className="grid gap-5 md:grid-cols-2">
+                {subEvents.map((event) => {
+                    const dateStr = new Date(event.startsAt).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        timeZone: 'Asia/Kathmandu',
+                    })
+                    const timeStr = new Date(event.startsAt).toLocaleTimeString(undefined, {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        timeZone: 'Asia/Kathmandu',
+                    })
+
+                    return (
+                        <Link
+                            key={event.id}
+                            href={`/events/${event.slug}`}
+                            className="group relative flex gap-4 bg-card rounded-2xl p-4 border border-border/50 shadow-sm hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30 hover:translate-y-[-2px] transition-all duration-300 overflow-hidden"
+                        >
+                            {event.image ? (
+                                <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden rounded-xl">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                     <Image
                                         src={event.image}
                                         alt={event.title}
                                         fill
-                                        className="object-cover"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                 </div>
+                            ) : (
+                                <div className="relative w-24 h-24 flex-shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-muted to-secondary/10 flex items-center justify-center">
+                                    <CalendarDays className="w-8 h-8 text-primary/20" />
+                                </div>
                             )}
-                            <div className="flex-1 min-w-0">
-                                <h4 className="font-medium line-clamp-1 group-hover:underline">
+                            <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
+                                <h4 className="font-semibold text-sm line-clamp-1 group-hover:text-primary transition-colors">
                                     {event.title}
                                 </h4>
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                                    <CalendarDays className="h-3 w-3" />
-                                    <span>
-                                        {new Date(event.startsAt).toLocaleDateString(undefined, {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: 'numeric',
-                                            minute: '2-digit',
-                                            timeZone: 'Asia/Kathmandu',
-                                        })}
-                                    </span>
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                    <CalendarDays className="h-3 w-3 text-primary/60" />
+                                    <span>{dateStr}, {timeStr}</span>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                                    <MapPin className="h-3 w-3" />
-                                    <span>{event.isVirtual ? 'Online' : event.location || 'TBA'}</span>
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                    <MapPin className="h-3 w-3 text-primary/60" />
+                                    <span className="line-clamp-1">{event.isVirtual ? 'Online' : event.location || 'TBA'}</span>
                                 </div>
                             </div>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground self-center group-hover:translate-x-1 transition-transform" />
-                        </div>
-                    </Link>
-                ))}
+                            <div className="flex items-center self-center pl-2">
+                                <div className="w-8 h-8 rounded-full bg-secondary/50 group-hover:bg-primary/10 flex items-center justify-center transition-colors duration-300">
+                                    <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-300" />
+                                </div>
+                            </div>
+                        </Link>
+                    )
+                })}
             </div>
         </div>
     )

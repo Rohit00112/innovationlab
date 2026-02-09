@@ -158,6 +158,7 @@ export async function POST(request: Request, context: RouteParams) {
         const teamMembersParsed = data.teamMembers?.filter(m => m.name.trim() || m.email) ?? []
         const emailData = {
             eventTitle: event.title,
+            eventStartDate: event.startsAt,
             participantName: data.participantName.trim(),
             registrationType: data.registrationType,
             teamName: data.teamName?.trim(),

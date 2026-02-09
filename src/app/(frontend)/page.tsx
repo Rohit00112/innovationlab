@@ -18,6 +18,8 @@ import { getPublishedTestimonials } from "@/lib/data/testimonials";
 import { getPublishedEvents } from "@/lib/data/events";
 import { type TestimonialRecord } from "@/lib/types/testimonials";
 import { type EventRecord } from "@/lib/types/events";
+import heroImage from "@/assets/home.jpg";
+
 
 // ---------------------------------------------------------------------------
 // Static hero content
@@ -394,16 +396,19 @@ export default async function Frontend() {
                         </div>
 
                         <div className="relative hidden lg:flex items-center justify-center">
-                            <div className="relative w-full max-w-md aspect-square">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 rounded-3xl blur-2xl"></div>
-                                <div className="relative w-full h-full rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm flex items-center justify-center overflow-hidden">
-                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
-                                    <div className="text-center space-y-4 relative z-10">
-                                        <div className="w-20 h-20 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center">
-                                            <Sparkles className="h-10 w-10 text-primary" />
-                                        </div>
-                                        <p className="text-sm font-medium text-foreground/60 px-8">{HERO_TAGLINE}</p>
-                                    </div>
+                            <div className="relative w-full max-w-lg">
+                                <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 rounded-3xl blur-2xl"></div>
+                                <div className="relative w-full aspect-[4/3] rounded-3xl border border-border/50 overflow-hidden shadow-2xl">
+                                    <Image
+                                        src={heroImage}
+                                        alt="Innovation Lab"
+                                        fill
+                                        sizes="(max-width: 1024px) 0vw, 512px"
+                                        quality={100}
+                                        unoptimized
+                                        priority
+                                        placeholder="blur"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -427,7 +432,7 @@ export default async function Frontend() {
                                 </h2>
                             </div>
                             <p className="text-lg leading-relaxed text-foreground/70">
-                                At the Innovation Lab, we empower students to transform bold ideas into real-world solutions. Through collaborative experimentation, cutting-edge technology, and creative thinking, we&apos;re shaping the future one project at a time.
+                                We cultivate a dynamic ecosystem where academic insight meets industry application to drive meaningful change. Through experiential learning and interdisciplinary collaboration, we empower individuals to become future-ready leaders and sustainable innovators.
                             </p>
 
                             <div className="p-6 rounded-2xl bg-muted/50 dark:bg-muted/30 border border-border/50 dark:border-border/30 relative overflow-hidden group">
@@ -448,20 +453,20 @@ export default async function Frontend() {
                             {[
                                 {
                                     icon: Lightbulb,
-                                    title: "Ideation & Design",
-                                    description: "From concept to prototype, we help students explore innovative solutions to real-world challenges.",
+                                    title: "Ideation, Design & Technical Development",
+                                    description: "Transform concepts into functional prototypes. We empower students with hands-on technical skills and cutting-edge tools to solve real-world challenges.",
                                     color: "bg-orange-500/10 text-orange-600 dark:text-orange-400"
                                 },
                                 {
                                     icon: Code2,
-                                    title: "Technical Development",
-                                    description: "Hands-on experience with cutting-edge tools, frameworks, and technologies across multiple domains.",
+                                    title: "Ignite Innovation",
+                                    description: "Foster creativity and practical experimentation. We build a hands-on environment where innovation thrives and new ideas come to life.",
                                     color: "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                                 },
                                 {
                                     icon: Briefcase,
-                                    title: "Project Execution",
-                                    description: "Transform ideas into fully-realized projects with mentorship and industry-standard practices.",
+                                    title: "Drive Impact",
+                                    description: "Create sustainable solutions. We drive cross-disciplinary initiatives that address critical social and environmental challenges for lasting change.",
                                     color: "bg-green-500/10 text-green-600 dark:text-green-400"
                                 }
                             ].map((item, index) => {
