@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 
 import { optionalUser } from "@/lib/api/auth";
@@ -69,7 +69,6 @@ export async function POST(request: Request, context: RouteParams) {
                 title: events.title,
                 status: events.status,
                 startsAt: events.startsAt,
-                maxParticipants: events.maxParticipants,
                 enableProposalSubmission: events.enableProposalSubmission,
                 submissionFields: events.submissionFields
             })
@@ -83,23 +82,6 @@ export async function POST(request: Request, context: RouteParams) {
 
         if (event.status !== "published") {
             throw new ApiError(400, "Event is not accepting registrations");
-        }
-
-        // Enforce maximum participant limit
-        if (event.maxParticipants) {
-            const [result] = await db
-                .select({ total: count() })
-                .from(eventRegistrations)
-                .where(
-                    and(
-                        eq(eventRegistrations.eventId, eventId),
-                        eq(eventRegistrations.status, "confirmed")
-                    )
-                );
-
-            if (result.total >= event.maxParticipants) {
-                throw new ApiError(400, `Registration is full. Maximum ${event.maxParticipants} participants allowed.`);
-            }
         }
 
         // Validate required submissions
