@@ -51,7 +51,7 @@ const CONTACT_DETAILS = [
     {
         title: "Visit the Lab",
         description:
-            "Itahari International College, Sundar Haraincha-4, Morang, Nepal",
+            "Itahari International College, Sundar Haraincha-4, Dulari, Morang",
         icon: MapPin,
         color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
     },
