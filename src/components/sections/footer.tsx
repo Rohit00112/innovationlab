@@ -57,7 +57,7 @@ export function Footer() {
               className="inline-flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors"
             >
               <Mail className="h-4 w-4" />
-              innovationlab@iic.edu.np
+              innovation.lab@iic.edu.np
             </a>
           </div>
 
