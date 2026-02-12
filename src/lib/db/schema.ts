@@ -114,6 +114,7 @@ export const events = pgTable(
     }),
     parentEventId: integer("parent_event_id"),
     documents: json("documents"), // JSON of Array<{ title: string, url: string }>
+    displayOrder: integer("display_order").notNull().default(0),
     createdAt: timestampWithDefaults("created_at"),
     updatedAt: timestampWithDefaults("updated_at")
   },
@@ -122,7 +123,8 @@ export const events = pgTable(
     statusIdx: index("events_status_idx").on(table.status),
     organizerIdx: index("events_organizer_idx").on(table.organizerId),
     startsAtIdx: index("events_starts_at_idx").on(table.startsAt),
-    parentEventIdx: index("events_parent_event_idx").on(table.parentEventId)
+    parentEventIdx: index("events_parent_event_idx").on(table.parentEventId),
+    displayOrderIdx: index("events_display_order_idx").on(table.displayOrder)
   })
 );
 

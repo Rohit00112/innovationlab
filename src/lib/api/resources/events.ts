@@ -26,6 +26,7 @@ export const eventSelection = {
   organizerId: events.organizerId,
   parentEventId: events.parentEventId,
   documents: events.documents,
+  displayOrder: events.displayOrder,
   createdAt: events.createdAt,
   updatedAt: events.updatedAt,
   organizer: {

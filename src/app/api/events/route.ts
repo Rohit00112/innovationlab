@@ -219,7 +219,8 @@ export async function POST(request: Request) {
         publishedAt,
         organizerId,
         parentEventId: payload.parentEventId ?? null,
-        documents: payload.documents ?? null
+        documents: payload.documents ?? null,
+        displayOrder: payload.displayOrder ?? 0
       })
       .returning({ id: events.id });
 

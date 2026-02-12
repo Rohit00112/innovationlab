@@ -38,6 +38,7 @@ export const createEventSchema = z.object({
   publishedAt: z.union([isoDateTime, z.null()]).optional(),
   organizerId: z.number().int().positive().optional(),
   parentEventId: z.number().int().positive().optional().nullable(),
+  displayOrder: z.number().int().min(0).optional(),
   documents: z
     .array(
       z.object({

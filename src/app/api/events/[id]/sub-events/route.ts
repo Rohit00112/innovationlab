@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, asc, and } from "drizzle-orm";
 
 import { ApiError, toErrorResponse } from "@/lib/api/errors";
 import { db } from "@/lib/db";
@@ -43,6 +43,7 @@ export async function GET(request: Request, context: RouteParams) {
                 startsAt: events.startsAt,
                 endsAt: events.endsAt,
                 status: events.status,
+                displayOrder: events.displayOrder,
                 createdAt: events.createdAt,
                 organizer: {
                     id: users.id,
@@ -56,7 +57,7 @@ export async function GET(request: Request, context: RouteParams) {
                 eq(events.parentEventId, parentId),
                 eq(events.status, "published")
             ))
-            .orderBy(desc(events.startsAt));
+            .orderBy(asc(events.displayOrder), asc(events.startsAt));
 
         return NextResponse.json({
             data: subEvents,

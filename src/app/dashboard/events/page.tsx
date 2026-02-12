@@ -96,6 +96,7 @@ const eventFormSchema = z.object({
   publishedAt: z.union([z.string(), z.literal(""), z.null()]).optional(),
   description: z.string().min(1, "Description cannot be empty"),
   parentEventId: z.union([z.string(), z.literal(""), z.null()]).optional(),
+  displayOrder: z.coerce.number().int().min(0).default(0),
   documents: z
     .array(
       z.object({
@@ -268,6 +269,7 @@ const defaultFormValues: EventFormValues = {
   publishedAt: "",
   description: JSON.stringify(EMPTY_EDITOR_STATE),
   parentEventId: "",
+  displayOrder: 0,
   documents: [],
 }
 
@@ -482,6 +484,7 @@ export default function EventsDashboard() {
       publishedAt: toDatetimeLocal(record.publishedAt),
       description: record.description ?? JSON.stringify(EMPTY_EDITOR_STATE),
       parentEventId: record.parentEventId ? String(record.parentEventId) : "",
+      displayOrder: record.displayOrder ?? 0,
       documents: record.documents ?? [],
     })
 
@@ -559,6 +562,7 @@ export default function EventsDashboard() {
       status: values.status,
       publishedAt: fromDatetimeLocal(values.publishedAt ?? null),
       parentEventId: values.parentEventId && String(values.parentEventId) !== "" ? Number(values.parentEventId) : null,
+      displayOrder: values.displayOrder ?? 0,
       documents: values.documents && values.documents.length > 0 ? values.documents : null,
     }
 
@@ -1134,42 +1138,65 @@ export default function EventsDashboard() {
                         )}
                       />
 
-                      <FormField
-                        name="parentEventId"
-                        render={({ field }) => {
-                          // Get potential parent events (events without a parent, excluding current event)
-                          const potentialParents = eventItems.filter(
-                            (e) => !e.parentEventId && e.id !== activeEvent?.id
-                          )
-                          return (
+                      <div className="grid grid-cols-[1fr_auto] gap-4 items-start">
+                        <FormField
+                          name="parentEventId"
+                          render={({ field }) => {
+                            // Get potential parent events (events without a parent, excluding current event)
+                            const potentialParents = eventItems.filter(
+                              (e) => !e.parentEventId && e.id !== activeEvent?.id
+                            )
+                            return (
+                              <FormItem>
+                                <FormLabel>Parent Event (Optional)</FormLabel>
+                                <Select
+                                  onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
+                                  value={field.value || "none"}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger className="rounded-lg">
+                                      <SelectValue placeholder="None (standalone event)" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="none">None (standalone event)</SelectItem>
+                                    {potentialParents.map((event) => (
+                                      <SelectItem key={event.id} value={String(event.id)}>
+                                        {event.title}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Select a parent to make this a sub-event
+                                </p>
+                                <FormMessage />
+                              </FormItem>
+                            )
+                          }}
+                        />
+                        <FormField
+                          name="displayOrder"
+                          render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Parent Event (Optional)</FormLabel>
-                              <Select
-                                onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
-                                value={field.value || "none"}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="rounded-lg">
-                                    <SelectValue placeholder="None (standalone event)" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="none">None (standalone event)</SelectItem>
-                                  {potentialParents.map((event) => (
-                                    <SelectItem key={event.id} value={String(event.id)}>
-                                      {event.title}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <FormLabel>Display Order</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  {...field}
+                                  className="rounded-lg w-24"
+                                  placeholder="0"
+                                />
+                              </FormControl>
                               <p className="text-xs text-muted-foreground mt-1">
-                                Select a parent to make this a sub-event
+                                Lower = first
                               </p>
                               <FormMessage />
                             </FormItem>
-                          )
-                        }}
-                      />
+                          )}
+                        />
+                      </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <FormField

@@ -139,6 +139,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       updates.documents = payload.documents ?? null;
     }
 
+    if (payload.displayOrder !== undefined) {
+      updates.displayOrder = payload.displayOrder;
+    }
+
     const nextStartsAt = payload.startsAt
       ? parseEventDate(payload.startsAt, "startsAt")
       : existing.startsAt;

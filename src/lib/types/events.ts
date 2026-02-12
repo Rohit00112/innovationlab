@@ -58,6 +58,7 @@ export interface EventRecord {
   organizerId: number | null
   parentEventId: number | null
   documents: EventDocument[] | null
+  displayOrder: number
   createdAt: string
   updatedAt: string
   organizer: EventOrganizer | null
@@ -86,6 +87,7 @@ export interface CreateEventPayload {
   organizerId?: number | null
   parentEventId?: number | null
   documents?: EventDocument[] | null
+  displayOrder?: number
 }
 
 export type UpdateEventPayload = Partial<CreateEventPayload>;

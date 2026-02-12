@@ -32,6 +32,7 @@ const eventSelection = {
     organizerId: events.organizerId,
     parentEventId: events.parentEventId,
     documents: events.documents,
+    displayOrder: events.displayOrder,
     createdAt: events.createdAt,
     updatedAt: events.updatedAt,
     organizer: {
@@ -133,7 +134,7 @@ export async function getSubEvents(parentEventId: number) {
             eq(events.parentEventId, parentEventId),
             eq(events.status, "published")
         ))
-        .orderBy(asc(events.startsAt));
+        .orderBy(asc(events.displayOrder), asc(events.startsAt));
 
     return records.map(formatEventRecord);
 }
@@ -162,6 +163,7 @@ function formatEventRecord(record: typeof eventSelection extends infer T ? { [K 
         organizerId: record.organizerId as number | null,
         parentEventId: record.parentEventId as number | null,
         documents: record.documents as EventDocument[] | null,
+        displayOrder: record.displayOrder as number,
         createdAt: (record.createdAt as Date).toISOString(),
         updatedAt: (record.updatedAt as Date).toISOString(),
         organizer: record.organizer ? {
