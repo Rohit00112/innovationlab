@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
-import { requireUser } from "@/lib/api/auth";
+import { optionalUser } from "@/lib/api/auth";
 import { ApiError, toErrorResponse } from "@/lib/api/errors";
 
 // Configure Cloudinary
@@ -13,13 +13,21 @@ cloudinary.config({
 
 export async function POST(request: Request) {
     try {
-        // Require authenticated user
-        await requireUser();
+        // Check authentication
+        const session = await optionalUser();
 
         const formData = await request.formData();
         const file = formData.get("file") as File | null;
         const folder = (formData.get("folder") as string) || "uploads";
         const resourceType = (formData.get("resourceType") as string) || "auto";
+
+        // Allow unauthenticated uploads ONLY for specific folders (like submissions)
+        const publicFolders = ["submissions"];
+        const isPublicFolder = publicFolders.some(f => folder.startsWith(f));
+
+        if (!session && !isPublicFolder) {
+            throw new ApiError(401, "Authentication required");
+        }
 
         if (!file) {
             throw new ApiError(400, "No file provided");
